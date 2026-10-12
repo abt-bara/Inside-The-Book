@@ -1,4 +1,4 @@
-# BookScan QR
+# Inside The Book
 
 **A QR code generator for bookstore owners that lets customers read a book's description without ever touching it.**
 
