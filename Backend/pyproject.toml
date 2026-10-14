@@ -1,0 +1,24 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = "Inside-The-Book's backend"
+readme = "README.md"
+authors = [
+    { name = "Muhammad Bara", email = "mbhsoftwarengineer@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "alembic>=1.20.0",
+    "fastapi[all]>=0.143.0",
+    "psycopg[binary]>=3.3.6",
+]
+
+[project.scripts]
+backend = "backend:main"
+
+[tool.uv]
+package = false
+
+[build-system]
+requires = ["uv_build>=0.13.0,<0.14.0"]
+build-backend = "uv_build"
