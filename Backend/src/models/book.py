@@ -47,6 +47,7 @@ class VolImage(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     vol_id: Mapped[int] = mapped_column(ForeignKey("vols.id"))
     image_url: Mapped[str]
+    storage_key: Mapped[str | None] = mapped_column(String, nullable=True)
 
     vol: Mapped["Vol"] = relationship(back_populates="images")
 
@@ -57,5 +58,6 @@ class BookImage(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     book_id: Mapped[int] = mapped_column(ForeignKey("books.id"))
     image_url: Mapped[str]
+    storage_key: Mapped[str | None] = mapped_column(String, nullable=True)
 
     book: Mapped["Book"] = relationship(back_populates="images")
