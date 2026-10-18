@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from api_config import API_CONFIG
 from config import settings
 from db import engine
 from routers import books, login
@@ -24,6 +25,6 @@ app.include_router(login.router)
 app.include_router(books.router)
 
 
-@app.get("/health")
+@app.get(f"{API_CONFIG['apiPrefix']}{API_CONFIG['api']['health']}")
 def health():
     return {"status": "healthy"}

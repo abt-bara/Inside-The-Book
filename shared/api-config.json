@@ -1,0 +1,13 @@
+{
+  "apiPrefix": "/api",
+  "pages": {
+    "books": "/books",
+    "bookDetail": "/books/:book_id"
+  },
+  "api": {
+    "books": "/books",
+    "book": "/books/{book_id}",
+    "login": "/auth/login",
+    "health": "/health"
+  }
+}

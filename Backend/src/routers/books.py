@@ -6,12 +6,13 @@ from starlette.datastructures import UploadFile
 from starlette.formparsers import MultiPartException
 from starlette.requests import Request
 
+from api_config import API_CONFIG
 from db import get_db
 from schemas.book import BookSchema, BookUpdate
 from services.book_service import BookService
 from services.image_storage import MAX_IMAGE_FILES
 
-router = APIRouter(prefix="/books", tags=["books"])
+router = APIRouter(prefix=API_CONFIG["apiPrefix"], tags=["books"])
 
 
 @dataclass
@@ -68,12 +69,12 @@ async def parse_book_upload(request: Request) -> BookUploadData:
 
 
 
-@router.get("", response_model=list[BookSchema])
+@router.get(API_CONFIG["api"]["books"], response_model=list[BookSchema])
 def get_books(service: BookService = Depends(get_service)) -> list[BookSchema]:
     return service.get_all()
 
 
-@router.get("/{book_id}", response_model=BookSchema)
+@router.get(API_CONFIG["api"]["book"], response_model=BookSchema)
 def get_book(book_id: int, service: BookService = Depends(get_service)):
     book = service.get_by_id(book_id)
     if book is None:
@@ -82,7 +83,7 @@ def get_book(book_id: int, service: BookService = Depends(get_service)):
 
 
 @router.post(
-    "",
+    API_CONFIG["api"]["books"],
     response_model=BookSchema,
     status_code=status.HTTP_201_CREATED,
     openapi_extra={
@@ -119,7 +120,7 @@ def create_book(
     return service.create_with_files(upload.payload_raw, upload.files)
 
 
-@router.patch("/{book_id}", response_model=BookSchema)
+@router.patch(API_CONFIG["api"]["book"], response_model=BookSchema)
 def update_book(
     book_id: int,
     data: BookUpdate,
@@ -131,7 +132,7 @@ def update_book(
     return book
 
 
-@router.delete("/{book_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(API_CONFIG["api"]["book"], status_code=status.HTTP_204_NO_CONTENT)
 def delete_book(book_id: int, service: BookService = Depends(get_service)):
     deleted = service.delete(book_id)
     if not deleted:
