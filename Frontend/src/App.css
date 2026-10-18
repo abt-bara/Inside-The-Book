@@ -1,184 +1,356 @@
-.counter {
-  font-size: 16px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  color: var(--accent);
-  background: var(--accent-bg);
-  border: 2px solid transparent;
-  transition: border-color 0.3s;
-  margin-bottom: 24px;
+/* =========================================================
+   JADE.CSS — Jade green (Islamic-inspired) utility theme
+   Pure CSS. Drop in, add class names. No JS needed.
+   Sections: 0 Fonts · 1 Tokens · 2 Colors · 3 Backgrounds
+             4 Blur/Glass · 5 Text gradients · 6 Border gradients
+             7 Extras
+   ========================================================= */
 
-  &:hover {
-    border-color: var(--accent-border);
-  }
-  &:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
+/* ---------- 0. FONTS ---------- */
+
+@import url('https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400..900;1,400..900&family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Arvo:ital,wght@0,400;0,700;1,400;1,700&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Fustat:wght@200..800&family=Katibeh&family=Kufam:ital,wght@0,400..900;1,400..900&family=Mirza:wght@400;500;600;700&family=Oxanium:wght@200..800&family=Rakkas&display=swap');
+
+/* ---------- 1. TOKENS ---------- */
+:root {
+  --jade-50:  #effaf5;
+  --jade-100: #d8f3e6;
+  --jade-200: #b3e6cf;
+  --jade-300: #82d3b3;
+  --jade-400: #4dba93;
+  --jade-500: #25a07a;
+  --jade-600: #00a86b;   /* classic jade */
+  --jade-700: #146851;
+  --jade-800: #135342;
+  --jade-900: #0f4337;
+  --jade-950: #07261f;
+
+  --gold:      #d4af37;  /* accent used in Islamic ornament */
+  --gold-soft: #f0d98a;
+  --ivory:     #f7f3e3;
+  --ink:       #04140f;
+
+  /* Neutral text */
+  --text-black: #111111;
+  --text-grey:  #6b7280;
+
+  /* Fonts — change --font-base to switch the whole app's font */
+  --font-alegreya: "Alegreya", serif;
+  --font-amiri:    "Amiri", serif;
+  --font-arvo:     "Arvo", serif;
+  --font-fraunces: "Fraunces", serif;
+  --font-katibeh:  "Katibeh", serif;
+  --font-kufam:    "Kufam", sans-serif;
+  --font-oxanium:  "Oxanium", sans-serif;
+  --font-rakkas:   "Rakkas", serif;
+  --font-base:     var(--font-fustat);
+  --font-fustat:   "Fustat", sans-serif;
+  --font-mirza:    "Mirza", serif;
+
+  --jade-glow: 0 0 24px rgba(0, 168, 107, .45);
+  --radius: 16px;
+  --speed: 6s;           /* change to speed up / slow down all motion */
 }
 
-.hero {
+/* Needed for the rotating border (modern browsers) */
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* ---------- 2. COLORS ---------- */
+/* Neutral text */
+.text-black { color: var(--text-black); }
+.text-grey  { color: var(--text-grey); }
+
+/* Font pickers — add to any element (or <body>) */
+.font-base      { font-family: var(--font-base); }
+.font-alegreya  { font-family: var(--font-alegreya); }
+.font-amiri     { font-family: var(--font-amiri); }
+.font-arvo      { font-family: var(--font-arvo); }
+.font-fraunces  { font-family: var(--font-fraunces); }
+.font-katibeh   { font-family: var(--font-katibeh); }
+.font-kufam     { font-family: var(--font-kufam); }
+.font-oxanium   { font-family: var(--font-oxanium); }
+.font-rakkas    { font-family: var(--font-rakkas); }
+.font-fustat    { font-family: var(--font-fustat); }
+.font-mirza     { font-family: var(--font-mirza); }
+
+/* Jade / gold text */
+.text-jade-50  { color: var(--jade-50); }
+.text-jade-100 { color: var(--jade-100); }
+.text-jade-200 { color: var(--jade-200); }
+.text-jade-300 { color: var(--jade-300); }
+.text-jade-400 { color: var(--jade-400); }
+.text-jade-500 { color: var(--jade-500); }
+.text-jade-600 { color: var(--jade-600); }
+.text-jade-700 { color: var(--jade-700); }
+.text-jade-800 { color: var(--jade-800); }
+.text-jade-900 { color: var(--jade-900); }
+.text-gold     { color: var(--gold); }
+.text-ivory    { color: var(--ivory); }
+
+.bg-jade-50  { background: var(--jade-50); }
+.bg-jade-100 { background: var(--jade-100); }
+.bg-jade-200 { background: var(--jade-200); }
+.bg-jade-300 { background: var(--jade-300); }
+.bg-jade-400 { background: var(--jade-400); }
+.bg-jade-500 { background: var(--jade-500); }
+.bg-jade-600 { background: var(--jade-600); }
+.bg-jade-700 { background: var(--jade-700); }
+.bg-jade-800 { background: var(--jade-800); }
+.bg-jade-900 { background: var(--jade-900); }
+.bg-jade-950 { background: var(--jade-950); }
+.bg-gold     { background: var(--gold); }
+.bg-ivory    { background: var(--ivory); }
+
+.border-jade-300 { border: 1px solid var(--jade-300); }
+.border-jade-500 { border: 1px solid var(--jade-500); }
+.border-jade-700 { border: 1px solid var(--jade-700); }
+.border-gold     { border: 1px solid var(--gold); }
+
+.glow-jade { box-shadow: var(--jade-glow); }
+.glow-gold { box-shadow: 0 0 24px rgba(212, 175, 55, .4); }
+
+/* ---------- 3. BACKGROUNDS ---------- */
+/* Base dark page: use on <body> */
+.bg-jade-night {
+  background: var(--jade-950);
+  color: var(--ivory);
+}
+
+.bg-jade-gradient {
+  background: linear-gradient(135deg, var(--jade-950) 0%, var(--jade-800) 55%, var(--jade-600) 100%);
+  color: var(--ivory);
+}
+
+.bg-jade-light {
+  background: linear-gradient(160deg, var(--jade-50) 0%, var(--jade-100) 50%, var(--jade-200) 100%);
+  color: var(--jade-950);
+}
+
+.bg-jade-radial {
+  background: radial-gradient(circle at 50% 0%, var(--jade-700) 0%, var(--jade-900) 45%, var(--jade-950) 100%);
+  color: var(--ivory);
+}
+
+.bg-jade-gold {
+  background: linear-gradient(135deg, var(--jade-900), var(--jade-700) 60%, var(--gold) 140%);
+  color: var(--ivory);
+}
+
+/* Soft glowing blobs — still pure CSS, no animation */
+.bg-jade-mesh {
+  background:
+    radial-gradient(at 15% 20%, rgba(0, 168, 107, .55) 0, transparent 45%),
+    radial-gradient(at 85% 10%, rgba(212, 175, 55, .22) 0, transparent 40%),
+    radial-gradient(at 70% 85%, rgba(37, 160, 122, .45) 0, transparent 50%),
+    var(--jade-950);
+  color: var(--ivory);
+}
+
+/* Slowly drifting aurora (simple motion) */
+.bg-jade-aurora {
+  background: linear-gradient(120deg, var(--jade-950), var(--jade-700), var(--jade-500), var(--jade-800), var(--jade-950));
+  background-size: 300% 300%;
+  animation: jade-drift calc(var(--speed) * 3) ease-in-out infinite;
+  color: var(--ivory);
+}
+
+/* Subtle geometric lattice (nod to mashrabiya / Islamic tiling) */
+.bg-jade-lattice {
+  background-color: var(--jade-900);
+  background-image:
+    linear-gradient(45deg,  rgba(255,255,255,.05) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.05) 75%),
+    linear-gradient(-45deg, rgba(255,255,255,.05) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.05) 75%),
+    radial-gradient(circle at 50% 50%, rgba(212,175,55,.12) 0 2px, transparent 3px);
+  background-size: 40px 40px, 40px 40px, 40px 40px;
+  color: var(--ivory);
+}
+
+/* ---------- 4. BLUR / GLASS ---------- */
+.blur-sm { backdrop-filter: blur(4px);  -webkit-backdrop-filter: blur(4px); }
+.blur-md { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.blur-lg { backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+
+/* Frosted jade glass card (put it over a gradient / image) */
+.glass-jade {
+  background: rgba(0, 168, 107, .12);
+  border: 1px solid rgba(130, 211, 179, .25);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, .25);
+}
+
+.glass-dark {
+  background: rgba(7, 38, 31, .55);
+  border: 1px solid rgba(130, 211, 179, .15);
+  backdrop-filter: blur(20px) saturate(130%);
+  -webkit-backdrop-filter: blur(20px) saturate(130%);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, .35);
+}
+
+.glass-light {
+  background: rgba(247, 243, 227, .55);
+  border: 1px solid rgba(255, 255, 255, .6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: var(--radius);
+  color: var(--jade-950);
+}
+
+/* Decorative blurred orbs — put on an empty absolutely-positioned <div> */
+.orb-jade {
+  background: var(--jade-500);
+  filter: blur(80px);
+  opacity: .5;
+  border-radius: 50%;
+}
+.orb-gold {
+  background: var(--gold);
+  filter: blur(90px);
+  opacity: .25;
+  border-radius: 50%;
+}
+
+/* ---------- 5. TEXT GRADIENTS ---------- */
+.text-grad-jade,
+.text-grad-gold,
+.text-grad-ivory,
+.text-grad-animated,
+.text-grad-shimmer,
+.text-grad-gold-animated {
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Static */
+.text-grad-jade  { background-image: linear-gradient(90deg, var(--jade-300), var(--jade-600)); }
+.text-grad-gold  { background-image: linear-gradient(90deg, var(--gold-soft), var(--gold)); }
+.text-grad-ivory { background-image: linear-gradient(180deg, var(--ivory), var(--jade-200)); }
+
+/* Animated: flowing jade → mint → gold */
+.text-grad-animated {
+  background-image: linear-gradient(90deg, var(--jade-600), var(--jade-300), var(--gold-soft), var(--jade-300), var(--jade-600));
+  background-size: 300% 100%;
+  animation: jade-flow var(--speed) linear infinite;
+}
+
+/* Animated: light sweep passing over the text */
+.text-grad-shimmer {
+  background-image: linear-gradient(110deg, var(--jade-500) 35%, var(--jade-50) 50%, var(--jade-500) 65%);
+  background-size: 250% 100%;
+  animation: jade-shimmer 3.5s ease-in-out infinite;
+}
+
+/* Animated gold */
+.text-grad-gold-animated {
+  background-image: linear-gradient(90deg, var(--gold), var(--gold-soft), var(--gold));
+  background-size: 250% 100%;
+  animation: jade-flow var(--speed) linear infinite;
+}
+
+/* Soft text glow */
+.text-glow-jade { text-shadow: 0 0 18px rgba(0, 168, 107, .7); }
+.text-glow-gold { text-shadow: 0 0 18px rgba(212, 175, 55, .6); }
+
+/* ---------- 6. BORDER GRADIENTS ---------- */
+/* A) Solid inside — set --inner to match your background.
+      <div class="border-grad" style="--inner:#07261f"> */
+.border-grad {
+  --bw: 2px;
+  --inner: var(--jade-950);
+  border: var(--bw) solid transparent;
+  border-radius: var(--radius);
+  background:
+    linear-gradient(var(--inner), var(--inner)) padding-box,
+    linear-gradient(135deg, var(--jade-300), var(--jade-600), var(--gold)) border-box;
+}
+
+/* B) Transparent inside (works over any background / glass).
+      Uses a mask, so inner content stays untouched. */
+.border-grad-glass {
+  --bw: 2px;
   position: relative;
-
-  .base,
-  .framework,
-  .vite {
-    inset-inline: 0;
-    margin: 0 auto;
-  }
-
-  .base {
-    width: 170px;
-    position: relative;
-    z-index: 0;
-  }
-
-  .framework,
-  .vite {
-    position: absolute;
-  }
-
-  .framework {
-    z-index: 1;
-    top: 34px;
-    height: 28px;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg)
-      scale(1.4);
-  }
-
-  .vite {
-    z-index: 0;
-    top: 107px;
-    height: 26px;
-    width: auto;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg)
-      scale(0.8);
-  }
+  border-radius: var(--radius);
+}
+.border-grad-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: var(--bw);
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--jade-300), var(--jade-600), var(--gold));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  pointer-events: none;
 }
 
-#center {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-  place-content: center;
-  place-items: center;
-  flex-grow: 1;
-
-  @media (max-width: 1024px) {
-    padding: 32px 20px 24px;
-    gap: 18px;
-  }
+/* C) Animated rotating border (conic). Set --inner to your bg. */
+.border-grad-animated {
+  --bw: 2px;
+  --inner: var(--jade-950);
+  border: var(--bw) solid transparent;
+  border-radius: var(--radius);
+  background:
+    linear-gradient(var(--inner), var(--inner)) padding-box,
+    conic-gradient(from var(--angle), var(--jade-700), var(--jade-300), var(--gold), var(--jade-300), var(--jade-700)) border-box;
+  animation: jade-spin var(--speed) linear infinite;
 }
 
-#next-steps {
-  display: flex;
-  border-top: 1px solid var(--border);
-  text-align: left;
+/* Border thickness helpers (combine with any border-grad*) */
+.bw-1 { --bw: 1px; }
+.bw-2 { --bw: 2px; }
+.bw-3 { --bw: 3px; }
+.bw-4 { --bw: 4px; }
 
-  & > div {
-    flex: 1 1 0;
-    padding: 32px;
-    @media (max-width: 1024px) {
-      padding: 24px 20px;
-    }
-  }
+/* Radius helpers */
+.r-sm   { --radius: 8px;   border-radius: 8px; }
+.r-md   { --radius: 16px;  border-radius: 16px; }
+.r-lg   { --radius: 28px;  border-radius: 28px; }
+.r-pill { --radius: 999px; border-radius: 999px; }
 
-  .icon {
-    margin-bottom: 16px;
-    width: 22px;
-    height: 22px;
-  }
-
-  @media (max-width: 1024px) {
-    flex-direction: column;
-    text-align: center;
-  }
+/* ---------- 7. EXTRAS ---------- */
+/* Gradient divider line */
+.divider-jade {
+  height: 1px;
+  border: 0;
+  background: linear-gradient(90deg, transparent, var(--jade-400), var(--gold), var(--jade-400), transparent);
 }
 
-#docs {
-  border-right: 1px solid var(--border);
-
-  @media (max-width: 1024px) {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-  }
+/* Jade button — hover lift */
+.btn-jade {
+  display: inline-block;
+  padding: .7rem 1.4rem;
+  border: 0;
+  border-radius: 999px;
+  color: var(--ivory);
+  font-weight: 600;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--jade-600), var(--jade-800));
+  box-shadow: 0 4px 18px rgba(0, 168, 107, .35);
+  transition: transform .2s ease, box-shadow .2s ease;
 }
+.btn-jade:hover { transform: translateY(-2px); box-shadow: 0 8px 26px rgba(0, 168, 107, .5); }
+.btn-jade:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
 
-#next-steps ul {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  gap: 8px;
-  margin: 32px 0 0;
+/* Gentle floating (for orbs, icons) */
+.float-slow { animation: jade-float 7s ease-in-out infinite; }
 
-  .logo {
-    height: 18px;
-  }
+/* ---------- KEYFRAMES ---------- */
+@keyframes jade-flow    { to { background-position: -300% 0; } }
+@keyframes jade-shimmer { 0% { background-position: 150% 0; } 100% { background-position: -150% 0; } }
+@keyframes jade-drift   { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+@keyframes jade-spin    { to { --angle: 360deg; } }
+@keyframes jade-float   { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
 
-  a {
-    color: var(--text-h);
-    font-size: 16px;
-    border-radius: 6px;
-    background: var(--social-bg);
-    display: flex;
-    padding: 6px 12px;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    transition: box-shadow 0.3s;
-
-    &:hover {
-      box-shadow: var(--shadow);
-    }
-    .button-icon {
-      height: 18px;
-      width: 18px;
-    }
-  }
-
-  @media (max-width: 1024px) {
-    margin-top: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-
-    li {
-      flex: 1 1 calc(50% - 8px);
-    }
-
-    a {
-      width: 100%;
-      justify-content: center;
-      box-sizing: border-box;
-    }
-  }
-}
-
-#spacer {
-  height: 88px;
-  border-top: 1px solid var(--border);
-  @media (max-width: 1024px) {
-    height: 48px;
-  }
-}
-
-.ticks {
-  position: relative;
-  width: 100%;
-
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: -4.5px;
-    border: 5px solid transparent;
-  }
-
-  &::before {
-    left: 0;
-    border-left-color: var(--border);
-  }
-  &::after {
-    right: 0;
-    border-right-color: var(--border);
-  }
+/* Respect users who prefer no motion */
+@media (prefers-reduced-motion: reduce) {
+  .text-grad-animated, .text-grad-shimmer, .text-grad-gold-animated,
+  .bg-jade-aurora, .border-grad-animated, .float-slow { animation: none; }
 }
