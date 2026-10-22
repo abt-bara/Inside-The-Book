@@ -4,7 +4,7 @@ import type { Book } from "../../types/Book";
 
 export default async function BookLoader({
   params,
-}: LoaderFunctionArgs): Promise<Book[]> {
+}: LoaderFunctionArgs): Promise<Book> {
   const bookId = params.book_id;
   if (!bookId) {
     throw new Response("Book ID is required.", { status: 400 });

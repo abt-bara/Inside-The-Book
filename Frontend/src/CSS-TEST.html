@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>jade.css — test page</title>
+<!-- Put this file in the same folder as jade.css -->
+<link rel="stylesheet" href="App.css">
+<style>
+  /* page scaffolding only — NOT part of jade.css */
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: var(--font-base); }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 24px 20px 80px; }
+  nav.toc { position: sticky; top: 0; z-index: 50; display: flex; gap: 6px; flex-wrap: wrap;
+            padding: 10px 20px; background: rgba(7,38,31,.85); backdrop-filter: blur(12px); }
+  nav.toc a { color: var(--jade-200); text-decoration: none; font-size: .85rem; padding: 4px 10px;
+              border-radius: 999px; border: 1px solid rgba(130,211,179,.25); }
+  nav.toc a:hover { background: var(--jade-700); }
+  section { margin-top: 56px; }
+  h2 { margin: 0 0 6px; font-size: 1.6rem; }
+  p.hint { margin: 0 0 18px; opacity: .7; font-size: .9rem; }
+  .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
+  .grid.wide { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+  .cell { padding: 18px; min-height: 90px; border-radius: 12px; }
+  .cls { display: block; direction: ltr; font: 12px/1.3 ui-monospace, Menlo, monospace; opacity: .85; margin-bottom: 8px; }
+  .stage { position: relative; overflow: hidden; padding: 28px; border-radius: 20px; min-height: 220px; }
+  .stage .orb-jade, .stage .orb-gold { position: absolute; }
+  .stage > .content { position: relative; z-index: 1; }
+  .big { font-size: 2.4rem; font-weight: 800; margin: 4px 0; }
+  .light-panel { background: var(--jade-50); color: var(--jade-950); padding: 22px; border-radius: 16px; }
+  .dark-panel  { background: var(--jade-950); color: var(--ivory); padding: 22px; border-radius: 16px; }
+  .row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  .card { padding: 22px; min-width: 200px; flex: 1; }
+</style>
+</head>
+<body class="bg-jade-zakhrafa-glow">
+
+<nav class="toc">
+  <a href="#fonts">الخطوط</a><a href="#colors">الألوان</a><a href="#bgs">الخلفيات</a>
+  <a href="#glass">الزجاج/التمويه</a><a href="#textgrad">تدرّج النص</a>
+  <a href="#bordergrad">تدرّج الحدود</a><a href="#extras">إضافات</a>
+</nav>
+
+<div class="wrap">
+  <h1 class="text-grad-animated" style="font-size:2.6rem;margin:30px 0 4px">jade.css — اختبار الأصناف</h1>
+  <p class="hint">Every class from the stylesheet, labelled. Click any class label to copy it.</p>
+  <hr class="divider-jade">
+
+  <!-- 2. FONTS -->
+  <section id="fonts">
+    <h2 class="text-jade-300">0 · Fonts</h2>
+    <p class="hint">.font-* — Arabic + Latin sample</p>
+    <div class="grid wide" id="fontGrid"></div>
+  </section>
+
+  <!-- 2. COLORS -->
+  <section id="colors">
+    <h2 class="text-jade-300">2 · Colors</h2>
+
+    <p class="hint">Neutral text (on light panel)</p>
+    <div class="light-panel row">
+      <span class="text-black">.text-black — بسم الله</span>
+      <span class="text-grey">.text-grey — بسم الله</span>
+    </div>
+
+    <p class="hint" style="margin-top:22px">.text-jade-50 … 900 · .text-gold · .text-ivory (on dark)</p>
+    <div class="dark-panel grid" id="textGrid"></div>
+
+    <p class="hint" style="margin-top:22px">.bg-jade-50 … 950 · .bg-gold · .bg-ivory</p>
+    <div class="grid" id="bgGrid"></div>
+
+    <p class="hint" style="margin-top:22px">Borders</p>
+    <div class="grid">
+      <div class="cell border-jade-300"><span class="cls">.border-jade-300</span>حد</div>
+      <div class="cell border-jade-500"><span class="cls">.border-jade-500</span>حد</div>
+      <div class="cell border-jade-700"><span class="cls">.border-jade-700</span>حد</div>
+      <div class="cell border-gold"><span class="cls">.border-gold</span>حد</div>
+    </div>
+
+    <p class="hint" style="margin-top:22px">Glows</p>
+    <div class="grid">
+      <div class="cell bg-jade-900 glow-jade"><span class="cls">.glow-jade</span>توهج</div>
+      <div class="cell bg-jade-900 glow-gold"><span class="cls">.glow-gold</span>توهج</div>
+    </div>
+  </section>
+
+  <!-- 3. BACKGROUNDS -->
+  <section id="bgs">
+    <h2 class="text-jade-300">3 · Backgrounds</h2>
+    <div class="grid wide">
+      <div class="cell bg-jade-night" style="border:1px solid var(--jade-700)"><span class="cls">.bg-jade-night</span>ليل</div>
+      <div class="cell bg-jade-gradient"><span class="cls">.bg-jade-gradient</span>تدرّج</div>
+      <div class="cell bg-jade-light"><span class="cls">.bg-jade-light</span>فاتح</div>
+      <div class="cell bg-jade-radial"><span class="cls">.bg-jade-radial</span>شعاعي</div>
+      <div class="cell bg-jade-gold"><span class="cls">.bg-jade-gold</span>أخضر وذهبي</div>
+      <div class="cell bg-jade-mesh"><span class="cls">.bg-jade-mesh</span>شبكة توهج</div>
+      <div class="cell bg-jade-aurora"><span class="cls">.bg-jade-aurora</span>شفق (animated)</div>
+      <div class="cell bg-jade-lattice"><span class="cls">.bg-jade-lattice</span>مشربية</div>
+    </div>
+  </section>
+
+  <!-- 4. GLASS -->
+  <section id="glass">
+    <h2 class="text-jade-300">4 · Blur / Glass</h2>
+    <p class="hint">Glass needs something behind it — orbs + gradient below.</p>
+    <div class="stage bg-jade-gradient">
+      <div class="orb-jade float-slow" style="width:220px;height:220px;top:-40px;left:8%"></div>
+      <div class="orb-gold" style="width:200px;height:200px;bottom:-50px;right:12%"></div>
+      <div class="content row">
+        <div class="glass-jade card"><span class="cls">.glass-jade</span>زجاج أخضر</div>
+        <div class="glass-dark card"><span class="cls">.glass-dark</span>زجاج داكن</div>
+        <div class="glass-light card"><span class="cls">.glass-light</span>زجاج فاتح</div>
+      </div>
+    </div>
+
+    <p class="hint" style="margin-top:22px">.blur-sm / .blur-md / .blur-lg (backdrop-filter over striped bg)</p>
+    <div class="stage" style="background:repeating-linear-gradient(90deg,var(--gold) 0 14px,var(--jade-600) 14px 28px);min-height:140px">
+      <div class="content row">
+        <div class="blur-sm card" style="background:rgba(0,0,0,.2);border-radius:12px"><span class="cls">.blur-sm</span>4px</div>
+        <div class="blur-md card" style="background:rgba(0,0,0,.2);border-radius:12px"><span class="cls">.blur-md</span>12px</div>
+        <div class="blur-lg card" style="background:rgba(0,0,0,.2);border-radius:12px"><span class="cls">.blur-lg</span>24px</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. TEXT GRADIENTS -->
+  <section id="textgrad">
+    <h2 class="text-jade-300">5 · Text gradients</h2>
+    <div class="grid wide">
+      <div class="cell"><span class="cls">.text-grad-jade</span><div class="big text-grad-jade">الحمد لله</div></div>
+      <div class="cell"><span class="cls">.text-grad-gold</span><div class="big text-grad-gold">الحمد لله</div></div>
+      <div class="cell"><span class="cls">.text-grad-ivory</span><div class="big text-grad-ivory">الحمد لله</div></div>
+      <div class="cell"><span class="cls">.text-grad-animated</span><div class="big text-grad-animated">الحمد لله</div></div>
+      <div class="cell"><span class="cls">.text-grad-shimmer</span><div class="big text-grad-shimmer">الحمد لله</div></div>
+      <div class="cell"><span class="cls">.text-grad-gold-animated</span><div class="big text-grad-gold-animated">الحمد لله</div></div>
+      <div class="cell"><span class="cls">.text-glow-jade</span><div class="big text-jade-400 text-glow-jade">الحمد لله</div></div>
+      <div class="cell"><span class="cls">.text-glow-gold</span><div class="big text-gold text-glow-gold">الحمد لله</div></div>
+    </div>
+  </section>
+
+  <!-- 6. BORDER GRADIENTS -->
+  <section id="bordergrad">
+    <h2 class="text-jade-300">6 · Border gradients</h2>
+    <div class="grid wide">
+      <div class="cell border-grad" style="--inner:#07261f"><span class="cls">.border-grad</span>داخل صلب</div>
+      <div class="cell border-grad-glass glass-jade"><span class="cls">.border-grad-glass (+ .glass-jade)</span>داخل شفاف</div>
+      <div class="cell border-grad-animated" style="--inner:#07261f"><span class="cls">.border-grad-animated</span>حد دوّار</div>
+    </div>
+
+    <p class="hint" style="margin-top:22px">Thickness helpers on .border-grad: .bw-1 / .bw-2 / .bw-3 / .bw-4</p>
+    <div class="grid">
+      <div class="cell border-grad bw-1"><span class="cls">.bw-1</span>1px</div>
+      <div class="cell border-grad bw-2"><span class="cls">.bw-2</span>2px</div>
+      <div class="cell border-grad bw-3"><span class="cls">.bw-3</span>3px</div>
+      <div class="cell border-grad bw-4"><span class="cls">.bw-4</span>4px</div>
+    </div>
+
+    <p class="hint" style="margin-top:22px">Radius helpers: .r-sm / .r-md / .r-lg / .r-pill</p>
+    <div class="grid">
+      <div class="cell border-grad r-sm"><span class="cls">.r-sm</span>8px</div>
+      <div class="cell border-grad r-md"><span class="cls">.r-md</span>16px</div>
+      <div class="cell border-grad r-lg"><span class="cls">.r-lg</span>28px</div>
+      <div class="cell border-grad r-pill"><span class="cls">.r-pill</span>999px</div>
+    </div>
+  </section>
+
+  <!-- 7. EXTRAS -->
+  <section id="extras">
+    <h2 class="text-jade-300">7 · Extras</h2>
+    <div class="row">
+      <div><span class="cls">.btn-jade</span><button class="btn-jade">بسم الله</button></div>
+      <div><span class="cls">.float-slow</span>
+        <div class="float-slow bg-jade-500 glow-jade" style="width:56px;height:56px;border-radius:50%"></div></div>
+    </div>
+    <p class="hint" style="margin-top:22px"><span class="cls" style="display:inline">.divider-jade</span></p>
+    <hr class="divider-jade">
+  </section>
+</div>
+
+<script>
+  const fonts = ['base','alegreya','amiri','arvo','fraunces','katibeh','kufam','oxanium','rakkas','fustat','mirza'];
+  document.getElementById('fontGrid').innerHTML = fonts.map(f =>
+    `<div class="cell glass-dark"><span class="cls">.font-${f}</span>
+      <div class="font-${f}" style="font-size:1.5rem;line-height:1.5">بسم الله الرحمن الرحيم<br>The quick brown fox 0123</div></div>`).join('');
+
+  const steps = [50,100,200,300,400,500,600,700,800,900];
+  document.getElementById('textGrid').innerHTML =
+    steps.map(s => `<div><span class="cls">.text-jade-${s}</span><b class="text-jade-${s}" style="font-size:1.3rem">نص ${s}</b></div>`).join('') +
+    `<div><span class="cls">.text-gold</span><b class="text-gold" style="font-size:1.3rem">نص ذهبي</b></div>
+     <div><span class="cls">.text-ivory</span><b class="text-ivory" style="font-size:1.3rem">نص عاجي</b></div>`;
+
+  const bgs = [...steps, 950].map(s => [`bg-jade-${s}`, s <= 400 ? 'var(--jade-950)' : 'var(--ivory)']);
+  bgs.push(['bg-gold','var(--ink)'], ['bg-ivory','var(--jade-950)']);
+  document.getElementById('bgGrid').innerHTML = bgs.map(([c,t]) =>
+    `<div class="cell ${c}" style="color:${t}"><span class="cls">.${c}</span>لون</div>`).join('');
+
+  // click a class label to copy it
+  document.addEventListener('click', e => {
+    const el = e.target.closest('.cls'); if (!el) return;
+    const txt = el.textContent.split(' ')[0];
+    navigator.clipboard?.writeText(txt).then(() => {
+      const old = el.textContent; el.textContent = 'copied ✓';
+      setTimeout(() => el.textContent = old, 800);
+    }).catch(() => {});
+  });
+</script>
+</body>
+</html>
