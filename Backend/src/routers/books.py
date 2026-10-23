@@ -1,6 +1,8 @@
+import json
 from dataclasses import dataclass
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from pydantic import ValidationError
 from sqlalchemy.orm import Session
 from starlette.datastructures import UploadFile
 from starlette.formparsers import MultiPartException
@@ -67,8 +69,6 @@ async def parse_book_upload(request: Request) -> BookUploadData:
     return BookUploadData(payload_raw=payload_values[0], files=files)
 
 
-
-
 @router.get(API_CONFIG["api"]["books"], response_model=list[BookSchema])
 def get_books(service: BookService = Depends(get_service)) -> list[BookSchema]:
     return service.get_all()
@@ -120,13 +120,72 @@ def create_book(
     return service.create_with_files(upload.payload_raw, upload.files)
 
 
-@router.patch(API_CONFIG["api"]["book"], response_model=BookSchema)
-def update_book(
+@router.patch(
+    API_CONFIG["api"]["book"],
+    response_model=BookSchema,
+    openapi_extra={
+        "requestBody": {
+            "required": True,
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "title": {"type": "string"},
+                            "author": {"type": "string"},
+                            "editor": {"type": "string"},
+                            "distributor": {"type": "string"},
+                            "description": {"type": "string"},
+                            "year": {"type": "string"},
+                            "new": {"type": "boolean"},
+                        },
+                    }
+                },
+                "multipart/form-data": {
+                    "schema": {
+                        "type": "object",
+                        "required": ["payload"],
+                        "properties": {
+                            "payload": {
+                                "type": "string",
+                                "description": (
+                                    "JSON matching BookUpdateWithSlots. Image entries "
+                                    "use slots; each volume entry identifies an existing "
+                                    "volume with vol_id."
+                                ),
+                            }
+                        },
+                        "additionalProperties": {
+                            "type": "string",
+                            "format": "binary",
+                        },
+                    }
+                },
+            },
+        }
+    },
+)
+async def update_book(
     book_id: int,
-    data: BookUpdate,
+    request: Request,
     service: BookService = Depends(get_service),
 ):
-    book = service.update(book_id, data)
+    if request.headers.get("content-type", "").lower().startswith(
+        "multipart/form-data"
+    ):
+        upload = await parse_book_upload(request)
+        book = service.update_with_files(
+            book_id,
+            upload.payload_raw,
+            upload.files,
+        )
+    else:
+        try:
+            data = BookUpdate.model_validate(await request.json())
+        except (json.JSONDecodeError, ValidationError) as exc:
+            raise HTTPException(status_code=422, detail=str(exc)) from exc
+        book = service.update(book_id, data)
+
     if book is None:
         raise HTTPException(status_code=404, detail="Book not found")
     return book

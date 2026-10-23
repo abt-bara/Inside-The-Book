@@ -211,7 +211,8 @@
   color: var(--ivory);
 }
 
-.bg-jade-gradient {
+.bg-jade-gradient,
+.btn-jade-gradient {
   background: linear-gradient(
     135deg,
     var(--jade-950) 0%,
@@ -221,7 +222,8 @@
   color: var(--ivory);
 }
 
-.bg-jade-light {
+.bg-jade-light,
+.btn-jade-light {
   background: linear-gradient(
     160deg,
     var(--jade-50) 0%,
@@ -231,7 +233,8 @@
   color: var(--jade-950);
 }
 
-.bg-jade-radial {
+.bg-jade-radial,
+.btn-jade-radial {
   background: radial-gradient(
     circle at 50% 0%,
     var(--jade-700) 0%,
@@ -241,7 +244,8 @@
   color: var(--ivory);
 }
 
-.bg-jade-gold {
+.bg-jade-gold,
+.btn-jade-gold {
   background: linear-gradient(
     135deg,
     var(--jade-900),
@@ -252,7 +256,8 @@
 }
 
 /* Soft glowing blobs — still pure CSS, no animation */
-.bg-jade-mesh {
+.bg-jade-mesh,
+.btn-jade-mesh {
   background:
     radial-gradient(at 15% 20%, rgba(0, 168, 107, 0.55) 0, transparent 45%),
     radial-gradient(at 85% 10%, rgba(212, 175, 55, 0.22) 0, transparent 40%),
@@ -262,7 +267,8 @@
 }
 
 /* Slowly drifting aurora (simple motion) */
-.bg-jade-aurora {
+.bg-jade-aurora,
+.btn-jade-aurora {
   background: linear-gradient(
     120deg,
     var(--jade-950),
@@ -277,7 +283,8 @@
 }
 
 /* 3 huge soft color glows melting into the dark jade bg */
-.bg-jade-orbs {
+.bg-jade-orbs,
+.btn-jade-orbs {
   background:
     /* gold glow — top right */
     radial-gradient(
@@ -310,7 +317,8 @@
   color: var(--ivory);
 }
 /* Lattice pattern sitting on top of 3 huge soft glows */
-.bg-jade-lattice {
+.bg-jade-lattice,
+.btn-jade-lattice {
   background-color: var(--jade-900);
   background-image:
     linear-gradient(
@@ -330,7 +338,8 @@
 }
 
 /* 2) Same lattice over 3 soft glows */
-.bg-jade-lattice-glow {
+.bg-jade-lattice-glow,
+.btn-jade-lattice-glow {
   background-color: var(--jade-950);
   background-image:
     linear-gradient(
@@ -374,7 +383,8 @@
 }
 
 /* 1) Khatam (8-point star) zakhrafa on dark jade */
-.bg-jade-zakhrafa {
+.bg-jade-zakhrafa,
+.btn-jade-zakhrafa {
   background-color: var(--jade-900);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64' fill='none' stroke='%2382d3b3' stroke-opacity='.22'%3E%3Crect x='15' y='15' width='34' height='34'/%3E%3Crect x='15' y='15' width='34' height='34' transform='rotate(45 32 32)'/%3E%3Ccircle cx='32' cy='32' r='5'/%3E%3Ccircle cx='32' cy='32' r='1.6' fill='%23d4af37' fill-opacity='.55' stroke='none'/%3E%3Cpath d='M0 7L7 0M57 0L64 7M64 57L57 64M7 64L0 57'/%3E%3C/svg%3E");
   background-size: var(--zakhrafa-size) var(--zakhrafa-size);
@@ -382,7 +392,8 @@
 }
 
 /* 2) Same zakhrafa over 3 huge soft glows */
-.bg-jade-zakhrafa-glow {
+.bg-jade-zakhrafa-glow,
+.btn-jade-zakhrafa-glow {
   background-color: var(--jade-950);
   background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64' fill='none' stroke='%2382d3b3' stroke-opacity='.22'%3E%3Crect x='15' y='15' width='34' height='34'/%3E%3Crect x='15' y='15' width='34' height='34' transform='rotate(45 32 32)'/%3E%3Ccircle cx='32' cy='32' r='5'/%3E%3Ccircle cx='32' cy='32' r='1.6' fill='%23d4af37' fill-opacity='.55' stroke='none'/%3E%3Cpath d='M0 7L7 0M57 0L64 7M64 57L57 64M7 64L0 57'/%3E%3C/svg%3E"),
@@ -677,10 +688,20 @@
 }
 
 .app-header__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   color: var(--app-heading);
   font-size: 1rem;
   font-weight: 700;
   text-decoration: none;
+}
+
+.app-header__brand img {
+  display: block;
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
 }
 
 .theme-switch {
@@ -1064,6 +1085,13 @@
   overflow-wrap: anywhere;
 }
 
+.new-book-form__loading {
+  margin: 0;
+  padding: 28px clamp(20px, 4vw, 32px);
+  color: var(--app-muted);
+  text-align: center;
+}
+
 .new-book-form__cache-warning {
   margin: 14px 0 0;
   color: var(--app-muted);
@@ -1234,11 +1262,18 @@
   padding-top: 28px;
 }
 
+.book-details-page__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
 .book-details-back {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  margin: 0 0 20px;
   color: var(--jade-600);
   font-size: 0.9rem;
   font-weight: 600;
@@ -1247,6 +1282,29 @@
 
 .app-shell--dark .book-details-back {
   color: var(--jade-300);
+}
+
+.book-details-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 12px;
+  border: 1px solid var(--app-outline);
+  border-radius: 8px;
+  background: var(--app-surface);
+  color: var(--app-heading);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+}
+
+.book-details-edit:hover {
+  border-color: var(--jade-500);
+}
+
+.book-details-edit:focus-visible {
+  outline: 2px solid var(--jade-400);
+  outline-offset: 3px;
 }
 
 .book-details-card {
@@ -1715,27 +1773,228 @@
   width: 3px;
 }
 /* Jade button — hover lift */
-.btn-jade {
+.btn-jade,
+.btn-jade-50,
+.btn-jade-100,
+.btn-jade-200,
+.btn-jade-300,
+.btn-jade-400,
+.btn-jade-500,
+.btn-jade-600,
+.btn-jade-700,
+.btn-jade-800,
+.btn-jade-900,
+.btn-jade-950,
+.btn-gold,
+.btn-ivory,
+.btn-jade-gradient,
+.btn-jade-light,
+.btn-jade-radial,
+.btn-jade-gold,
+.btn-jade-mesh,
+.btn-jade-aurora,
+.btn-jade-orbs,
+.btn-jade-lattice,
+.btn-jade-lattice-glow,
+.btn-jade-zakhrafa,
+.btn-jade-zakhrafa-glow {
   display: inline-block;
   padding: 0.7rem 1.4rem;
   border: 0;
   border-radius: 999px;
-  color: var(--ivory);
   font-weight: 600;
   cursor: pointer;
-  background: linear-gradient(135deg, var(--jade-600), var(--jade-800));
-  box-shadow: 0 4px 18px rgba(0, 168, 107, 0.35);
+  box-shadow: 0 4px 18px rgba(4, 20, 15, 0.16);
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease;
 }
-.btn-jade:hover {
+
+.btn-jade {
+  color: var(--ivory);
+  background: linear-gradient(135deg, var(--jade-600), var(--jade-800));
+  box-shadow: 0 4px 18px rgba(0, 168, 107, 0.35);
+}
+
+.btn-jade-50 {
+  color: var(--ink);
+  background: var(--jade-50);
+}
+
+.btn-jade-100 {
+  color: var(--ink);
+  background: var(--jade-100);
+}
+
+.btn-jade-200 {
+  color: var(--ink);
+  background: var(--jade-200);
+}
+
+.btn-jade-300 {
+  color: var(--ink);
+  background: var(--jade-300);
+}
+
+.btn-jade-400 {
+  color: var(--ink);
+  background: var(--jade-400);
+}
+
+.btn-jade-500 {
+  color: var(--ink);
+  background: var(--jade-500);
+}
+
+.btn-jade-600 {
+  color: var(--ink);
+  background: var(--jade-600);
+}
+
+.btn-jade-700 {
+  color: var(--ivory);
+  background: var(--jade-700);
+}
+
+.btn-jade-800 {
+  color: var(--ivory);
+  background: var(--jade-800);
+}
+
+.btn-jade-900 {
+  color: var(--ivory);
+  background: var(--jade-900);
+}
+
+.btn-jade-950 {
+  color: var(--ivory);
+  background: var(--jade-950);
+}
+
+.btn-gold {
+  color: var(--ink);
+  background: var(--gold);
+}
+
+.btn-ivory {
+  color: var(--ink);
+  background: var(--ivory);
+}
+
+.btn-jade:hover,
+.btn-jade-50:hover,
+.btn-jade-100:hover,
+.btn-jade-200:hover,
+.btn-jade-300:hover,
+.btn-jade-400:hover,
+.btn-jade-500:hover,
+.btn-jade-600:hover,
+.btn-jade-700:hover,
+.btn-jade-800:hover,
+.btn-jade-900:hover,
+.btn-jade-950:hover,
+.btn-gold:hover,
+.btn-ivory:hover,
+.btn-jade-gradient:hover,
+.btn-jade-light:hover,
+.btn-jade-radial:hover,
+.btn-jade-gold:hover,
+.btn-jade-mesh:hover,
+.btn-jade-aurora:hover,
+.btn-jade-orbs:hover,
+.btn-jade-lattice:hover,
+.btn-jade-lattice-glow:hover,
+.btn-jade-zakhrafa:hover,
+.btn-jade-zakhrafa-glow:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 26px rgba(0, 168, 107, 0.5);
 }
-.btn-jade:focus-visible {
-  outline: 2px solid var(--gold);
+
+.btn-jade:focus-visible,
+.btn-jade-50:focus-visible,
+.btn-jade-100:focus-visible,
+.btn-jade-200:focus-visible,
+.btn-jade-300:focus-visible,
+.btn-jade-400:focus-visible,
+.btn-jade-500:focus-visible,
+.btn-jade-600:focus-visible,
+.btn-jade-700:focus-visible,
+.btn-jade-800:focus-visible,
+.btn-jade-900:focus-visible,
+.btn-jade-950:focus-visible,
+.btn-gold:focus-visible,
+.btn-ivory:focus-visible,
+.btn-jade-gradient:focus-visible,
+.btn-jade-light:focus-visible,
+.btn-jade-radial:focus-visible,
+.btn-jade-gold:focus-visible,
+.btn-jade-mesh:focus-visible,
+.btn-jade-aurora:focus-visible,
+.btn-jade-orbs:focus-visible,
+.btn-jade-lattice:focus-visible,
+.btn-jade-lattice-glow:focus-visible,
+.btn-jade-zakhrafa:focus-visible,
+.btn-jade-zakhrafa-glow:focus-visible {
+  outline: 2px solid var(--app-heading);
   outline-offset: 3px;
+}
+
+.btn-jade-50:hover,
+.btn-jade-100:hover,
+.btn-jade-200:hover,
+.btn-jade-300:hover,
+.btn-jade-400:hover,
+.btn-jade-500:hover,
+.btn-jade-600:hover,
+.btn-jade-700:hover,
+.btn-jade-800:hover,
+.btn-jade-900:hover,
+.btn-jade-950:hover,
+.btn-gold:hover,
+.btn-ivory:hover,
+.btn-jade-gradient:hover,
+.btn-jade-light:hover,
+.btn-jade-radial:hover,
+.btn-jade-gold:hover,
+.btn-jade-mesh:hover,
+.btn-jade-aurora:hover,
+.btn-jade-orbs:hover,
+.btn-jade-lattice:hover,
+.btn-jade-lattice-glow:hover,
+.btn-jade-zakhrafa:hover,
+.btn-jade-zakhrafa-glow:hover {
+  box-shadow: 0 8px 26px rgba(4, 20, 15, 0.24);
+}
+
+.btn-jade:disabled,
+.btn-jade-50:disabled,
+.btn-jade-100:disabled,
+.btn-jade-200:disabled,
+.btn-jade-300:disabled,
+.btn-jade-400:disabled,
+.btn-jade-500:disabled,
+.btn-jade-600:disabled,
+.btn-jade-700:disabled,
+.btn-jade-800:disabled,
+.btn-jade-900:disabled,
+.btn-jade-950:disabled,
+.btn-gold:disabled,
+.btn-ivory:disabled,
+.btn-jade-gradient:disabled,
+.btn-jade-light:disabled,
+.btn-jade-radial:disabled,
+.btn-jade-gold:disabled,
+.btn-jade-mesh:disabled,
+.btn-jade-aurora:disabled,
+.btn-jade-orbs:disabled,
+.btn-jade-lattice:disabled,
+.btn-jade-lattice-glow:disabled,
+.btn-jade-zakhrafa:disabled,
+.btn-jade-zakhrafa-glow:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none;
+  box-shadow: none;
 }
 
 /* Gentle floating (for orbs, icons) */
@@ -1807,6 +2066,7 @@
   .text-grad-shimmer,
   .text-grad-gold-animated,
   .bg-jade-aurora,
+  .btn-jade-aurora,
   .border-grad-animated,
   .float-slow,
   .entry-widget,

@@ -87,16 +87,11 @@ class BookCreateWithSlots(BookCreate):
     images: list[ImageSlotRef] = Field(default_factory=list)
 
     def referenced_slots(self) -> list[str]:
-        
         return [
             *(image.slot for image in self.images),
-            *(
-                image.slot
-                for vol in self.vols
-                for image in vol.images
-            ),
+            *(image.slot for vol in self.vols for image in vol.images),
         ]
-        
+
     def to_book_create(
         self,
         uploaded_images: Mapping[str, "UploadedImage"],
@@ -120,6 +115,11 @@ class BookCreateWithSlots(BookCreate):
         return BookCreateWithVols.model_validate(data)
 
 
+class VolImageSlotsForUpdate(BaseModel):
+    vol_id: int = Field(gt=0)
+    images: list[ImageSlotRef] = Field(default_factory=list)
+
+
 class UploadedImage(BaseModel):
     image_url: str
     storage_key: str
@@ -133,3 +133,14 @@ class BookUpdate(BaseModel):
     description: str | None = None
     year: str | None = None
     new: bool | None = None
+
+
+class BookUpdateWithSlots(BookUpdate):
+    images: list[ImageSlotRef] = Field(default_factory=list)
+    vols: list[VolImageSlotsForUpdate] = Field(default_factory=list)
+
+    def referenced_slots(self) -> list[str]:
+        return [
+            *(image.slot for image in self.images),
+            *(image.slot for vol in self.vols for image in vol.images),
+        ]

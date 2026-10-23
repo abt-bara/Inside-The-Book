@@ -1,4 +1,6 @@
-import { Link, useLoaderData } from "react-router-dom";
+import { useState } from "react";
+import { Link, useLoaderData, useRevalidator } from "react-router-dom";
+import EditBookDialog from "../Components/EditBookDialog";
 import BookImageCarousel from "../Components/BookImageCarousel";
 import { useTheme } from "../Hooks/useTheme";
 import { booksPagePath } from "../services/pagePaths";
@@ -7,6 +9,8 @@ import type { Book } from "../types/Book";
 function BookDetailsPage() {
   const book = useLoaderData() as Book;
   const { theme } = useTheme();
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const revalidator = useRevalidator();
   const volumeCount = book.vols?.length ?? 0;
   const metadata = [
     ["Author", book.author],
@@ -18,9 +22,19 @@ function BookDetailsPage() {
 
   return (
     <main className="book-details-page">
-      <Link className="book-details-back" to={booksPagePath}>
-        <span aria-hidden="true">←</span> All books
-      </Link>
+      <div className="book-details-page__toolbar">
+        <Link className="book-details-back" to={booksPagePath}>
+          <span aria-hidden="true">←</span> All books
+        </Link>
+        <button
+          className="book-details-edit"
+          type="button"
+          aria-label={`Edit ${book.title}`}
+          onClick={() => setIsEditOpen(true)}
+        >
+          <span aria-hidden="true">✎</span> Edit book
+        </button>
+      </div>
       <article className={`book-details-card book-details-card--${theme}  entry-widget`}>
         <div className="book-details-card__cover">
           <BookImageCarousel images={book.images ?? []} label={`${book.title} cover`} />
@@ -64,6 +78,13 @@ function BookDetailsPage() {
             ))}
           </div>
         </section>
+      )}
+      {isEditOpen && (
+        <EditBookDialog
+          bookId={book.id}
+          onClose={() => setIsEditOpen(false)}
+          onUpdated={() => revalidator.revalidate()}
+        />
       )}
     </main>
   );

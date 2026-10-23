@@ -1,6 +1,7 @@
 import { Link, Outlet } from "react-router-dom";
 import { useTheme } from "../Hooks/useTheme";
 import { booksPagePath } from "../services/pagePaths";
+import faviconUrl from "../../assets/favicon.png";
 
 const themeModes = [
   { value: "dark", src: "../../../assets/dark-theme.svg", name: "Dark" },
@@ -14,7 +15,10 @@ function Scaffold() {
   return (
     <div className={`app-shell app-shell--${theme}`} data-theme={theme}>
       <header className="app-header">
-        <Link className="app-header__brand" to={booksPagePath}>Inside the Book</Link>
+        <Link className="app-header__brand" to={booksPagePath}>
+          <img src={faviconUrl} alt="" aria-hidden="true" />
+          <span>Inside the Book</span>
+        </Link>
         <div className="theme-switch" role="group" aria-label="Color theme">
           {themeModes.map((option) => (
             <button

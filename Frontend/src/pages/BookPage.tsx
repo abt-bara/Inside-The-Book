@@ -15,7 +15,7 @@ function BooksPage() {
       <div className="books-page__heading">
         <h1 className="books-page__title">Inside the Book — في الكتاب</h1>
         <button
-          className="btn-jade books-page__add-button"
+          className="btn-jade-gold books-page__add-button"
           type="button"
           onClick={() => setIsNewBookOpen(true)}
         >
@@ -43,7 +43,7 @@ function BooksPage() {
       {isNewBookOpen && (
         <NewBookDialog
           onClose={() => setIsNewBookOpen(false)}
-          onCreated={() => revalidator.revalidate()}
+          onSaved={() => revalidator.revalidate()}
         />
       )}
     </main>

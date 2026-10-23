@@ -3,15 +3,18 @@ import {
   useRef,
   useState,
   type AnimationEvent,
-  type FormEvent,
+  type SubmitEvent,
 } from "react";
 import apiConfig from "../../../shared/api-config.json";
+import type { Book } from "../types/Book";
 
 interface VolumeDraft {
   key: number;
+  id?: number;
   title: string;
   number: string;
   images: File[];
+  existingImageCount: number;
 }
 
 interface BookDraft {
@@ -23,7 +26,6 @@ interface BookDraft {
   year: string;
   month: string;
   day: string;
-  isNew: boolean;
 }
 
 interface CachedDraft extends BookDraft {
@@ -32,15 +34,12 @@ interface CachedDraft extends BookDraft {
 
 interface NewBookDialogProps {
   onClose: () => void;
-  onCreated: () => void;
+  onSaved: () => void;
+  editBookId?: number;
 }
 
 const draftStorageKey = "inside-the-book:new-book-draft";
 const currentYear = new Date().getFullYear();
-const publicationYears = Array.from(
-  { length: currentYear - 1499 },
-  (_, index) => String(currentYear - index),
-);
 const months = [
   "January",
   "February",
@@ -65,7 +64,6 @@ const emptyBookDraft: BookDraft = {
   year: "",
   month: "",
   day: "",
-  isNew: false,
 };
 
 function readCachedDraft(): { draft: CachedDraft | null; warning: string } {
@@ -91,7 +89,6 @@ function readCachedDraft(): { draft: CachedDraft | null; warning: string } {
     ] as const;
     if (
       !textFields.every((field) => typeof candidate[field] === "string") ||
-      typeof candidate.isNew !== "boolean" ||
       !Array.isArray(candidate.volumes) ||
       !candidate.volumes.every(
         (volume) =>
@@ -131,7 +128,55 @@ interface BookPayload {
   }[];
 }
 
-function NewBookDialog({ onClose, onCreated }: NewBookDialogProps) {
+interface BookUpdatePayload {
+  title?: string;
+  author?: string;
+  editor?: string;
+  distributor?: string;
+  description?: string;
+  year?: string;
+  new?: boolean;
+  images: ImageSlot[];
+  vols: {
+    vol_id: number;
+    images: ImageSlot[];
+  }[];
+}
+
+function toDraftDate(year: string): Pick<BookDraft, "year" | "month" | "day"> {
+  const [dateYear = "", month = "", day = ""] = year.split("-");
+  return {
+    year: dateYear,
+    month: month ? month.padStart(2, "0") : "",
+    day: day ? day.padStart(2, "0") : "",
+  };
+}
+
+function toApiDate(draft: BookDraft): string {
+  return [
+    draft.year,
+    draft.month,
+    draft.day ? draft.day.padStart(2, "0") : "",
+  ].filter(Boolean).join("-");
+}
+
+function normalizeApiDate(value: string): string {
+  return value
+    .split("-")
+    .map((part, index) => (index > 0 && part ? part.padStart(2, "0") : part))
+    .join("-");
+}
+
+function bookApiPath(bookId: number): string {
+  return apiConfig.api.book.replace("{book_id}", String(bookId));
+}
+
+function NewBookDialog({
+  onClose,
+  onSaved,
+  editBookId,
+}: NewBookDialogProps) {
+  const isEditing = editBookId !== undefined;
   const dialogRef = useRef<HTMLDialogElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const [cachedDraft] = useState(readCachedDraft);
@@ -145,6 +190,7 @@ function NewBookDialog({ onClose, onCreated }: NewBookDialogProps) {
         ...volume,
         key,
         images: [],
+        existingImageCount: 0,
       })) ?? [],
   );
   const [nextVolumeKey, setNextVolumeKey] = useState(
@@ -154,12 +200,71 @@ function NewBookDialog({ onClose, onCreated }: NewBookDialogProps) {
   const [isClosing, setIsClosing] = useState(false);
   const [error, setError] = useState(cachedDraft.warning);
   const [cacheWarning, setCacheWarning] = useState("");
+  const [initialBook, setInitialBook] = useState<Book | null>(null);
+  const [isLoadingEdit, setIsLoadingEdit] = useState(isEditing);
+  const [isEditReady, setIsEditReady] = useState(!isEditing);
 
   useEffect(() => {
     dialogRef.current?.showModal();
   }, []);
 
+  useEffect(() => {
+    if (editBookId === undefined) return;
+
+    const controller = new AbortController();
+
+    fetch(`${apiConfig.apiPrefix}${bookApiPath(editBookId)}`, {
+      signal: controller.signal,
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          const message = await response.text();
+          throw new Error(message || `Book loading failed (${response.status}).`);
+        }
+        return response.json() as Promise<Book>;
+      })
+      .then((book) => {
+        setError("");
+        setInitialBook(book);
+        setDraft({
+          title: book.title,
+          author: book.author,
+          editor: book.editor,
+          distributor: book.distributor,
+          description: book.description,
+          ...toDraftDate(book.year),
+        });
+        setBookImages([]);
+        setVolumes(
+          book.vols.map((volume, key) => ({
+            key,
+            id: volume.id,
+            title: volume.title,
+            number: String(volume.number),
+            images: [],
+            existingImageCount: volume.images.length,
+          })),
+        );
+        setNextVolumeKey(book.vols.length);
+        setIsEditReady(true);
+      })
+      .catch((loadError: unknown) => {
+        if (loadError instanceof Error && loadError.name === "AbortError") return;
+        setError(
+          loadError instanceof Error
+            ? loadError.message
+            : "An unexpected error occurred while loading the book.",
+        );
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setIsLoadingEdit(false);
+      });
+
+    return () => controller.abort();
+  }, [editBookId]);
+
   const saveDraft = (nextDraft: BookDraft, nextVolumes: VolumeDraft[]) => {
+    if (isEditing) return;
     try {
       const toCache: CachedDraft = {
         ...nextDraft,
@@ -203,6 +308,7 @@ function NewBookDialog({ onClose, onCreated }: NewBookDialogProps) {
         title: "",
         number: String(volumes.length + 1),
         images: [],
+        existingImageCount: 0,
       },
     ];
     setVolumes(nextVolumes);
@@ -224,97 +330,186 @@ function NewBookDialog({ onClose, onCreated }: NewBookDialogProps) {
     saveDraft(draft, nextVolumes);
   };
 
-  const submitBook = async (event: FormEvent<HTMLFormElement>) => {
+  const submitBook = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError("");
 
     const formData = new FormData(event.currentTarget);
-    const requiredFields = [
-      ["Book name", draft.title],
-      ["Author", draft.author],
-      ["Editor", draft.editor],
-      ["Distributor", draft.distributor],
-      ["Description", draft.description],
-      ["Publication year", draft.year],
-    ];
-    const missingField = requiredFields.find(([, value]) => !value.trim());
+    if (isEditing) {
+      if (!draft.title.trim()) {
+        setError("Book name is required.");
+        return;
+      }
+    } else {
+      const requiredFields = [
+        ["Book name", draft.title],
+        ["Author", draft.author],
+        ["Distributor", draft.distributor],
+        ["Description", draft.description],
+        ["Publication year", draft.year],
+      ];
+      const missingField = requiredFields.find(([, value]) => !value.trim());
 
-    if (missingField) {
-      setError(`${missingField[0]} is required.`);
-      return;
+      if (missingField) {
+        setError(`${missingField[0]} is required.`);
+        return;
+      }
+
+      const incompleteVolumeIndex = volumes.findIndex(
+        (volume) => !volume.title.trim() || !volume.number.trim(),
+      );
+      if (incompleteVolumeIndex !== -1) {
+        setError(`Complete the title and number for volume ${incompleteVolumeIndex + 1}.`);
+        return;
+      }
     }
 
-    const incompleteVolumeIndex = volumes.findIndex(
-      (volume) => !volume.title.trim() || !volume.number.trim(),
-    );
-    if (incompleteVolumeIndex !== -1) {
-      setError(`Complete the title and number for volume ${incompleteVolumeIndex + 1}.`);
-      return;
-    }
-
-    if (bookImages.length === 0 && volumes.every((volume) => volume.images.length === 0)) {
+    if (
+      !isEditing &&
+      bookImages.length === 0 &&
+      volumes.every((volume) => volume.images.length === 0)
+    ) {
       setError("Select at least one image for the book or one of its volumes.");
       return;
     }
 
+    if (isEditing && !initialBook) {
+      setError("The book data has not loaded yet. Please try again.");
+      return;
+    }
+
     setIsSubmitting(true);
-    const payload: BookPayload = {
+    const commonFields = {
       title: String(formData.get("title") ?? "").trim(),
       author: String(formData.get("author") ?? "").trim(),
       editor: String(formData.get("editor") ?? "").trim(),
       distributor: String(formData.get("distributor") ?? "").trim(),
       description: String(formData.get("description") ?? "").trim(),
-      year: [
-        draft.year,
-        draft.month,
-        draft.day ? draft.day.padStart(2, "0") : "",
-      ].filter(Boolean).join("-"),
-      new: draft.isNew,
-      images: bookImages.map((_, index) => ({ slot: `book-image-${index}` })),
-      vols: volumes.map((volume, volumeIndex) => ({
-        title: volume.title.trim(),
-        number: Number(volume.number),
-        images: volume.images.map((_, imageIndex) => ({
-          slot: `volume-${volumeIndex}-image-${imageIndex}`,
-        })),
-      })),
+      year: toApiDate(draft),
+      new: true,
     };
 
-    const requestBody = new FormData();
-    requestBody.append("payload", JSON.stringify(payload));
-    bookImages.forEach((image, index) => {
-      requestBody.append(`book-image-${index}`, image);
-    });
-    volumes.forEach((volume, volumeIndex) => {
-      volume.images.forEach((image, imageIndex) => {
-        requestBody.append(`volume-${volumeIndex}-image-${imageIndex}`, image);
+    let requestUrl = `${apiConfig.apiPrefix}${apiConfig.api.books}`;
+    let requestInit: RequestInit;
+
+    if (editBookId !== undefined && initialBook) {
+      const changedFields: Omit<BookUpdatePayload, "images" | "vols"> = {};
+      if (commonFields.title !== initialBook.title) changedFields.title = commonFields.title;
+      if (commonFields.author !== initialBook.author) changedFields.author = commonFields.author;
+      if (commonFields.editor !== initialBook.editor) changedFields.editor = commonFields.editor;
+      if (commonFields.distributor !== initialBook.distributor) {
+        changedFields.distributor = commonFields.distributor;
+      }
+      if (commonFields.description !== initialBook.description) {
+        changedFields.description = commonFields.description;
+      }
+      if (commonFields.year !== normalizeApiDate(initialBook.year)) {
+        changedFields.year = commonFields.year;
+      }
+      if (!initialBook.new) changedFields.new = true;
+
+      const bookImageSlots = bookImages.map((_, index) => ({
+        slot: `book-image-${index}`,
+      }));
+      const volumeImageUploads = volumes
+        .filter(
+          (volume): volume is VolumeDraft & { id: number } =>
+            volume.id !== undefined && volume.images.length > 0,
+        )
+        .map((volume) => ({
+          volume,
+          slots: volume.images.map((_, index) => ({
+            slot: `volume-${volume.id}-image-${index}`,
+          })),
+        }));
+      const hasImageChanges =
+        bookImageSlots.length > 0 || volumeImageUploads.length > 0;
+
+      if (Object.keys(changedFields).length === 0 && !hasImageChanges) {
+        setError("There are no changes to save.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      requestUrl = `${apiConfig.apiPrefix}${bookApiPath(editBookId)}`;
+      if (hasImageChanges) {
+        const payload: BookUpdatePayload = {
+          ...changedFields,
+          images: bookImageSlots,
+          vols: volumeImageUploads.map(({ volume, slots }) => ({
+            vol_id: volume.id,
+            images: slots,
+          })),
+        };
+        const requestBody = new FormData();
+        requestBody.append("payload", JSON.stringify(payload));
+        bookImages.forEach((image, index) => {
+          requestBody.append(`book-image-${index}`, image);
+        });
+        volumeImageUploads.forEach(({ volume }) => {
+          volume.images.forEach((image, index) => {
+            requestBody.append(`volume-${volume.id}-image-${index}`, image);
+          });
+        });
+        requestInit = { method: "PATCH", body: requestBody };
+      } else {
+        requestInit = {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(changedFields),
+        };
+      }
+    } else {
+      const payload: BookPayload = {
+        ...commonFields,
+        images: bookImages.map((_, index) => ({ slot: `book-image-${index}` })),
+        vols: volumes.map((volume, volumeIndex) => ({
+          title: volume.title.trim(),
+          number: Number(volume.number),
+          images: volume.images.map((_, imageIndex) => ({
+            slot: `volume-${volumeIndex}-image-${imageIndex}`,
+          })),
+        })),
+      };
+      const requestBody = new FormData();
+      requestBody.append("payload", JSON.stringify(payload));
+      bookImages.forEach((image, index) => {
+        requestBody.append(`book-image-${index}`, image);
       });
-    });
+      volumes.forEach((volume, volumeIndex) => {
+        volume.images.forEach((image, imageIndex) => {
+          requestBody.append(`volume-${volumeIndex}-image-${imageIndex}`, image);
+        });
+      });
+      requestInit = { method: "POST", body: requestBody };
+    }
 
     try {
-      const response = await fetch(
-        `${apiConfig.apiPrefix}${apiConfig.api.books}`,
-        { method: "POST", body: requestBody },
-      );
+      const response = await fetch(requestUrl, requestInit);
 
       if (!response.ok) {
         const message = await response.text();
-        throw new Error(message || `Book creation failed (${response.status}).`);
+        throw new Error(
+          message ||
+            `Book ${isEditing ? "update" : "creation"} failed (${response.status}).`,
+        );
       }
 
       await response.json();
-      try {
-        localStorage.removeItem(draftStorageKey);
-      } catch {
-        setCacheWarning("The saved draft could not be cleared.");
+      if (!isEditing) {
+        try {
+          localStorage.removeItem(draftStorageKey);
+        } catch {
+          setCacheWarning("The saved draft could not be cleared.");
+        }
       }
-      onCreated();
+      onSaved();
       closeWithAnimation(true);
     } catch (submitError) {
       setError(
         submitError instanceof Error
           ? submitError.message
-          : "An unexpected error occurred while creating the book.",
+          : `An unexpected error occurred while ${isEditing ? "updating" : "creating"} the book.`,
       );
     } finally {
       setIsSubmitting(false);
@@ -325,7 +520,7 @@ function NewBookDialog({ onClose, onCreated }: NewBookDialogProps) {
     <dialog
       className={`new-book-dialog ${isClosing ? "is-closing" : ""}`}
       ref={dialogRef}
-      aria-labelledby="new-book-title"
+      aria-labelledby="book-dialog-title"
       onAnimationEnd={handleAnimationEnd}
       onCancel={(event) => {
         event.preventDefault();
@@ -341,17 +536,22 @@ function NewBookDialog({ onClose, onCreated }: NewBookDialogProps) {
       <div className="new-book-dialog__header">
         <div>
           <p className="new-book-dialog__eyebrow">Library</p>
-          <h2 id="new-book-title">Add a new book</h2>
+          <h2 id="book-dialog-title">{isEditing ? "Edit book" : "Add a new book"}</h2>
         </div>
         <button
           className="new-book-dialog__close"
           type="button"
-          aria-label="Close new book form"
+          aria-label={`Close ${isEditing ? "edit" : "new book"} form`}
           onClick={() => closeWithAnimation()}
         >
           ×
         </button>
       </div>
+      {isEditing && !isEditReady ? (
+        <p className="new-book-form__loading" role={isLoadingEdit ? "status" : "alert"}>
+          {isLoadingEdit ? "Loading book details…" : error}
+        </p>
+      ) : (
       <form
         ref={formRef}
         className="new-book-form"
@@ -373,30 +573,36 @@ function NewBookDialog({ onClose, onCreated }: NewBookDialogProps) {
             />
           </label>
           <label className="new-book-form__field">
-            <span>Author <span aria-hidden="true">*</span></span>
+            <span>
+              Author {!isEditing && <span aria-hidden="true">*</span>}
+            </span>
             <input
               name="author"
-              required
+              required={!isEditing}
               maxLength={100}
               value={draft.author}
               onChange={(event) => updateDraft({ author: event.currentTarget.value })}
             />
           </label>
           <label className="new-book-form__field">
-            <span>Editor <span aria-hidden="true">*</span></span>
+            <span>
+              Editor {!isEditing && <span aria-hidden="true">*</span>}
+            </span>
             <input
               name="editor"
-              required
+              required={!isEditing}
               maxLength={100}
               value={draft.editor}
               onChange={(event) => updateDraft({ editor: event.currentTarget.value })}
             />
           </label>
           <label className="new-book-form__field">
-            <span>Distributor <span aria-hidden="true">*</span></span>
+            <span>
+              Distributor {!isEditing && <span aria-hidden="true">*</span>}
+            </span>
             <input
               name="distributor"
-              required
+              required={!isEditing}
               maxLength={100}
               value={draft.distributor}
               onChange={(event) => updateDraft({ distributor: event.currentTarget.value })}
@@ -408,22 +614,23 @@ function NewBookDialog({ onClose, onCreated }: NewBookDialogProps) {
             aria-labelledby="publication-date-label"
           >
             <span id="publication-date-label" className="new-book-form__date-label">
-              Publication date <span aria-hidden="true">*</span>
+              Publication date {!isEditing && <span aria-hidden="true">*</span>}
             </span>
             <div className="new-book-form__date-fields">
               <label className="new-book-form__field">
                 <span>Year</span>
-                <select
+                <input
                   name="year"
-                  required
+                  type="number"
+                  min="1500"
+                  max={currentYear}
+                  step="1"
+                  inputMode="numeric"
+                  placeholder="YYYY"
+                  required={!isEditing}
                   value={draft.year}
                   onChange={(event) => updateDraft({ year: event.currentTarget.value, day: "" })}
-                >
-                  <option value="">Select year</option>
-                  {publicationYears.map((year) => (
-                    <option key={year} value={year}>{year}</option>
-                  ))}
-                </select>
+                />
               </label>
               <label className="new-book-form__field">
                 <span>
@@ -470,23 +677,16 @@ function NewBookDialog({ onClose, onCreated }: NewBookDialogProps) {
             </div>
           </div>
           <label className="new-book-form__field new-book-form__field--wide">
-            <span>Description <span aria-hidden="true">*</span></span>
+            <span>
+              Description {!isEditing && <span aria-hidden="true">*</span>}
+            </span>
             <textarea
               name="description"
               rows={4}
-              required
+              required={!isEditing}
               value={draft.description}
               onChange={(event) => updateDraft({ description: event.currentTarget.value })}
             />
-          </label>
-          <label className="new-book-form__checkbox">
-            <input
-              name="new"
-              type="checkbox"
-              checked={draft.isNew}
-              onChange={(event) => updateDraft({ isNew: event.currentTarget.checked })}
-            />
-            <span>Mark as printed</span>
           </label>
         </div>
 
@@ -495,9 +695,9 @@ function NewBookDialog({ onClose, onCreated }: NewBookDialogProps) {
             <div>
               <h3 id="book-images-title">Book images</h3>
               <p>
-                At least one image is required across the book and its volumes.
-                Text and volume details are cached; image files must be selected
-                again when reopening a saved draft.
+                {isEditing
+                  ? `${initialBook?.images.length ?? 0} existing image(s). Add more images below if needed.`
+                  : "At least one image is required across the book and its volumes. Text and volume details are cached; image files must be selected again when reopening a saved draft."}
               </p>
             </div>
           </div>
@@ -512,7 +712,9 @@ function NewBookDialog({ onClose, onCreated }: NewBookDialogProps) {
             <small>
               {bookImages.length
                 ? `${bookImages.length} image(s) selected`
-                : "JPEG, PNG, or WebP · 5 MB max each."}
+                : isEditing
+                  ? `${initialBook?.images.length ?? 0} existing image(s) · JPEG, PNG, or WebP · 5 MB max each.`
+                  : "JPEG, PNG, or WebP · 5 MB max each."}
             </small>
           </label>
         </section>
@@ -521,22 +723,30 @@ function NewBookDialog({ onClose, onCreated }: NewBookDialogProps) {
           <div className="new-book-form__section-heading">
             <div>
               <h3 id="book-volumes-title">Volumes</h3>
-              <p>Volume images are stored separately from book images.</p>
+              <p>
+                {isEditing
+                  ? "Existing volumes are kept. Add images to any volume below."
+                  : "Volume images are stored separately from book images."}
+              </p>
             </div>
-            <button className="new-book-form__add-volume" type="button" onClick={addVolume}>
-              + Add volume
-            </button>
+            {!isEditing && (
+              <button className="new-book-form__add-volume" type="button" onClick={addVolume}>
+                + Add volume
+              </button>
+            )}
           </div>
           {volumes.map((volume, index) => (
             <fieldset className="new-book-volume" key={volume.key}>
               <legend>Volume {index + 1}</legend>
-              <button
-                className="new-book-volume__remove"
-                type="button"
-                onClick={() => removeVolume(volume.key)}
-              >
-                Remove
-              </button>
+              {!isEditing && (
+                <button
+                  className="new-book-volume__remove"
+                  type="button"
+                  onClick={() => removeVolume(volume.key)}
+                >
+                  Remove
+                </button>
+              )}
               <div className="new-book-form__fields">
                 <label className="new-book-form__field">
                   <span>Volume title <span aria-hidden="true">*</span></span>
@@ -545,6 +755,7 @@ function NewBookDialog({ onClose, onCreated }: NewBookDialogProps) {
                     required
                     maxLength={200}
                     value={volume.title}
+                    disabled={isEditing}
                     onChange={(event) => updateVolume(volume.key, { title: event.currentTarget.value })}
                   />
                 </label>
@@ -557,6 +768,7 @@ function NewBookDialog({ onClose, onCreated }: NewBookDialogProps) {
                     step="1"
                     required
                     value={volume.number}
+                    disabled={isEditing}
                     onChange={(event) => updateVolume(volume.key, { number: event.currentTarget.value })}
                   />
                 </label>
@@ -575,7 +787,9 @@ function NewBookDialog({ onClose, onCreated }: NewBookDialogProps) {
                   <small>
                     {volume.images.length
                       ? `${volume.images.length} image(s) selected`
-                      : "JPEG, PNG, or WebP · 5 MB max each"}
+                      : isEditing
+                        ? `${volume.existingImageCount} existing image(s) · JPEG, PNG, or WebP · 5 MB max each`
+                        : "JPEG, PNG, or WebP · 5 MB max each"}
                   </small>
                 </label>
               </div>
@@ -590,22 +804,46 @@ function NewBookDialog({ onClose, onCreated }: NewBookDialogProps) {
             className="new-book-form__cancel"
             type="button"
             onClick={() => {
-              formRef.current?.reset();
-              setDraft(emptyBookDraft);
-              setBookImages([]);
-              setVolumes([]);
-              setNextVolumeKey(0);
-              setError("");
-              try {
-                localStorage.removeItem(draftStorageKey);
-                setCacheWarning("");
-              } catch {
-                setCacheWarning("The saved draft could not be cleared.");
+              if (isEditing && initialBook) {
+                setDraft({
+                  title: initialBook.title,
+                  author: initialBook.author,
+                  editor: initialBook.editor,
+                  distributor: initialBook.distributor,
+                  description: initialBook.description,
+                  ...toDraftDate(initialBook.year),
+                });
+                setVolumes(
+                  initialBook.vols.map((volume, key) => ({
+                    key,
+                    id: volume.id,
+                    title: volume.title,
+                    number: String(volume.number),
+                    images: [],
+                    existingImageCount: volume.images.length,
+                  })),
+                );
+                setNextVolumeKey(initialBook.vols.length);
+                setBookImages([]);
+                setError("");
+              } else {
+                formRef.current?.reset();
+                setDraft(emptyBookDraft);
+                setBookImages([]);
+                setVolumes([]);
+                setNextVolumeKey(0);
+                setError("");
+                try {
+                  localStorage.removeItem(draftStorageKey);
+                  setCacheWarning("");
+                } catch {
+                  setCacheWarning("The saved draft could not be cleared.");
+                }
               }
             }}
             disabled={isSubmitting}
           >
-            Reset form
+            {isEditing ? "Reset changes" : "Reset form"}
           </button>
           <button
             className="new-book-form__cancel"
@@ -616,10 +854,13 @@ function NewBookDialog({ onClose, onCreated }: NewBookDialogProps) {
             Cancel
           </button>
           <button className="btn-jade new-book-form__submit" type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Saving book…" : "Save book"}
+            {isSubmitting
+              ? isEditing ? "Updating book…" : "Saving book…"
+              : isEditing ? "Save changes" : "Save book"}
           </button>
         </div>
       </form>
+      )}
     </dialog>
   );
 }

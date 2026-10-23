@@ -1,9 +1,6 @@
-import json
-import logging
-from uuid import uuid4
+from collections.abc import Mapping
 
 from fastapi import HTTPException
-from pydantic import ValidationError
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 from starlette.datastructures import UploadFile
@@ -13,17 +10,11 @@ from schemas.book import (
     BookCreateWithSlots,
     BookCreateWithVols,
     BookUpdate,
+    BookUpdateWithSlots,
     UploadedImage,
 )
-from services.image_storage import (
-    IMAGE_CONTENT_TYPES,
-    MAX_IMAGE_FILES,
-    MAX_IMAGE_SIZE,
-    ImageStorage,
-    SupabaseImageStorage,
-)
-
-logger = logging.getLogger(__name__)
+from services.image_storage import ImageStorage
+from utils.image_upload import process_image_upload
 
 
 class BookService:
@@ -94,96 +85,19 @@ class BookService:
         payload_raw: str,
         files: dict[str, UploadFile],
     ) -> Book:
-        try:
-            payload = BookCreateWithSlots.model_validate(json.loads(payload_raw))
-        except (json.JSONDecodeError, ValidationError) as exc:
-            raise HTTPException(status_code=422, detail=str(exc)) from exc
+        def persist(
+            payload: BookCreateWithSlots,
+            uploaded_images: Mapping[str, UploadedImage],
+        ) -> Book:
+            return self.create(payload.to_book_create(uploaded_images))
 
-        slots = payload.referenced_slots()
-        if len(slots) > MAX_IMAGE_FILES or len(files) > MAX_IMAGE_FILES:
-            raise HTTPException(
-                status_code=422,
-                detail=f"A book request may include at most {MAX_IMAGE_FILES} image files.",
-            )
-        if len(slots) != len(set(slots)):
-            raise HTTPException(
-                status_code=422,
-                detail="Each image slot may be referenced only once.",
-            )
-
-        missing_slots = set(slots) - files.keys()
-        extra_files = files.keys() - set(slots)
-        if missing_slots or extra_files:
-            raise HTTPException(
-                status_code=422,
-                detail={
-                    "missing_slots": sorted(missing_slots),
-                    "unreferenced_files": sorted(extra_files),
-                },
-            )
-
-        for slot, upload in files.items():
-            if upload.content_type not in IMAGE_CONTENT_TYPES:
-                raise HTTPException(
-                    status_code=422,
-                    detail=f"Unsupported content type for image slot '{slot}'.",
-                )
-            upload.file.seek(0)
-            file_bytes = upload.file.read(MAX_IMAGE_SIZE + 1)
-            upload.file.seek(0)
-            if len(file_bytes) > MAX_IMAGE_SIZE:
-                raise HTTPException(
-                    status_code=422,
-                    detail=f"Image slot '{slot}' exceeds the 5 MB limit.",
-                )
-
-        if not slots:
-            return self.create(payload.to_book_create({}))
-
-        storage = self.storage or SupabaseImageStorage()
-        uploaded_keys: list[str] = []
-        uploaded_images: dict[str, UploadedImage] = {}
-        book_upload_id = str(uuid4())
-        try:
-            for slot in slots:
-                upload = files[slot]
-                content_type = upload.content_type
-                if content_type not in IMAGE_CONTENT_TYPES:
-                    raise HTTPException(
-                        status_code=422,
-                        detail=f"Unsupported content type for image slot '{slot}'.",
-                    )
-                extension = IMAGE_CONTENT_TYPES[content_type]
-                key = f"books/{book_upload_id}/{slot}.{extension}"
-                upload.file.seek(0)
-                file_bytes = upload.file.read(MAX_IMAGE_SIZE + 1)
-                if len(file_bytes) > MAX_IMAGE_SIZE:
-                    raise HTTPException(
-                        status_code=422,
-                        detail=f"Image slot '{slot}' exceeds the 5 MB limit.",
-                    )
-                storage_key, public_url = storage.upload(
-                    file_bytes,
-                    key,
-                    content_type,
-                )
-                uploaded_keys.append(storage_key)
-                uploaded_images[slot] = UploadedImage(
-                    image_url=public_url,
-                    storage_key=storage_key,
-                )
-
-            data = payload.to_book_create(uploaded_images)
-            return self.create(data)
-        except Exception:
-            if uploaded_keys:
-                try:
-                    storage.delete(uploaded_keys)
-                except Exception:
-                    logger.exception(
-                        "Failed to remove uploaded book images after book creation failed."
-                    )
-            raise
+        return process_image_upload(
+            payload_raw,
+            files,
+            BookCreateWithSlots,
+            self.storage,
+            persist,
+        )
 
     def update(self, book_id: int, data: BookUpdate) -> Book | None:
         book = self.get_by_id(book_id)
@@ -196,6 +110,80 @@ class BookService:
         self.db.commit()
         self.db.refresh(book)
         return book
+
+    def update_with_files(
+        self,
+        book_id: int,
+        payload_raw: str,
+        files: dict[str, UploadFile],
+    ) -> Book | None:
+        book = self.get_by_id(book_id)
+        if book is None:
+            return None
+
+        def persist(
+            payload: BookUpdateWithSlots,
+            uploaded_images: Mapping[str, UploadedImage],
+        ) -> Book:
+            volume_ids = {volume.id for volume in book.vols}
+            invalid_volume_ids = sorted(
+                {
+                    volume.vol_id
+                    for volume in payload.vols
+                    if volume.vol_id not in volume_ids
+                }
+            )
+            if invalid_volume_ids:
+                raise HTTPException(
+                    status_code=422,
+                    detail={
+                        "invalid_volume_ids": invalid_volume_ids,
+                        "message": "Volume images must reference volumes belonging to this book.",
+                    },
+                )
+
+            fields = payload.model_dump(
+                exclude_unset=True,
+                exclude={"images", "vols"},
+            )
+            volumes = {volume.id: volume for volume in book.vols}
+            try:
+                for field, value in fields.items():
+                    setattr(book, field, value)
+
+                book.images.extend(
+                    BookImage(
+                        image_url=uploaded_images[image.slot].image_url,
+                        storage_key=uploaded_images[image.slot].storage_key,
+                    )
+                    for image in payload.images
+                )
+                for volume_payload in payload.vols:
+                    volume = volumes[volume_payload.vol_id]
+                    volume.images.extend(
+                        VolImage(
+                            image_url=uploaded_images[image.slot].image_url,
+                            storage_key=uploaded_images[image.slot].storage_key,
+                        )
+                        for image in volume_payload.images
+                    )
+                self.db.commit()
+            except Exception:
+                self.db.rollback()
+                raise
+
+            updated_book = self.get_by_id(book_id)
+            if updated_book is None:
+                raise RuntimeError("Updated book disappeared after commit.")
+            return updated_book
+
+        return process_image_upload(
+            payload_raw,
+            files,
+            BookUpdateWithSlots,
+            self.storage,
+            persist,
+        )
 
     def delete(self, book_id: int) -> bool:
         book = self.get_by_id(book_id)
