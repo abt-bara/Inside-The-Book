@@ -1,12 +1,8 @@
-import apiConfig from "../../../../shared/api-config.json";
-import type { Book } from "../../types/Book";
+import type { LoaderFunctionArgs } from "react-router-dom";
+import userServices from "../../api/UserServices";
 
-export default async function BooksPageLoader():Promise<Book[]> {
-  const response = await fetch(
-    `${apiConfig.apiPrefix}${apiConfig.api.books}`,
-  );
-  if (!response.ok) {
-    throw response;
-  }
-  return response.json();
+export default async function BooksPageLoader({
+  request,
+}: LoaderFunctionArgs) {
+  return userServices.getBooks(request.signal);
 }

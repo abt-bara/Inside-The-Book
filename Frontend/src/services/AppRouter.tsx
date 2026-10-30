@@ -1,10 +1,11 @@
 import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 import BooksPage from "../pages/BookPage";
 import BookDetailsPage from "../pages/BookDetailsPage";
+import QrPage from "../pages/QrPage";
 import BookLoader from "./loaders/BookLoader";
 import BooksPageLoader from "./loaders/BooksPageLoader";
 import Scaffold from "../pages/scaffold";
-import { bookDetailPagePath, booksPagePath } from "./pagePaths";
+import { bookDetailPagePath, booksPagePath, qrPagePath } from "./pagePaths";
 import AppError from "../pages/errors/AppError";
 import BooksPageError from "../pages/errors/BooksPageError";
 import BookDetailsPageError from "../pages/errors/BookDetailsPageError";
@@ -21,6 +22,12 @@ const router = createBrowserRouter([
       {
         path: booksPagePath,
         element: <BooksPage />,
+        loader: BooksPageLoader,
+        ErrorBoundary: BooksPageError,
+      },
+      {
+        path: qrPagePath,
+        element: <QrPage />,
         loader: BooksPageLoader,
         ErrorBoundary: BooksPageError,
       },

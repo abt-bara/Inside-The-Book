@@ -17,6 +17,10 @@ from services.image_storage import ImageStorage
 from utils.image_upload import process_image_upload
 
 
+def create_default_volume(book_title: str) -> Vol:
+    return Vol(title=book_title, number=1)
+
+
 class BookService:
     def __init__(
         self,
@@ -41,22 +45,26 @@ class BookService:
         return self.db.execute(stmt).scalars().first()
 
     def create(self, data: BookCreateWithVols) -> Book:
+        volumes = [
+            Vol(
+                title=vol.title,
+                number=vol.number,
+                images=[
+                    VolImage(
+                        image_url=image.image_url,
+                        storage_key=image.storage_key,
+                    )
+                    for image in vol.images
+                ],
+            )
+            for vol in data.vols
+        ]
+        if not volumes:
+            volumes.append(create_default_volume(data.title))
+
         book = Book(
             **data.model_dump(exclude={"vols", "images"}),
-            vols=[
-                Vol(
-                    title=vol.title,
-                    number=vol.number,
-                    images=[
-                        VolImage(
-                            image_url=image.image_url,
-                            storage_key=image.storage_key,
-                        )
-                        for image in vol.images
-                    ],
-                )
-                for vol in data.vols
-            ],
+            vols=volumes,
             images=[
                 BookImage(
                     image_url=image.image_url,

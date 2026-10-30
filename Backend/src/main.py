@@ -6,12 +6,6 @@ from config import settings
 from db import engine
 from routers import books, login
 
-if settings.database_url.startswith("sqlite"):
-    from models.base import Base
-    import models.book  # noqa: F401
-
-    Base.metadata.create_all(bind=engine)
-
 app = FastAPI(debug=settings.debug)
 
 app.add_middleware(

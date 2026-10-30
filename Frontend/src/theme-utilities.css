@@ -1,0 +1,1980 @@
+/* =========================================================
+   JADE.CSS — reusable color, background, component, and motion utilities
+   No project-specific selectors. Add utility classes directly to elements.
+
+   0  Fonts
+   1  Tokens (palettes, gradients, shadows, fonts)
+   2  Color utilities (text / bg / border / tint / from-via-to)
+   3  Backgrounds (flat · linear · radial · mesh · patterns)
+   4  Glass, blur, orbs, overlays, grain
+   5  Text (gradients, glow, outline, underline, Arabic)
+   6  Borders & frames
+   7  Shadows & glows
+   8  Components-lite (surface, card, badge, buttons, dividers)
+   9  Motion & hover
+   10 Misc helpers (radius, scrollbar, selection, focus)
+   Keyframes · Reduced motion
+   ========================================================= */
+
+/* ---------- 0. FONTS ---------- */
+@import url("https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400..900;1,400..900&family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Arvo:ital,wght@0,400;0,700;1,400;1,700&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Fustat:wght@200..800&family=Katibeh&family=Kufam:ital,wght@0,400..900;1,400..900&family=Mirza:wght@400;500;600;700&family=Oxanium:wght@200..800&family=Rakkas&family=Reem+Kufi:wght@400..700&family=Aref+Ruqaa:wght@400;700&family=Scheherazade+New:wght@400;500;600;700&family=Cairo:wght@200..1000&family=El+Messiri:wght@400..700&family=Noto+Naskh+Arabic:wght@400..700&family=Tajawal:wght@200;300;400;500;700;800;900&family=JetBrains+Mono:wght@100..800&display=swap");
+
+/* ---------- 1. TOKENS ---------- */
+:root {
+  /* Jade — the core scale */
+  --jade-50: #effaf5;
+  --jade-100: #d8f3e6;
+  --jade-200: #b3e6cf;
+  --jade-300: #82d3b3;
+  --jade-400: #4dba93;
+  --jade-500: #25a07a;
+  --jade-600: #00a86b; /* classic jade */
+  --jade-700: #146851;
+  --jade-800: #135342;
+  --jade-900: #0f4337;
+  --jade-950: #07261f;
+
+  /* Gold — ornament, illumination (tadhhib) */
+  --gold-50: #fcf8e8;
+  --gold-100: #f8efc9;
+  --gold-200: #f0d98a;
+  --gold-300: #e6c862;
+  --gold-400: #dcb94a;
+  --gold-500: #d4af37;
+  --gold-600: #b8932a;
+  --gold-700: #947520;
+  --gold-800: #6f5718;
+  --gold-900: #4a3a10;
+  --gold: var(--gold-500);
+  --gold-soft: var(--gold-200);
+
+  /* Lapis — Iznik / zellige blue */
+  --lapis-50: #eef4ff;
+  --lapis-100: #d9e6ff;
+  --lapis-200: #b6cdfa;
+  --lapis-300: #86a9ef;
+  --lapis-400: #5a82dd;
+  --lapis-500: #3a63c4;
+  --lapis-600: #2a4ca3;
+  --lapis-700: #223d82;
+  --lapis-800: #1c3166;
+  --lapis-900: #14224a;
+  --lapis-950: #0b1430;
+
+  /* Turquoise / teal — tile glaze */
+  --teal-300: #5fd4d0;
+  --teal-400: #34c2bd;
+  --teal-500: #1fb5b0;
+  --teal-600: #169a96;
+  --teal-700: #0f7c7a;
+  --teal-50: #effcfb;
+  --teal-100: #d3f6f3;
+  --teal-200: #a9eae5;
+  --teal-800: #0c6261;
+  --teal-900: #0a4a4a;
+  --teal-950: #062e31;
+
+  /* Henna / terracotta — warm counterpoint */
+  --henna-50: #fff5ef;
+  --henna-100: #ffe5d7;
+  --henna-200: #f9c9b0;
+  --henna-300: #e8a27c;
+  --henna-400: #d98057;
+  --henna-500: #c4623a;
+  --henna-600: #aa4e2d;
+  --henna-700: #8f3e22;
+  --henna-800: #71341f;
+  --henna-900: #5d2c1e;
+  --henna-950: #32150d;
+
+  /* Ruby — danger, rare accent */
+  --ruby-50: #fff1f1;
+  --ruby-100: #ffe0e0;
+  --ruby-200: #ffc7c7;
+  --ruby-300: #e57f7f;
+  --ruby-400: #d95d5d;
+  --ruby-500: #c0392b;
+  --ruby-600: #a62b25;
+  --ruby-700: #8e1c1c;
+  --ruby-800: #741b1b;
+  --ruby-900: #601b1b;
+  --ruby-950: #350b0b;
+  --red: #a71616;
+
+  /* Sand / ivory / parchment */
+  --sand-50: #fcfaf4;
+  --ivory: #f7f3e3;
+  --sand-100: #efe6cc;
+  --sand-200: #e0d2aa;
+  --sand-300: #cdb97f;
+  --sand-400: #b7a46d;
+  --sand-500: #9c8958;
+  --sand-600: #806f48;
+  --sand-700: #65573b;
+  --sand-800: #4a412f;
+  --sand-900: #332e23;
+  --sand-950: #1e1b14;
+
+  /* Stone — jade-tinted neutrals */
+  --stone-50: #f5f8f6;
+  --stone-100: #e8efec;
+  --stone-200: #d2ded9;
+  --stone-300: #b7c4bf;
+  --stone-400: #98aaa3;
+  --stone-500: #7d8f88;
+  --stone-600: #62736c;
+  --stone-700: #46544e;
+  --stone-800: #303b36;
+  --stone-900: #1c2622;
+  --stone-950: #101714;
+
+  --ink: #04140f;
+  --text-black: #111111;
+  --text-grey: #6b7280;
+
+  /* Semantic */
+  --success: var(--jade-500);
+  --warning: var(--gold-500);
+  --danger: var(--ruby-500);
+  --info: var(--lapis-500);
+
+  /* Surfaces (overridden by .surface-dark / .surface-light) */
+  --surface: #ffffff;
+  --surface-raised: #f8faf9;
+  --outline: #dfe7e3;
+  --muted: #5f6f68;
+  --heading: var(--jade-950);
+
+  /* Gradients — reuse anywhere: background: var(--grad-oasis) */
+  --grad-jade: linear-gradient(135deg, var(--jade-300), var(--jade-600));
+  --grad-jade-deep: linear-gradient(135deg, var(--jade-950) 0%, var(--jade-800) 55%, var(--jade-600) 100%);
+  --grad-jade-light: linear-gradient(160deg, var(--jade-50) 0%, var(--jade-100) 50%, var(--jade-200) 100%);
+  --grad-mint: linear-gradient(135deg, var(--jade-100), var(--jade-300) 50%, var(--jade-500));
+  --grad-gold: linear-gradient(135deg, var(--gold-200), var(--gold-500) 55%, var(--gold-700));
+  --grad-jade-gold: linear-gradient(135deg, var(--jade-900), var(--jade-700) 60%, var(--gold-500) 140%);
+  --grad-sunrise: linear-gradient(180deg, var(--jade-950) 0%, var(--jade-800) 45%, var(--jade-500) 78%, var(--gold-200) 100%);
+  --grad-dusk: linear-gradient(160deg, var(--lapis-950) 0%, var(--lapis-800) 35%, var(--jade-800) 75%, var(--jade-600) 100%);
+  --grad-lapis: linear-gradient(135deg, var(--lapis-300), var(--lapis-600));
+  --grad-oasis: linear-gradient(135deg, var(--jade-300), var(--teal-500) 50%, var(--lapis-400));
+  --grad-henna: linear-gradient(135deg, var(--gold-300), var(--henna-500));
+  --grad-zellige: linear-gradient(90deg, var(--jade-500), var(--teal-400), var(--lapis-400), var(--gold-400), var(--henna-500));
+  --grad-jade-lapis: linear-gradient(135deg, var(--jade-700), var(--lapis-500));
+  --grad-jade-henna: linear-gradient(135deg, var(--jade-700), var(--henna-500));
+  --grad-jade-ruby: linear-gradient(135deg, var(--jade-700), var(--ruby-500));
+  --grad-jade-teal: linear-gradient(135deg, var(--jade-700), var(--teal-400));
+  --grad-gold-lapis: linear-gradient(135deg, var(--gold-300), var(--lapis-500));
+  --grad-gold-henna: linear-gradient(135deg, var(--gold-300), var(--henna-500));
+  --grad-gold-ruby: linear-gradient(135deg, var(--gold-300), var(--ruby-500));
+  --grad-gold-teal: linear-gradient(135deg, var(--gold-300), var(--teal-500));
+  --grad-lapis-teal: linear-gradient(135deg, var(--lapis-500), var(--teal-400));
+  --grad-lapis-henna: linear-gradient(135deg, var(--lapis-500), var(--henna-500));
+  --grad-lapis-ruby: linear-gradient(135deg, var(--lapis-500), var(--ruby-500));
+  --grad-teal-henna: linear-gradient(135deg, var(--teal-500), var(--henna-500));
+  --grad-teal-ruby: linear-gradient(135deg, var(--teal-500), var(--ruby-500));
+  --grad-henna-ruby: linear-gradient(135deg, var(--henna-500), var(--ruby-500));
+  --grad-parchment: linear-gradient(135deg, var(--sand-50), var(--sand-200), var(--gold-200));
+  --grad-stone: linear-gradient(135deg, var(--stone-800), var(--stone-500), var(--stone-300));
+  --grad-rose: linear-gradient(135deg, var(--ruby-300), var(--henna-300), var(--gold-200));
+  --grad-ocean: linear-gradient(135deg, var(--lapis-800), var(--teal-500), var(--jade-400));
+  --grad-forest: linear-gradient(135deg, var(--jade-950), var(--jade-700), var(--gold-700));
+  --border-grad: linear-gradient(135deg, var(--jade-300), var(--jade-600), var(--gold-500));
+
+  /* Shadows & glows */
+  --jade-glow: 0 0 24px rgba(0, 168, 107, 0.45);
+  --gold-glow: 0 0 24px rgba(212, 175, 55, 0.4);
+  --shadow-sm: 0 2px 8px rgba(4, 20, 15, 0.14);
+  --shadow-md: 0 8px 24px rgba(4, 20, 15, 0.2);
+  --shadow-lg: 0 18px 48px rgba(4, 20, 15, 0.3);
+  --shadow-xl: 0 32px 80px rgba(4, 20, 15, 0.4);
+
+  /* Pattern sizes */
+  --lattice-size: 44px;
+  --lattice-line: rgba(130, 211, 179, 0.1);
+  --zakhrafa-size: 64px;
+  --pattern-size: 40px;
+  --pattern-color: rgba(130, 211, 179, 0.14);
+
+  /* Fonts — change --font-base to switch the whole app's font */
+  --font-alegreya: "Alegreya", serif;
+  --font-amiri: "Amiri", serif;
+  --font-arvo: "Arvo", serif;
+  --font-fraunces: "Fraunces", serif;
+  --font-katibeh: "Katibeh", serif;
+  --font-kufam: "Kufam", sans-serif;
+  --font-oxanium: "Oxanium", sans-serif;
+  --font-rakkas: "Rakkas", serif;
+  --font-fustat: "Fustat", sans-serif;
+  --font-mirza: "Mirza", serif;
+  --font-reem-kufi: "Reem Kufi", sans-serif;
+  --font-aref-ruqaa: "Aref Ruqaa", serif;
+  --font-scheherazade: "Scheherazade New", serif;
+  --font-cairo: "Cairo", sans-serif;
+  --font-el-messiri: "El Messiri", sans-serif;
+  --font-naskh: "Noto Naskh Arabic", serif;
+  --font-tajawal: "Tajawal", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-base: var(--font-fustat);
+
+  --radius: 12px;
+  --speed: 6s; /* change to speed up / slow down all motion */
+}
+
+/* Needed for the rotating border (modern browsers) */
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* ---------- 2. COLOR UTILITIES ---------- */
+/* Neutral text */
+.text-black { color: var(--text-black); }
+.text-grey { color: var(--text-grey); }
+.text-ink { color: var(--ink); }
+.text-ivory { color: var(--ivory); }
+.text-muted { color: var(--muted); }
+.text-heading { color: var(--heading); }
+
+/* Font pickers — add to any element (or <body>) */
+.font-base { font-family: var(--font-base); }
+.font-alegreya { font-family: var(--font-alegreya); }
+.font-amiri { font-family: var(--font-amiri); }
+.font-arvo { font-family: var(--font-arvo); }
+.font-fraunces { font-family: var(--font-fraunces); }
+.font-katibeh { font-family: var(--font-katibeh); }
+.font-kufam { font-family: var(--font-kufam); }
+.font-oxanium { font-family: var(--font-oxanium); }
+.font-rakkas { font-family: var(--font-rakkas); }
+.font-fustat { font-family: var(--font-fustat); }
+.font-mirza { font-family: var(--font-mirza); }
+.font-reem-kufi { font-family: var(--font-reem-kufi); }
+.font-aref-ruqaa { font-family: var(--font-aref-ruqaa); }
+.font-scheherazade { font-family: var(--font-scheherazade); }
+.font-cairo { font-family: var(--font-cairo); }
+.font-el-messiri { font-family: var(--font-el-messiri); }
+.font-naskh { font-family: var(--font-naskh); }
+.font-tajawal { font-family: var(--font-tajawal); }
+.font-mono { font-family: var(--font-mono); }
+
+/* Text color — jade */
+.text-jade-50 { color: var(--jade-50); }
+.text-jade-100 { color: var(--jade-100); }
+.text-jade-200 { color: var(--jade-200); }
+.text-jade-300 { color: var(--jade-300); }
+.text-jade-400 { color: var(--jade-400); }
+.text-jade-500 { color: var(--jade-500); }
+.text-jade-600 { color: var(--jade-600); }
+.text-jade-700 { color: var(--jade-700); }
+.text-jade-800 { color: var(--jade-800); }
+.text-jade-900 { color: var(--jade-900); }
+.text-jade-950 { color: var(--jade-950); }
+/* gold */
+.text-gold { color: var(--gold); }
+.text-gold-50 { color: var(--gold-50); }
+.text-gold-100 { color: var(--gold-100); }
+.text-gold-200 { color: var(--gold-200); }
+.text-gold-300 { color: var(--gold-300); }
+.text-gold-400 { color: var(--gold-400); }
+.text-gold-500 { color: var(--gold-500); }
+.text-gold-600 { color: var(--gold-600); }
+.text-gold-700 { color: var(--gold-700); }
+.text-gold-800 { color: var(--gold-800); }
+.text-gold-900 { color: var(--gold-900); }
+/* lapis */
+.text-lapis-50 { color: var(--lapis-50); }
+.text-lapis-100 { color: var(--lapis-100); }
+.text-lapis-200 { color: var(--lapis-200); }
+.text-lapis-300 { color: var(--lapis-300); }
+.text-lapis-400 { color: var(--lapis-400); }
+.text-lapis-500 { color: var(--lapis-500); }
+.text-lapis-600 { color: var(--lapis-600); }
+.text-lapis-700 { color: var(--lapis-700); }
+.text-lapis-800 { color: var(--lapis-800); }
+.text-lapis-900 { color: var(--lapis-900); }
+.text-lapis-950 { color: var(--lapis-950); }
+/* teal · henna · ruby · sand · stone */
+.text-teal { color: var(--teal-500); }
+.text-henna { color: var(--henna-500); }
+.text-ruby { color: var(--ruby-500); }
+.text-sand { color: var(--sand-500); }
+.text-stone { color: var(--stone-500); }
+.text-teal-50 { color: var(--teal-50); }
+.text-teal-100 { color: var(--teal-100); }
+.text-teal-200 { color: var(--teal-200); }
+.text-teal-300 { color: var(--teal-300); }
+.text-teal-400 { color: var(--teal-400); }
+.text-teal-500 { color: var(--teal-500); }
+.text-teal-600 { color: var(--teal-600); }
+.text-teal-700 { color: var(--teal-700); }
+.text-teal-800 { color: var(--teal-800); }
+.text-teal-900 { color: var(--teal-900); }
+.text-teal-950 { color: var(--teal-950); }
+.text-henna-50 { color: var(--henna-50); }
+.text-henna-100 { color: var(--henna-100); }
+.text-henna-200 { color: var(--henna-200); }
+.text-henna-300 { color: var(--henna-300); }
+.text-henna-400 { color: var(--henna-400); }
+.text-henna-500 { color: var(--henna-500); }
+.text-henna-600 { color: var(--henna-600); }
+.text-henna-700 { color: var(--henna-700); }
+.text-henna-800 { color: var(--henna-800); }
+.text-henna-900 { color: var(--henna-900); }
+.text-henna-950 { color: var(--henna-950); }
+.text-ruby-50 { color: var(--ruby-50); }
+.text-ruby-100 { color: var(--ruby-100); }
+.text-ruby-200 { color: var(--ruby-200); }
+.text-ruby-300 { color: var(--ruby-300); }
+.text-ruby-400 { color: var(--ruby-400); }
+.text-ruby-500 { color: var(--ruby-500); }
+.text-ruby-600 { color: var(--ruby-600); }
+.text-ruby-700 { color: var(--ruby-700); }
+.text-ruby-800 { color: var(--ruby-800); }
+.text-ruby-900 { color: var(--ruby-900); }
+.text-ruby-950 { color: var(--ruby-950); }
+.text-sand-50 { color: var(--sand-50); }
+.text-sand-100 { color: var(--sand-100); }
+.text-sand-200 { color: var(--sand-200); }
+.text-sand-300 { color: var(--sand-300); }
+.text-sand-400 { color: var(--sand-400); }
+.text-sand-500 { color: var(--sand-500); }
+.text-sand-600 { color: var(--sand-600); }
+.text-sand-700 { color: var(--sand-700); }
+.text-sand-800 { color: var(--sand-800); }
+.text-sand-900 { color: var(--sand-900); }
+.text-sand-950 { color: var(--sand-950); }
+.text-stone-50 { color: var(--stone-50); }
+.text-stone-100 { color: var(--stone-100); }
+.text-stone-200 { color: var(--stone-200); }
+.text-stone-300 { color: var(--stone-300); }
+.text-stone-400 { color: var(--stone-400); }
+.text-stone-500 { color: var(--stone-500); }
+.text-stone-600 { color: var(--stone-600); }
+.text-stone-700 { color: var(--stone-700); }
+.text-stone-800 { color: var(--stone-800); }
+.text-stone-900 { color: var(--stone-900); }
+.text-stone-950 { color: var(--stone-950); }
+/* semantic */
+.text-success { color: var(--success); }
+.text-warning { color: var(--warning); }
+.text-danger { color: var(--danger); }
+.text-info { color: var(--info); }
+
+/* Background color — jade */
+.bg-jade-50 { background: var(--jade-50); }
+.bg-jade-100 { background: var(--jade-100); }
+.bg-jade-200 { background: var(--jade-200); }
+.bg-jade-300 { background: var(--jade-300); }
+.bg-jade-400 { background: var(--jade-400); }
+.bg-jade-500 { background: var(--jade-500); }
+.bg-jade-600 { background: var(--jade-600); }
+.bg-jade-700 { background: var(--jade-700); }
+.bg-jade-800 { background: var(--jade-800); }
+.bg-jade-900 { background: var(--jade-900); }
+.bg-jade-950 { background: var(--jade-950); }
+/* gold */
+.bg-gold { background: var(--gold); }
+.bg-gold-50 { background: var(--gold-50); }
+.bg-gold-100 { background: var(--gold-100); }
+.bg-gold-200 { background: var(--gold-200); }
+.bg-gold-300 { background: var(--gold-300); }
+.bg-gold-400 { background: var(--gold-400); }
+.bg-gold-500 { background: var(--gold-500); }
+.bg-gold-600 { background: var(--gold-600); }
+.bg-gold-700 { background: var(--gold-700); }
+.bg-gold-800 { background: var(--gold-800); }
+.bg-gold-900 { background: var(--gold-900); }
+/* lapis */
+.bg-lapis-50 { background: var(--lapis-50); }
+.bg-lapis-100 { background: var(--lapis-100); }
+.bg-lapis-200 { background: var(--lapis-200); }
+.bg-lapis-300 { background: var(--lapis-300); }
+.bg-lapis-400 { background: var(--lapis-400); }
+.bg-lapis-500 { background: var(--lapis-500); }
+.bg-lapis-600 { background: var(--lapis-600); }
+.bg-lapis-700 { background: var(--lapis-700); }
+.bg-lapis-800 { background: var(--lapis-800); }
+.bg-lapis-900 { background: var(--lapis-900); }
+.bg-lapis-950 { background: var(--lapis-950); }
+/* teal · henna · ruby · sand · stone · ink · ivory */
+.bg-teal { background: var(--teal-500); }
+.bg-henna { background: var(--henna-500); }
+.bg-ruby { background: var(--ruby-500); }
+.bg-sand { background: var(--sand-500); }
+.bg-stone { background: var(--stone-500); }
+.bg-teal-50 { background: var(--teal-50); }
+.bg-teal-100 { background: var(--teal-100); }
+.bg-teal-200 { background: var(--teal-200); }
+.bg-teal-300 { background: var(--teal-300); }
+.bg-teal-400 { background: var(--teal-400); }
+.bg-teal-500 { background: var(--teal-500); }
+.bg-teal-600 { background: var(--teal-600); }
+.bg-teal-700 { background: var(--teal-700); }
+.bg-teal-800 { background: var(--teal-800); }
+.bg-teal-900 { background: var(--teal-900); }
+.bg-teal-950 { background: var(--teal-950); }
+.bg-henna-50 { background: var(--henna-50); }
+.bg-henna-100 { background: var(--henna-100); }
+.bg-henna-200 { background: var(--henna-200); }
+.bg-henna-300 { background: var(--henna-300); }
+.bg-henna-400 { background: var(--henna-400); }
+.bg-henna-500 { background: var(--henna-500); }
+.bg-henna-600 { background: var(--henna-600); }
+.bg-henna-700 { background: var(--henna-700); }
+.bg-henna-800 { background: var(--henna-800); }
+.bg-henna-900 { background: var(--henna-900); }
+.bg-henna-950 { background: var(--henna-950); }
+.bg-ruby-50 { background: var(--ruby-50); }
+.bg-ruby-100 { background: var(--ruby-100); }
+.bg-ruby-200 { background: var(--ruby-200); }
+.bg-ruby-300 { background: var(--ruby-300); }
+.bg-ruby-400 { background: var(--ruby-400); }
+.bg-ruby-500 { background: var(--ruby-500); }
+.bg-ruby-600 { background: var(--ruby-600); }
+.bg-ruby-700 { background: var(--ruby-700); }
+.bg-ruby-800 { background: var(--ruby-800); }
+.bg-ruby-900 { background: var(--ruby-900); }
+.bg-ruby-950 { background: var(--ruby-950); }
+.bg-sand-50 { background: var(--sand-50); }
+.bg-sand-100 { background: var(--sand-100); }
+.bg-sand-200 { background: var(--sand-200); }
+.bg-sand-300 { background: var(--sand-300); }
+.bg-sand-400 { background: var(--sand-400); }
+.bg-sand-500 { background: var(--sand-500); }
+.bg-sand-600 { background: var(--sand-600); }
+.bg-sand-700 { background: var(--sand-700); }
+.bg-sand-800 { background: var(--sand-800); }
+.bg-sand-900 { background: var(--sand-900); }
+.bg-sand-950 { background: var(--sand-950); }
+.bg-stone-50 { background: var(--stone-50); }
+.bg-stone-100 { background: var(--stone-100); }
+.bg-stone-200 { background: var(--stone-200); }
+.bg-stone-300 { background: var(--stone-300); }
+.bg-stone-400 { background: var(--stone-400); }
+.bg-stone-500 { background: var(--stone-500); }
+.bg-stone-600 { background: var(--stone-600); }
+.bg-stone-700 { background: var(--stone-700); }
+.bg-stone-800 { background: var(--stone-800); }
+.bg-stone-900 { background: var(--stone-900); }
+.bg-stone-950 { background: var(--stone-950); }
+.bg-ink { background: var(--ink); color: var(--ivory); }
+.bg-ivory { background: var(--ivory); }
+
+/* Border colors can be combined with border width/style utilities. */
+.border-jade-50 { border-color: var(--jade-50); }
+.border-jade-100 { border-color: var(--jade-100); }
+.border-jade-200 { border-color: var(--jade-200); }
+.border-jade-300 { border: 1px solid var(--jade-300); }
+.border-jade-400 { border-color: var(--jade-400); }
+.border-jade-500 { border: 1px solid var(--jade-500); }
+.border-jade-600 { border-color: var(--jade-600); }
+.border-jade-700 { border: 1px solid var(--jade-700); }
+.border-jade-800 { border-color: var(--jade-800); }
+.border-jade-900 { border-color: var(--jade-900); }
+.border-jade-950 { border-color: var(--jade-950); }
+.border-gold-50 { border-color: var(--gold-50); }
+.border-gold-100 { border-color: var(--gold-100); }
+.border-gold-200 { border-color: var(--gold-200); }
+.border-gold-400 { border-color: var(--gold-400); }
+.border-gold-500 { border-color: var(--gold-500); }
+.border-gold-600 { border-color: var(--gold-600); }
+.border-gold-800 { border-color: var(--gold-800); }
+.border-gold-900 { border-color: var(--gold-900); }
+.border-gold { border: 1px solid var(--gold); }
+.border-gold-300 { border: 1px solid var(--gold-300); }
+.border-gold-700 { border: 1px solid var(--gold-700); }
+.border-lapis-50 { border-color: var(--lapis-50); }
+.border-lapis-100 { border-color: var(--lapis-100); }
+.border-lapis-200 { border-color: var(--lapis-200); }
+.border-lapis-300 { border-color: var(--lapis-300); }
+.border-lapis-400 { border: 1px solid var(--lapis-400); }
+.border-lapis-500 { border-color: var(--lapis-500); }
+.border-lapis-600 { border: 1px solid var(--lapis-600); }
+.border-lapis-700 { border-color: var(--lapis-700); }
+.border-lapis-800 { border-color: var(--lapis-800); }
+.border-lapis-900 { border-color: var(--lapis-900); }
+.border-lapis-950 { border-color: var(--lapis-950); }
+.border-teal-50 { border-color: var(--teal-50); }
+.border-teal-100 { border-color: var(--teal-100); }
+.border-teal-200 { border-color: var(--teal-200); }
+.border-teal-300 { border-color: var(--teal-300); }
+.border-teal-400 { border-color: var(--teal-400); }
+.border-teal-500 { border: 1px solid var(--teal-500); }
+.border-teal-600 { border-color: var(--teal-600); }
+.border-teal-700 { border-color: var(--teal-700); }
+.border-teal-800 { border-color: var(--teal-800); }
+.border-teal-900 { border-color: var(--teal-900); }
+.border-teal-950 { border-color: var(--teal-950); }
+.border-henna-50 { border-color: var(--henna-50); }
+.border-henna-100 { border-color: var(--henna-100); }
+.border-henna-200 { border-color: var(--henna-200); }
+.border-henna-300 { border-color: var(--henna-300); }
+.border-henna-400 { border-color: var(--henna-400); }
+.border-henna-500 { border-color: var(--henna-500); }
+.border-henna-600 { border-color: var(--henna-600); }
+.border-henna-700 { border-color: var(--henna-700); }
+.border-henna-800 { border-color: var(--henna-800); }
+.border-henna-900 { border-color: var(--henna-900); }
+.border-henna-950 { border-color: var(--henna-950); }
+.border-ruby-50 { border-color: var(--ruby-50); }
+.border-ruby-100 { border-color: var(--ruby-100); }
+.border-ruby-200 { border-color: var(--ruby-200); }
+.border-ruby-300 { border-color: var(--ruby-300); }
+.border-ruby-400 { border-color: var(--ruby-400); }
+.border-ruby-500 { border-color: var(--ruby-500); }
+.border-ruby-600 { border-color: var(--ruby-600); }
+.border-ruby-700 { border-color: var(--ruby-700); }
+.border-ruby-800 { border-color: var(--ruby-800); }
+.border-ruby-900 { border-color: var(--ruby-900); }
+.border-ruby-950 { border-color: var(--ruby-950); }
+.border-sand-50 { border-color: var(--sand-50); }
+.border-sand-100 { border-color: var(--sand-100); }
+.border-ruby-500 { border: 1px solid var(--ruby-500); }
+.border-sand-300 { border-color: var(--sand-300); }
+.border-sand-400 { border-color: var(--sand-400); }
+.border-sand-500 { border-color: var(--sand-500); }
+.border-sand-600 { border-color: var(--sand-600); }
+.border-sand-700 { border-color: var(--sand-700); }
+.border-sand-800 { border-color: var(--sand-800); }
+.border-sand-900 { border-color: var(--sand-900); }
+.border-sand-950 { border-color: var(--sand-950); }
+.border-stone-50 { border-color: var(--stone-50); }
+.border-stone-100 { border-color: var(--stone-100); }
+.border-stone-200 { border-color: var(--stone-200); }
+.border-sand-200 { border: 1px solid var(--sand-200); }
+.border-stone-400 { border-color: var(--stone-400); }
+.border-stone-500 { border-color: var(--stone-500); }
+.border-stone-600 { border-color: var(--stone-600); }
+.border-stone-700 { border-color: var(--stone-700); }
+.border-stone-800 { border-color: var(--stone-800); }
+.border-stone-900 { border-color: var(--stone-900); }
+.border-stone-950 { border-color: var(--stone-950); }
+.border-stone-300 { border: 1px solid var(--stone-300); }
+.border-jade-50,
+.border-jade-100,
+.border-jade-200,
+.border-jade-400,
+.border-jade-600,
+.border-jade-800,
+.border-jade-900,
+.border-jade-950,
+.border-gold-50,
+.border-gold-100,
+.border-gold-200,
+.border-gold-400,
+.border-gold-500,
+.border-gold-600,
+.border-gold-800,
+.border-gold-900,
+.border-lapis-50,
+.border-lapis-100,
+.border-lapis-200,
+.border-lapis-300,
+.border-lapis-500,
+.border-lapis-700,
+.border-lapis-800,
+.border-lapis-900,
+.border-lapis-950,
+.border-teal-50,
+.border-teal-100,
+.border-teal-200,
+.border-teal-300,
+.border-teal-400,
+.border-teal-600,
+.border-teal-700,
+.border-teal-800,
+.border-teal-900,
+.border-teal-950,
+.border-henna-50,
+.border-henna-100,
+.border-henna-200,
+.border-henna-300,
+.border-henna-400,
+.border-henna-500,
+.border-henna-600,
+.border-henna-700,
+.border-henna-800,
+.border-henna-900,
+.border-henna-950,
+.border-ruby-50,
+.border-ruby-100,
+.border-ruby-200,
+.border-ruby-300,
+.border-ruby-400,
+.border-ruby-600,
+.border-ruby-700,
+.border-ruby-800,
+.border-ruby-900,
+.border-ruby-950,
+.border-sand-50,
+.border-sand-100,
+.border-sand-300,
+.border-sand-400,
+.border-sand-500,
+.border-sand-600,
+.border-sand-700,
+.border-sand-800,
+.border-sand-900,
+.border-sand-950,
+.border-stone-50,
+.border-stone-100,
+.border-stone-200,
+.border-stone-400,
+.border-stone-500,
+.border-stone-600,
+.border-stone-700,
+.border-stone-800,
+.border-stone-900,
+.border-stone-950 {
+  border-width: 1px;
+  border-style: solid;
+}
+
+/* Tint system — translucent color without hand-writing rgba.
+   <div class="tint-jade-500 bg-tint-20 border-tint-40"> */
+.tint-jade-300 { --tint: var(--jade-300); }
+.tint-jade-500 { --tint: var(--jade-500); }
+.tint-jade-600 { --tint: var(--jade-600); }
+.tint-jade-800 { --tint: var(--jade-800); }
+.tint-jade-950 { --tint: var(--jade-950); }
+.tint-gold { --tint: var(--gold-500); }
+.tint-lapis { --tint: var(--lapis-500); }
+.tint-teal { --tint: var(--teal-500); }
+.tint-henna { --tint: var(--henna-500); }
+.tint-ruby { --tint: var(--ruby-500); }
+.tint-ivory { --tint: var(--ivory); }
+.tint-ink { --tint: var(--ink); }
+
+.bg-tint-05 { background: color-mix(in srgb, var(--tint, var(--jade-600)) 5%, transparent); }
+.bg-tint-10 { background: color-mix(in srgb, var(--tint, var(--jade-600)) 10%, transparent); }
+.bg-tint-20 { background: color-mix(in srgb, var(--tint, var(--jade-600)) 20%, transparent); }
+.bg-tint-30 { background: color-mix(in srgb, var(--tint, var(--jade-600)) 30%, transparent); }
+.bg-tint-50 { background: color-mix(in srgb, var(--tint, var(--jade-600)) 50%, transparent); }
+.bg-tint-70 { background: color-mix(in srgb, var(--tint, var(--jade-600)) 70%, transparent); }
+.border-tint-20 { border: 1px solid color-mix(in srgb, var(--tint, var(--jade-600)) 20%, transparent); }
+.border-tint-40 { border: 1px solid color-mix(in srgb, var(--tint, var(--jade-600)) 40%, transparent); }
+.border-tint-70 { border: 1px solid color-mix(in srgb, var(--tint, var(--jade-600)) 70%, transparent); }
+.text-tint { color: var(--tint, var(--jade-600)); }
+
+/* Gradient builder — from / via / to + direction, Tailwind-style.
+   <div class="bg-grad dir-br from-jade-900 via-jade-700 to-gold-500"> */
+.from-jade-50 { --from: var(--jade-50); }
+.from-jade-100 { --from: var(--jade-100); }
+.from-jade-200 { --from: var(--jade-200); }
+.from-jade-300 { --from: var(--jade-300); }
+.from-jade-400 { --from: var(--jade-400); }
+.from-jade-500 { --from: var(--jade-500); }
+.from-jade-600 { --from: var(--jade-600); }
+.from-jade-700 { --from: var(--jade-700); }
+.from-jade-800 { --from: var(--jade-800); }
+.from-jade-900 { --from: var(--jade-900); }
+.from-jade-950 { --from: var(--jade-950); }
+.from-gold-200 { --from: var(--gold-200); }
+.from-gold-400 { --from: var(--gold-400); }
+.from-gold-500 { --from: var(--gold-500); }
+.from-gold-700 { --from: var(--gold-700); }
+.from-lapis-400 { --from: var(--lapis-400); }
+.from-lapis-600 { --from: var(--lapis-600); }
+.from-lapis-900 { --from: var(--lapis-900); }
+.from-teal-400 { --from: var(--teal-400); }
+.from-teal-600 { --from: var(--teal-600); }
+.from-henna-500 { --from: var(--henna-500); }
+.from-ivory { --from: var(--ivory); }
+.from-ink { --from: var(--ink); }
+.from-transparent { --from: transparent; }
+
+.via-jade-50 { --via: var(--jade-50); }
+.via-jade-100 { --via: var(--jade-100); }
+.via-jade-200 { --via: var(--jade-200); }
+.via-jade-300 { --via: var(--jade-300); }
+.via-jade-400 { --via: var(--jade-400); }
+.via-jade-500 { --via: var(--jade-500); }
+.via-jade-600 { --via: var(--jade-600); }
+.via-jade-700 { --via: var(--jade-700); }
+.via-jade-800 { --via: var(--jade-800); }
+.via-jade-900 { --via: var(--jade-900); }
+.via-jade-950 { --via: var(--jade-950); }
+.via-gold-200 { --via: var(--gold-200); }
+.via-gold-400 { --via: var(--gold-400); }
+.via-gold-500 { --via: var(--gold-500); }
+.via-gold-700 { --via: var(--gold-700); }
+.via-lapis-400 { --via: var(--lapis-400); }
+.via-lapis-600 { --via: var(--lapis-600); }
+.via-lapis-900 { --via: var(--lapis-900); }
+.via-teal-400 { --via: var(--teal-400); }
+.via-teal-600 { --via: var(--teal-600); }
+.via-henna-500 { --via: var(--henna-500); }
+.via-ivory { --via: var(--ivory); }
+.via-ink { --via: var(--ink); }
+.via-transparent { --via: transparent; }
+
+.to-jade-50 { --to: var(--jade-50); }
+.to-jade-100 { --to: var(--jade-100); }
+.to-jade-200 { --to: var(--jade-200); }
+.to-jade-300 { --to: var(--jade-300); }
+.to-jade-400 { --to: var(--jade-400); }
+.to-jade-500 { --to: var(--jade-500); }
+.to-jade-600 { --to: var(--jade-600); }
+.to-jade-700 { --to: var(--jade-700); }
+.to-jade-800 { --to: var(--jade-800); }
+.to-jade-900 { --to: var(--jade-900); }
+.to-jade-950 { --to: var(--jade-950); }
+.to-gold-200 { --to: var(--gold-200); }
+.to-gold-400 { --to: var(--gold-400); }
+.to-gold-500 { --to: var(--gold-500); }
+.to-gold-700 { --to: var(--gold-700); }
+.to-lapis-400 { --to: var(--lapis-400); }
+.to-lapis-600 { --to: var(--lapis-600); }
+.to-lapis-900 { --to: var(--lapis-900); }
+.to-teal-400 { --to: var(--teal-400); }
+.to-teal-600 { --to: var(--teal-600); }
+.to-henna-500 { --to: var(--henna-500); }
+.to-ivory { --to: var(--ivory); }
+.to-ink { --to: var(--ink); }
+.to-transparent { --to: transparent; }
+
+/* Complete gradient-stop palettes; mix any from-*, via-*, and to-* classes. */
+.from-gold-50 { --from: var(--gold-50); }
+.from-gold-100 { --from: var(--gold-100); }
+.from-gold-300 { --from: var(--gold-300); }
+.from-gold-600 { --from: var(--gold-600); }
+.from-gold-800 { --from: var(--gold-800); }
+.from-gold-900 { --from: var(--gold-900); }
+.from-lapis-50 { --from: var(--lapis-50); }
+.from-lapis-100 { --from: var(--lapis-100); }
+.from-lapis-200 { --from: var(--lapis-200); }
+.from-lapis-300 { --from: var(--lapis-300); }
+.from-lapis-500 { --from: var(--lapis-500); }
+.from-lapis-700 { --from: var(--lapis-700); }
+.from-lapis-800 { --from: var(--lapis-800); }
+.from-lapis-950 { --from: var(--lapis-950); }
+.from-teal-50 { --from: var(--teal-50); }
+.from-teal-100 { --from: var(--teal-100); }
+.from-teal-200 { --from: var(--teal-200); }
+.from-teal-300 { --from: var(--teal-300); }
+.from-teal-400 { --from: var(--teal-400); }
+.from-teal-500 { --from: var(--teal-500); }
+.from-teal-600 { --from: var(--teal-600); }
+.from-teal-700 { --from: var(--teal-700); }
+.from-teal-800 { --from: var(--teal-800); }
+.from-teal-900 { --from: var(--teal-900); }
+.from-teal-950 { --from: var(--teal-950); }
+.from-henna-50 { --from: var(--henna-50); }
+.from-henna-100 { --from: var(--henna-100); }
+.from-henna-200 { --from: var(--henna-200); }
+.from-henna-300 { --from: var(--henna-300); }
+.from-henna-400 { --from: var(--henna-400); }
+.from-henna-500 { --from: var(--henna-500); }
+.from-henna-600 { --from: var(--henna-600); }
+.from-henna-700 { --from: var(--henna-700); }
+.from-henna-800 { --from: var(--henna-800); }
+.from-henna-900 { --from: var(--henna-900); }
+.from-henna-950 { --from: var(--henna-950); }
+.from-ruby-50 { --from: var(--ruby-50); }
+.from-ruby-100 { --from: var(--ruby-100); }
+.from-ruby-200 { --from: var(--ruby-200); }
+.from-ruby-300 { --from: var(--ruby-300); }
+.from-ruby-400 { --from: var(--ruby-400); }
+.from-ruby-500 { --from: var(--ruby-500); }
+.from-ruby-600 { --from: var(--ruby-600); }
+.from-ruby-700 { --from: var(--ruby-700); }
+.from-ruby-800 { --from: var(--ruby-800); }
+.from-ruby-900 { --from: var(--ruby-900); }
+.from-ruby-950 { --from: var(--ruby-950); }
+.from-sand-50 { --from: var(--sand-50); }
+.from-sand-100 { --from: var(--sand-100); }
+.from-sand-200 { --from: var(--sand-200); }
+.from-sand-300 { --from: var(--sand-300); }
+.from-sand-400 { --from: var(--sand-400); }
+.from-sand-500 { --from: var(--sand-500); }
+.from-sand-600 { --from: var(--sand-600); }
+.from-sand-700 { --from: var(--sand-700); }
+.from-sand-800 { --from: var(--sand-800); }
+.from-sand-900 { --from: var(--sand-900); }
+.from-sand-950 { --from: var(--sand-950); }
+.from-stone-50 { --from: var(--stone-50); }
+.from-stone-100 { --from: var(--stone-100); }
+.from-stone-200 { --from: var(--stone-200); }
+.from-stone-300 { --from: var(--stone-300); }
+.from-stone-400 { --from: var(--stone-400); }
+.from-stone-500 { --from: var(--stone-500); }
+.from-stone-600 { --from: var(--stone-600); }
+.from-stone-700 { --from: var(--stone-700); }
+.from-stone-800 { --from: var(--stone-800); }
+.from-stone-900 { --from: var(--stone-900); }
+.from-stone-950 { --from: var(--stone-950); }
+
+.via-gold-50 { --via: var(--gold-50); }
+.via-gold-100 { --via: var(--gold-100); }
+.via-gold-300 { --via: var(--gold-300); }
+.via-gold-600 { --via: var(--gold-600); }
+.via-gold-800 { --via: var(--gold-800); }
+.via-gold-900 { --via: var(--gold-900); }
+.via-lapis-50 { --via: var(--lapis-50); }
+.via-lapis-100 { --via: var(--lapis-100); }
+.via-lapis-200 { --via: var(--lapis-200); }
+.via-lapis-300 { --via: var(--lapis-300); }
+.via-lapis-500 { --via: var(--lapis-500); }
+.via-lapis-700 { --via: var(--lapis-700); }
+.via-lapis-800 { --via: var(--lapis-800); }
+.via-lapis-950 { --via: var(--lapis-950); }
+.via-teal-50 { --via: var(--teal-50); }
+.via-teal-100 { --via: var(--teal-100); }
+.via-teal-200 { --via: var(--teal-200); }
+.via-teal-300 { --via: var(--teal-300); }
+.via-teal-500 { --via: var(--teal-500); }
+.via-teal-700 { --via: var(--teal-700); }
+.via-teal-800 { --via: var(--teal-800); }
+.via-teal-900 { --via: var(--teal-900); }
+.via-teal-950 { --via: var(--teal-950); }
+.via-henna-50 { --via: var(--henna-50); }
+.via-henna-100 { --via: var(--henna-100); }
+.via-henna-200 { --via: var(--henna-200); }
+.via-henna-300 { --via: var(--henna-300); }
+.via-henna-400 { --via: var(--henna-400); }
+.via-henna-600 { --via: var(--henna-600); }
+.via-henna-700 { --via: var(--henna-700); }
+.via-henna-800 { --via: var(--henna-800); }
+.via-henna-900 { --via: var(--henna-900); }
+.via-henna-950 { --via: var(--henna-950); }
+.via-ruby-50 { --via: var(--ruby-50); }
+.via-ruby-100 { --via: var(--ruby-100); }
+.via-ruby-200 { --via: var(--ruby-200); }
+.via-ruby-300 { --via: var(--ruby-300); }
+.via-ruby-400 { --via: var(--ruby-400); }
+.via-ruby-500 { --via: var(--ruby-500); }
+.via-ruby-600 { --via: var(--ruby-600); }
+.via-ruby-700 { --via: var(--ruby-700); }
+.via-ruby-800 { --via: var(--ruby-800); }
+.via-ruby-900 { --via: var(--ruby-900); }
+.via-ruby-950 { --via: var(--ruby-950); }
+.via-sand-50 { --via: var(--sand-50); }
+.via-sand-100 { --via: var(--sand-100); }
+.via-sand-200 { --via: var(--sand-200); }
+.via-sand-300 { --via: var(--sand-300); }
+.via-sand-400 { --via: var(--sand-400); }
+.via-sand-500 { --via: var(--sand-500); }
+.via-sand-600 { --via: var(--sand-600); }
+.via-sand-700 { --via: var(--sand-700); }
+.via-sand-800 { --via: var(--sand-800); }
+.via-sand-900 { --via: var(--sand-900); }
+.via-sand-950 { --via: var(--sand-950); }
+.via-stone-50 { --via: var(--stone-50); }
+.via-stone-100 { --via: var(--stone-100); }
+.via-stone-200 { --via: var(--stone-200); }
+.via-stone-300 { --via: var(--stone-300); }
+.via-stone-400 { --via: var(--stone-400); }
+.via-stone-500 { --via: var(--stone-500); }
+.via-stone-600 { --via: var(--stone-600); }
+.via-stone-700 { --via: var(--stone-700); }
+.via-stone-800 { --via: var(--stone-800); }
+.via-stone-900 { --via: var(--stone-900); }
+.via-stone-950 { --via: var(--stone-950); }
+
+.to-gold-50 { --to: var(--gold-50); }
+.to-gold-100 { --to: var(--gold-100); }
+.to-gold-300 { --to: var(--gold-300); }
+.to-gold-600 { --to: var(--gold-600); }
+.to-gold-800 { --to: var(--gold-800); }
+.to-gold-900 { --to: var(--gold-900); }
+.to-lapis-50 { --to: var(--lapis-50); }
+.to-lapis-100 { --to: var(--lapis-100); }
+.to-lapis-200 { --to: var(--lapis-200); }
+.to-lapis-300 { --to: var(--lapis-300); }
+.to-lapis-500 { --to: var(--lapis-500); }
+.to-lapis-700 { --to: var(--lapis-700); }
+.to-lapis-800 { --to: var(--lapis-800); }
+.to-lapis-950 { --to: var(--lapis-950); }
+.to-teal-50 { --to: var(--teal-50); }
+.to-teal-100 { --to: var(--teal-100); }
+.to-teal-200 { --to: var(--teal-200); }
+.to-teal-300 { --to: var(--teal-300); }
+.to-teal-500 { --to: var(--teal-500); }
+.to-teal-700 { --to: var(--teal-700); }
+.to-teal-800 { --to: var(--teal-800); }
+.to-teal-900 { --to: var(--teal-900); }
+.to-teal-950 { --to: var(--teal-950); }
+.to-henna-50 { --to: var(--henna-50); }
+.to-henna-100 { --to: var(--henna-100); }
+.to-henna-200 { --to: var(--henna-200); }
+.to-henna-300 { --to: var(--henna-300); }
+.to-henna-400 { --to: var(--henna-400); }
+.to-henna-600 { --to: var(--henna-600); }
+.to-henna-700 { --to: var(--henna-700); }
+.to-henna-800 { --to: var(--henna-800); }
+.to-henna-900 { --to: var(--henna-900); }
+.to-henna-950 { --to: var(--henna-950); }
+.to-ruby-50 { --to: var(--ruby-50); }
+.to-ruby-100 { --to: var(--ruby-100); }
+.to-ruby-200 { --to: var(--ruby-200); }
+.to-ruby-300 { --to: var(--ruby-300); }
+.to-ruby-400 { --to: var(--ruby-400); }
+.to-ruby-500 { --to: var(--ruby-500); }
+.to-ruby-600 { --to: var(--ruby-600); }
+.to-ruby-700 { --to: var(--ruby-700); }
+.to-ruby-800 { --to: var(--ruby-800); }
+.to-ruby-900 { --to: var(--ruby-900); }
+.to-ruby-950 { --to: var(--ruby-950); }
+.to-sand-50 { --to: var(--sand-50); }
+.to-sand-100 { --to: var(--sand-100); }
+.to-sand-200 { --to: var(--sand-200); }
+.to-sand-300 { --to: var(--sand-300); }
+.to-sand-400 { --to: var(--sand-400); }
+.to-sand-500 { --to: var(--sand-500); }
+.to-sand-600 { --to: var(--sand-600); }
+.to-sand-700 { --to: var(--sand-700); }
+.to-sand-800 { --to: var(--sand-800); }
+.to-sand-900 { --to: var(--sand-900); }
+.to-sand-950 { --to: var(--sand-950); }
+.to-stone-50 { --to: var(--stone-50); }
+.to-stone-100 { --to: var(--stone-100); }
+.to-stone-200 { --to: var(--stone-200); }
+.to-stone-300 { --to: var(--stone-300); }
+.to-stone-400 { --to: var(--stone-400); }
+.to-stone-500 { --to: var(--stone-500); }
+.to-stone-600 { --to: var(--stone-600); }
+.to-stone-700 { --to: var(--stone-700); }
+.to-stone-800 { --to: var(--stone-800); }
+.to-stone-900 { --to: var(--stone-900); }
+.to-stone-950 { --to: var(--stone-950); }
+
+/* Direction (default 135deg) */
+.dir-t { --ga: 0deg; }
+.dir-tr { --ga: 45deg; }
+.dir-r { --ga: 90deg; }
+.dir-br { --ga: 135deg; }
+.dir-b { --ga: 180deg; }
+.dir-bl { --ga: 225deg; }
+.dir-l { --ga: 270deg; }
+.dir-tl { --ga: 315deg; }
+
+.bg-grad {
+  background-image: linear-gradient(
+    var(--ga, 135deg),
+    var(--from, var(--jade-700)),
+    var(--via, var(--from, var(--jade-700))),
+    var(--to, var(--jade-950))
+  );
+}
+
+.bg-grad-radial {
+  background-image: radial-gradient(
+    var(--gradient-shape, ellipse) at var(--gradient-position, center),
+    var(--from, var(--jade-700)),
+    var(--via, var(--from, var(--jade-700))),
+    var(--to, var(--jade-950))
+  );
+}
+
+.bg-grad-conic {
+  background-image: conic-gradient(
+    from var(--gradient-start, 0deg) at var(--gradient-position, center),
+    var(--from, var(--jade-700)),
+    var(--via, var(--from, var(--jade-700))),
+    var(--to, var(--jade-950))
+  );
+}
+
+.bg-grad-mesh {
+  background-color: var(--to, var(--jade-950));
+  background-image:
+    radial-gradient(ellipse at 12% 18%, color-mix(in srgb, var(--from, var(--jade-500)) 72%, transparent), transparent 56%),
+    radial-gradient(ellipse at 88% 22%, color-mix(in srgb, var(--via, var(--teal-500)) 62%, transparent), transparent 52%),
+    radial-gradient(ellipse at 55% 100%, color-mix(in srgb, var(--to, var(--lapis-700)) 82%, transparent), transparent 58%);
+}
+
+.bg-grad-animated {
+  background-image: linear-gradient(
+    var(--ga, 135deg),
+    var(--from, var(--jade-700)),
+    var(--via, var(--from, var(--jade-700))),
+    var(--to, var(--jade-950)),
+    var(--from, var(--jade-700))
+  );
+  background-size: 300% 300%;
+  animation: jade-drift var(--gradient-speed, 12s) ease-in-out infinite;
+}
+
+.bg-gradient-jade-lapis { background: var(--grad-jade-lapis); }
+.bg-gradient-jade-henna { background: var(--grad-jade-henna); }
+.bg-gradient-jade-ruby { background: var(--grad-jade-ruby); }
+.bg-gradient-jade-teal { background: var(--grad-jade-teal); }
+.bg-gradient-gold-lapis { background: var(--grad-gold-lapis); }
+.bg-gradient-gold-henna { background: var(--grad-gold-henna); }
+.bg-gradient-gold-ruby { background: var(--grad-gold-ruby); }
+.bg-gradient-gold-teal { background: var(--grad-gold-teal); }
+.bg-gradient-lapis-teal { background: var(--grad-lapis-teal); }
+.bg-gradient-lapis-henna { background: var(--grad-lapis-henna); }
+.bg-gradient-lapis-ruby { background: var(--grad-lapis-ruby); }
+.bg-gradient-teal-henna { background: var(--grad-teal-henna); }
+.bg-gradient-teal-ruby { background: var(--grad-teal-ruby); }
+.bg-gradient-henna-ruby { background: var(--grad-henna-ruby); }
+.bg-gradient-parchment { background: var(--grad-parchment); }
+.bg-gradient-stone { background: var(--grad-stone); }
+.bg-gradient-rose { background: var(--grad-rose); }
+.bg-gradient-ocean { background: var(--grad-ocean); }
+.bg-gradient-forest { background: var(--grad-forest); }
+.bg-gradient-aurora {
+  background: linear-gradient(125deg, var(--jade-950), var(--teal-600), var(--lapis-600), var(--jade-700));
+  background-size: 300% 300%;
+  animation: jade-drift var(--gradient-speed, 12s) ease-in-out infinite;
+}
+.bg-gradient-aurora-warm {
+  background: linear-gradient(125deg, var(--henna-800), var(--ruby-500), var(--gold-400), var(--henna-700));
+  background-size: 300% 300%;
+  animation: jade-drift var(--gradient-speed, 12s) ease-in-out infinite;
+}
+.bg-gradient-aurora-stone {
+  background: linear-gradient(125deg, var(--stone-950), var(--stone-700), var(--lapis-800), var(--stone-900));
+  background-size: 300% 300%;
+  animation: jade-drift var(--gradient-speed, 12s) ease-in-out infinite;
+}
+.text-on-dark { color: var(--ivory); }
+.text-on-light { color: var(--ink); }
+
+/* ---------- 3. BACKGROUNDS ---------- */
+/* Every bg-jade-* also sets a readable text color.
+   Put them on <body>, sections, cards, or on .btn for gradient buttons. */
+
+/* — Flat — */
+.bg-jade-night { background: var(--jade-950); color: var(--ivory); }
+.bg-jade-ink { background: var(--ink); color: var(--ivory); }
+.bg-jade-parchment {
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(212, 175, 55, 0.12), transparent 60%),
+    radial-gradient(ellipse 70% 60% at 100% 100%, rgba(0, 168, 107, 0.1), transparent 60%),
+    var(--ivory);
+  color: var(--jade-950);
+}
+
+/* — Linear — */
+.bg-jade-gradient { background: var(--grad-jade-deep); color: var(--ivory); }
+.bg-jade-light { background: var(--grad-jade-light); color: var(--jade-950); }
+.bg-jade-gold { background: var(--grad-jade-gold); color: var(--ivory); }
+.bg-jade-mint { background: var(--grad-mint); color: var(--jade-950); }
+.bg-jade-sunrise { background: var(--grad-sunrise); color: var(--ivory); }
+.bg-jade-dusk { background: var(--grad-dusk); color: var(--ivory); }
+.bg-jade-oasis { background: var(--grad-oasis); color: var(--ink); }
+.bg-jade-emerald { background: linear-gradient(180deg, var(--jade-900), var(--jade-600)); color: var(--ivory); }
+.bg-jade-forest { background: linear-gradient(200deg, var(--jade-950) 0%, var(--jade-900) 50%, var(--teal-900) 100%); color: var(--ivory); }
+.bg-jade-gold-shine { background: var(--grad-gold); color: var(--ink); }
+.bg-jade-zellige { background: var(--grad-zellige); color: var(--ink); }
+
+/* — Radial — */
+.bg-jade-radial {
+  background: radial-gradient(circle at 50% 0%, var(--jade-700) 0%, var(--jade-900) 45%, var(--jade-950) 100%);
+  color: var(--ivory);
+}
+.bg-jade-spotlight {
+  background: radial-gradient(ellipse 60% 50% at 50% 35%, rgba(77, 186, 147, 0.45), transparent 70%), var(--jade-950);
+  color: var(--ivory);
+}
+.bg-jade-halo {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.28) 0%, transparent 38%),
+    radial-gradient(circle at 50% 50%, var(--jade-700) 0%, var(--jade-900) 55%, var(--jade-950) 100%);
+  color: var(--ivory);
+}
+.bg-jade-oasis-light {
+  background: radial-gradient(ellipse 90% 70% at 50% 0%, var(--jade-100), var(--jade-50) 55%, var(--ivory) 100%);
+  color: var(--jade-950);
+}
+
+/* — Mesh & glow — */
+.bg-jade-mesh {
+  background:
+    radial-gradient(at 15% 20%, rgba(0, 168, 107, 0.55) 0, transparent 45%),
+    radial-gradient(at 85% 10%, rgba(212, 175, 55, 0.22) 0, transparent 40%),
+    radial-gradient(at 70% 85%, rgba(37, 160, 122, 0.45) 0, transparent 50%),
+    var(--jade-950);
+  color: var(--ivory);
+}
+.bg-jade-mesh-light {
+  background:
+    radial-gradient(at 15% 20%, rgba(130, 211, 179, 0.7) 0, transparent 50%),
+    radial-gradient(at 85% 10%, rgba(240, 217, 138, 0.55) 0, transparent 45%),
+    radial-gradient(at 70% 90%, rgba(95, 212, 208, 0.45) 0, transparent 50%),
+    var(--jade-50);
+  color: var(--jade-950);
+}
+.bg-jade-mesh-lapis {
+  background:
+    radial-gradient(at 12% 25%, rgba(58, 99, 196, 0.6) 0, transparent 48%),
+    radial-gradient(at 88% 15%, rgba(0, 168, 107, 0.45) 0, transparent 45%),
+    radial-gradient(at 60% 95%, rgba(31, 181, 176, 0.4) 0, transparent 50%),
+    var(--lapis-950);
+  color: var(--ivory);
+}
+.bg-jade-mesh-gold {
+  background:
+    radial-gradient(at 10% 15%, rgba(212, 175, 55, 0.45) 0, transparent 45%),
+    radial-gradient(at 90% 30%, rgba(0, 168, 107, 0.5) 0, transparent 48%),
+    radial-gradient(at 40% 100%, rgba(196, 98, 58, 0.28) 0, transparent 50%),
+    var(--jade-950);
+  color: var(--ivory);
+}
+
+/* Slowly drifting aurora (simple motion) */
+.bg-jade-aurora {
+  background: linear-gradient(120deg, var(--jade-950), var(--jade-700), var(--jade-500), var(--jade-800), var(--jade-950));
+  background-size: 300% 300%;
+  animation: jade-drift calc(var(--speed) * 3) ease-in-out infinite;
+  color: var(--ivory);
+}
+.bg-jade-aurora-lapis {
+  background: linear-gradient(120deg, var(--lapis-950), var(--lapis-700), var(--teal-600), var(--jade-700), var(--lapis-950));
+  background-size: 300% 300%;
+  animation: jade-drift calc(var(--speed) * 3) ease-in-out infinite;
+  color: var(--ivory);
+}
+
+/* Conic — jewel facets */
+.bg-jade-conic {
+  background: conic-gradient(from 210deg at 50% 50%, var(--jade-900), var(--jade-600), var(--gold-200), var(--jade-700), var(--teal-700), var(--jade-900));
+  color: var(--ivory);
+}
+
+/* 3 huge soft glows melting into the dark jade bg */
+.bg-jade-orbs {
+  background:
+    radial-gradient(ellipse 60% 55% at 85% 12%, rgba(212, 175, 55, 0.55) 0%, rgba(212, 175, 55, 0.34) 25%, rgba(212, 175, 55, 0.15) 50%, rgba(212, 175, 55, 0.04) 75%, transparent 100%),
+    radial-gradient(ellipse 70% 60% at 8% 40%, rgba(0, 168, 107, 0.6) 0%, rgba(0, 168, 107, 0.36) 28%, rgba(0, 168, 107, 0.16) 52%, rgba(0, 168, 107, 0.04) 76%, transparent 100%),
+    radial-gradient(ellipse 65% 55% at 60% 105%, rgba(37, 160, 122, 0.5) 0%, rgba(37, 160, 122, 0.3) 28%, rgba(37, 160, 122, 0.13) 52%, rgba(37, 160, 122, 0.03) 76%, transparent 100%),
+    var(--jade-950);
+  color: var(--ivory);
+}
+
+/* — Patterns — */
+/* Lattice (diagonal diamonds) */
+.bg-jade-lattice {
+  background-color: var(--jade-900);
+  background-image:
+    linear-gradient(45deg, transparent calc(50% - 0.5px), var(--lattice-line) 50%, transparent calc(50% + 0.5px)),
+    linear-gradient(-45deg, transparent calc(50% - 0.5px), var(--lattice-line) 50%, transparent calc(50% + 0.5px));
+  background-size: var(--lattice-size) var(--lattice-size);
+  color: var(--ivory);
+}
+/* Lattice over 3 soft glows */
+.bg-jade-lattice-glow {
+  background-color: var(--jade-950);
+  background-image:
+    linear-gradient(45deg, transparent calc(50% - 0.5px), var(--lattice-line) 50%, transparent calc(50% + 0.5px)),
+    linear-gradient(-45deg, transparent calc(50% - 0.5px), var(--lattice-line) 50%, transparent calc(50% + 0.5px)),
+    radial-gradient(ellipse 60% 55% at 85% 12%, rgba(212, 175, 55, 0.5), rgba(212, 175, 55, 0.14) 50%, transparent 100%),
+    radial-gradient(ellipse 70% 60% at 8% 40%, rgba(0, 168, 107, 0.55), rgba(0, 168, 107, 0.15) 52%, transparent 100%),
+    radial-gradient(ellipse 65% 55% at 60% 105%, rgba(37, 160, 122, 0.45), rgba(37, 160, 122, 0.12) 52%, transparent 100%);
+  background-size: var(--lattice-size) var(--lattice-size), var(--lattice-size) var(--lattice-size), 100% 100%, 100% 100%, 100% 100%;
+  background-repeat: repeat, repeat, no-repeat, no-repeat, no-repeat;
+  color: var(--ivory);
+}
+/* Lattice on light jade */
+.bg-jade-lattice-light {
+  background-color: var(--jade-50);
+  background-image:
+    linear-gradient(45deg, transparent calc(50% - 0.5px), rgba(20, 104, 81, 0.12) 50%, transparent calc(50% + 0.5px)),
+    linear-gradient(-45deg, transparent calc(50% - 0.5px), rgba(20, 104, 81, 0.12) 50%, transparent calc(50% + 0.5px));
+  background-size: var(--lattice-size) var(--lattice-size);
+  color: var(--jade-950);
+}
+
+/* Khatam (8-point star) zakhrafa on dark jade */
+.bg-jade-zakhrafa {
+  background-color: var(--jade-900);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64' fill='none' stroke='%2382d3b3' stroke-opacity='.22'%3E%3Crect x='15' y='15' width='34' height='34'/%3E%3Crect x='15' y='15' width='34' height='34' transform='rotate(45 32 32)'/%3E%3Ccircle cx='32' cy='32' r='5'/%3E%3Ccircle cx='32' cy='32' r='1.6' fill='%23d4af37' fill-opacity='.55' stroke='none'/%3E%3Cpath d='M0 7L7 0M57 0L64 7M64 57L57 64M7 64L0 57'/%3E%3C/svg%3E");
+  background-size: var(--zakhrafa-size) var(--zakhrafa-size);
+  color: var(--ivory);
+}
+/* Zakhrafa over 3 huge soft glows */
+.bg-jade-zakhrafa-glow {
+  background-color: var(--jade-950);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64' fill='none' stroke='%2382d3b3' stroke-opacity='.22'%3E%3Crect x='15' y='15' width='34' height='34'/%3E%3Crect x='15' y='15' width='34' height='34' transform='rotate(45 32 32)'/%3E%3Ccircle cx='32' cy='32' r='5'/%3E%3Ccircle cx='32' cy='32' r='1.6' fill='%23d4af37' fill-opacity='.55' stroke='none'/%3E%3Cpath d='M0 7L7 0M57 0L64 7M64 57L57 64M7 64L0 57'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 60% 55% at 85% 12%, rgba(212, 175, 55, 0.5), rgba(212, 175, 55, 0.14) 50%, transparent 100%),
+    radial-gradient(ellipse 70% 60% at 8% 40%, rgba(0, 168, 107, 0.55), rgba(0, 168, 107, 0.15) 52%, transparent 100%),
+    radial-gradient(ellipse 65% 55% at 60% 105%, rgba(37, 160, 122, 0.45), rgba(37, 160, 122, 0.12) 52%, transparent 100%);
+  background-size: var(--zakhrafa-size) var(--zakhrafa-size), 100% 100%, 100% 100%, 100% 100%;
+  background-repeat: repeat, no-repeat, no-repeat, no-repeat;
+  color: var(--ivory);
+}
+/* Zakhrafa on light jade (deep-jade strokes) */
+.bg-jade-zakhrafa-light {
+  background-color: var(--jade-50);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64' fill='none' stroke='%23146851' stroke-opacity='.16'%3E%3Crect x='15' y='15' width='34' height='34'/%3E%3Crect x='15' y='15' width='34' height='34' transform='rotate(45 32 32)'/%3E%3Ccircle cx='32' cy='32' r='5'/%3E%3Ccircle cx='32' cy='32' r='1.6' fill='%23b8932a' fill-opacity='.6' stroke='none'/%3E%3Cpath d='M0 7L7 0M57 0L64 7M64 57L57 64M7 64L0 57'/%3E%3C/svg%3E");
+  background-size: var(--zakhrafa-size) var(--zakhrafa-size);
+  color: var(--jade-950);
+}
+/* Overlapping circles — mashrabiya / "flower" grid */
+.bg-jade-flower {
+  background-color: var(--jade-900);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40' fill='none' stroke='%2382d3b3' stroke-opacity='.2'%3E%3Ccircle cx='0' cy='0' r='20'/%3E%3Ccircle cx='40' cy='0' r='20'/%3E%3Ccircle cx='0' cy='40' r='20'/%3E%3Ccircle cx='40' cy='40' r='20'/%3E%3Ccircle cx='20' cy='20' r='20'/%3E%3C/svg%3E");
+  background-size: var(--pattern-size) var(--pattern-size);
+  color: var(--ivory);
+}
+/* Pointed-arch arcade */
+.bg-jade-arches {
+  background-color: var(--jade-950);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='56' viewBox='0 0 48 56' fill='none' stroke='%2382d3b3' stroke-opacity='.2'%3E%3Cpath d='M0 56V30Q0 10 24 0Q48 10 48 30V56'/%3E%3Cpath d='M8 56V32Q8 18 24 10Q40 18 40 32V56' stroke-opacity='.12'/%3E%3C/svg%3E");
+  background-size: 48px 56px;
+  color: var(--ivory);
+}
+/* Simple CSS-only patterns — tune with --pattern-size / --pattern-color */
+.bg-jade-dots {
+  background-color: var(--jade-900);
+  background-image: radial-gradient(circle, var(--pattern-color) 1.5px, transparent 1.6px);
+  background-size: calc(var(--pattern-size) / 2) calc(var(--pattern-size) / 2);
+  color: var(--ivory);
+}
+.bg-jade-grid {
+  background-color: var(--jade-950);
+  background-image:
+    linear-gradient(var(--pattern-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--pattern-color) 1px, transparent 1px);
+  background-size: var(--pattern-size) var(--pattern-size);
+  color: var(--ivory);
+}
+.bg-jade-stripes {
+  background-color: var(--jade-900);
+  background-image: repeating-linear-gradient(45deg, var(--pattern-color) 0 2px, transparent 2px calc(var(--pattern-size) / 3));
+  color: var(--ivory);
+}
+.bg-jade-stripes-gold {
+  background-color: var(--jade-900);
+  background-image: repeating-linear-gradient(135deg, rgba(212, 175, 55, 0.22) 0 1px, transparent 1px 14px);
+  color: var(--ivory);
+}
+
+/* Aliases kept from v1 for pattern tuning on other elements */
+.pattern-fine { --pattern-size: 24px; --lattice-size: 28px; --zakhrafa-size: 40px; }
+.pattern-large { --pattern-size: 72px; --lattice-size: 80px; --zakhrafa-size: 112px; }
+.pattern-bold { --pattern-color: rgba(130, 211, 179, 0.3); --lattice-line: rgba(130, 211, 179, 0.28); }
+.pattern-gold { --pattern-color: rgba(212, 175, 55, 0.25); --lattice-line: rgba(212, 175, 55, 0.22); }
+
+/* ---------- 4. BLUR / GLASS / OVERLAYS ---------- */
+.blur-xs { backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); }
+.blur-sm { backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+.blur-md { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.blur-lg { backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+.blur-xl { backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); }
+
+/* Frosted glass cards (put over a gradient / image) */
+.glass-jade {
+  background: rgba(0, 168, 107, 0.12);
+  border: 1px solid rgba(130, 211, 179, 0.25);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+.glass-dark {
+  background: rgba(7, 38, 31, 0.55);
+  border: 1px solid rgba(130, 211, 179, 0.15);
+  backdrop-filter: blur(20px) saturate(130%);
+  -webkit-backdrop-filter: blur(20px) saturate(130%);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+.glass-light {
+  background: rgba(247, 243, 227, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: var(--radius);
+  color: var(--jade-950);
+}
+.glass-gold {
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(240, 217, 138, 0.3);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+.glass-lapis {
+  background: rgba(58, 99, 196, 0.14);
+  border: 1px solid rgba(134, 169, 239, 0.28);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
+}
+.glass-frost {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(22px) saturate(160%);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  border-radius: var(--radius);
+}
+/* Top-edge highlight — add to any glass-* for a "lit glass" feel */
+.glass-edge { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 8px 32px rgba(0, 0, 0, 0.3); }
+
+/* Decorative blurred orbs — empty absolutely-positioned <div>; give width/height */
+.orb { position: absolute; border-radius: 50%; pointer-events: none; }
+.orb-jade { background: var(--jade-500); filter: blur(80px); opacity: 0.5; border-radius: 50%; }
+.orb-mint { background: var(--jade-300); filter: blur(90px); opacity: 0.35; border-radius: 50%; }
+.orb-gold { background: var(--gold); filter: blur(90px); opacity: 0.25; border-radius: 50%; }
+.orb-lapis { background: var(--lapis-500); filter: blur(90px); opacity: 0.4; border-radius: 50%; }
+.orb-teal { background: var(--teal-500); filter: blur(85px); opacity: 0.35; border-radius: 50%; }
+.orb-henna { background: var(--henna-500); filter: blur(95px); opacity: 0.22; border-radius: 50%; }
+
+/* Scrims — fade for text over images */
+.scrim-b { background: linear-gradient(to top, rgba(7, 38, 31, 0.92), rgba(7, 38, 31, 0.45) 45%, transparent); }
+.scrim-t { background: linear-gradient(to bottom, rgba(7, 38, 31, 0.92), rgba(7, 38, 31, 0.45) 45%, transparent); }
+.scrim-all { background: rgba(7, 38, 31, 0.6); }
+.scrim-radial { background: radial-gradient(ellipse at center, transparent 40%, rgba(4, 20, 15, 0.75) 100%); }
+
+/* Film grain — adds richness to any flat/gradient bg. Tune --grain-opacity */
+.grain { position: relative; isolation: isolate; }
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: var(--grain-opacity, 0.14);
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.grain > * { position: relative; z-index: 1; }
+
+/* Inner vignette */
+.vignette { box-shadow: inset 0 0 120px rgba(4, 20, 15, 0.55); }
+
+/* ---------- 5. TEXT ---------- */
+/* Gradient clip base */
+.text-grad,
+.text-grad-jade,
+.text-grad-mint,
+.text-grad-gold,
+.text-grad-ivory,
+.text-grad-lapis,
+.text-grad-oasis,
+.text-grad-henna,
+.text-grad-zellige,
+.text-grad-night,
+.text-grad-animated,
+.text-grad-shimmer,
+.text-grad-gold-animated,
+.text-grad-zellige-animated,
+.text-grad-oasis-animated {
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Custom — combine with from-* via-* to-* dir-* */
+.text-grad {
+  background-image: linear-gradient(var(--ga, 90deg), var(--from, var(--jade-300)), var(--via, var(--from, var(--jade-300))), var(--to, var(--jade-600)));
+}
+
+/* Static */
+.text-grad-jade { background-image: linear-gradient(90deg, var(--jade-300), var(--jade-600)); }
+.text-grad-mint { background-image: linear-gradient(90deg, var(--jade-100), var(--jade-300) 50%, var(--teal-400)); }
+.text-grad-gold { background-image: linear-gradient(90deg, var(--gold-soft), var(--gold)); }
+.text-grad-ivory { background-image: linear-gradient(180deg, var(--ivory), var(--jade-200)); }
+.text-grad-lapis { background-image: linear-gradient(90deg, var(--lapis-300), var(--teal-400)); }
+.text-grad-oasis { background-image: linear-gradient(90deg, var(--jade-300), var(--teal-400), var(--lapis-300)); }
+.text-grad-henna { background-image: linear-gradient(90deg, var(--gold-300), var(--henna-500)); }
+.text-grad-zellige { background-image: var(--grad-zellige); }
+.text-grad-night { background-image: linear-gradient(180deg, var(--jade-700), var(--jade-950)); }
+
+/* Animated: flowing jade → mint → gold */
+.text-grad-animated {
+  background-image: linear-gradient(90deg, var(--jade-600), var(--jade-300), var(--gold-soft), var(--jade-300), var(--jade-600));
+  background-size: 300% 100%;
+  animation: jade-flow var(--speed) linear infinite;
+}
+/* Animated: light sweep passing over the text */
+.text-grad-shimmer {
+  background-image: linear-gradient(110deg, var(--jade-500) 35%, var(--jade-50) 50%, var(--jade-500) 65%);
+  background-size: 250% 100%;
+  animation: jade-shimmer 3.5s ease-in-out infinite;
+}
+/* Animated gold */
+.text-grad-gold-animated {
+  background-image: linear-gradient(90deg, var(--gold), var(--gold-soft), var(--gold));
+  background-size: 250% 100%;
+  animation: jade-flow var(--speed) linear infinite;
+}
+/* Animated zellige / oasis (loops seamlessly) */
+.text-grad-zellige-animated {
+  background-image: linear-gradient(90deg, var(--jade-500), var(--teal-400), var(--lapis-400), var(--gold-400), var(--henna-500), var(--jade-500));
+  background-size: 300% 100%;
+  animation: jade-flow var(--speed) linear infinite;
+}
+.text-grad-oasis-animated {
+  background-image: linear-gradient(90deg, var(--jade-300), var(--teal-400), var(--lapis-300), var(--teal-400), var(--jade-300));
+  background-size: 300% 100%;
+  animation: jade-flow var(--speed) linear infinite;
+}
+
+/* Soft glow */
+.text-glow-jade { text-shadow: 0 0 18px rgba(0, 168, 107, 0.7); }
+.text-glow-mint { text-shadow: 0 0 18px rgba(130, 211, 179, 0.7); }
+.text-glow-gold { text-shadow: 0 0 18px rgba(212, 175, 55, 0.6); }
+.text-glow-lapis { text-shadow: 0 0 18px rgba(90, 130, 221, 0.7); }
+/* Multi-layer neon */
+.text-neon-jade { color: var(--jade-100); text-shadow: 0 0 4px var(--jade-300), 0 0 14px var(--jade-500), 0 0 32px var(--jade-600); }
+.text-neon-gold { color: var(--gold-100); text-shadow: 0 0 4px var(--gold-300), 0 0 14px var(--gold-500), 0 0 32px var(--gold-700); }
+
+/* Outline / emboss */
+.text-outline-jade { -webkit-text-stroke: 1.5px var(--jade-400); -webkit-text-fill-color: transparent; }
+.text-outline-gold { -webkit-text-stroke: 1.5px var(--gold-400); -webkit-text-fill-color: transparent; }
+.text-outline-ivory { -webkit-text-stroke: 1.5px var(--ivory); -webkit-text-fill-color: transparent; }
+.text-emboss { color: var(--jade-700); text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55), 0 -1px 0 rgba(0, 0, 0, 0.35); }
+.text-engrave { color: var(--jade-900); text-shadow: 0 1px 1px rgba(255, 255, 255, 0.35); }
+.text-shadow-soft { text-shadow: 0 2px 12px rgba(4, 20, 15, 0.45); }
+
+/* Underlines & highlights — work inline on <span>/<a> */
+.underline-jade, .underline-gold, .underline-grad {
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 0.14em;
+  padding-bottom: 0.08em;
+}
+.underline-jade { background-image: linear-gradient(90deg, var(--jade-400), var(--jade-600)); }
+.underline-gold { background-image: linear-gradient(90deg, var(--gold-300), var(--gold-600)); }
+.underline-grad { background-image: linear-gradient(90deg, var(--jade-400), var(--gold-400)); }
+.underline-grow { background-size: 0% 0.14em; transition: background-size 0.3s ease; }
+.underline-grow:hover, .underline-grow:focus-visible { background-size: 100% 0.14em; }
+.marker-jade { background: linear-gradient(transparent 58%, rgba(0, 168, 107, 0.3) 58%); }
+.marker-gold { background: linear-gradient(transparent 58%, rgba(212, 175, 55, 0.4) 58%); }
+.marker-mint { background: linear-gradient(transparent 58%, rgba(130, 211, 179, 0.5) 58%); }
+
+/* Typographic helpers */
+.eyebrow { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--jade-600); }
+.text-balance { text-wrap: balance; }
+.text-pretty { text-wrap: pretty; }
+.tracking-tight { letter-spacing: -0.02em; }
+.tracking-wide { letter-spacing: 0.04em; }
+.tracking-wider { letter-spacing: 0.1em; }
+.smallcaps { font-variant-caps: all-small-caps; letter-spacing: 0.06em; }
+.numerals-tab { font-variant-numeric: tabular-nums; }
+
+/* Arabic / RTL helpers */
+.rtl { direction: rtl; text-align: right; }
+.ltr { direction: ltr; text-align: left; }
+.arabic { font-family: var(--font-amiri); direction: rtl; line-height: 2; font-feature-settings: "liga", "calt"; }
+.arabic-modern { font-family: var(--font-cairo); direction: rtl; line-height: 1.9; }
+.arabic-kufi { font-family: var(--font-reem-kufi); direction: rtl; line-height: 1.8; }
+.arabic-naskh { font-family: var(--font-naskh); direction: rtl; line-height: 2.1; }
+.arabic-display { font-family: var(--font-aref-ruqaa); direction: rtl; line-height: 1.7; }
+/* Quranic / large recitation text */
+.ayah {
+  font-family: var(--font-scheherazade);
+  direction: rtl;
+  text-align: center;
+  line-height: 2.3;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  color: var(--gold-200);
+}
+.ayah-light { color: var(--jade-900); }
+
+/* ---------- 6. BORDERS & FRAMES ---------- */
+/* Border thickness helpers (combine with any border-grad*) */
+.bw-1 { --bw: 1px; }
+.bw-2 { --bw: 2px; }
+.bw-3 { --bw: 3px; }
+.bw-4 { --bw: 4px; }
+
+/* Swap the gradient used by any border-grad* with one of these */
+.bgrad-jade { --border-grad: linear-gradient(135deg, var(--jade-300), var(--jade-600)); }
+.bgrad-gold { --border-grad: linear-gradient(135deg, var(--gold-200), var(--gold-500), var(--gold-700)); }
+.bgrad-lapis { --border-grad: linear-gradient(135deg, var(--lapis-300), var(--teal-400), var(--jade-400)); }
+.bgrad-oasis { --border-grad: var(--grad-oasis); }
+.bgrad-zellige { --border-grad: var(--grad-zellige); }
+.bgrad-henna { --border-grad: var(--grad-henna); }
+
+/* A) Solid inside — set --inner to match your background.
+      <div class="border-grad" style="--inner:#07261f"> */
+.border-grad {
+  --bw: 2px;
+  --inner: var(--jade-950);
+  border: var(--bw) solid transparent;
+  border-radius: var(--radius);
+  background: linear-gradient(var(--inner), var(--inner)) padding-box, var(--border-grad) border-box;
+}
+
+/* B) Transparent inside (works over any background / glass). Uses a mask. */
+.border-grad-glass { --bw: 2px; position: relative; border-radius: var(--radius); }
+.border-grad-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: var(--bw);
+  border-radius: inherit;
+  background: var(--border-grad);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  pointer-events: none;
+}
+
+/* C) Animated rotating border (conic). Set --inner to your bg. */
+.border-grad-animated {
+  --bw: 2px;
+  --inner: var(--jade-950);
+  border: var(--bw) solid transparent;
+  border-radius: var(--radius);
+  background:
+    linear-gradient(var(--inner), var(--inner)) padding-box,
+    conic-gradient(from var(--angle), var(--jade-700), var(--jade-300), var(--gold), var(--jade-300), var(--jade-700)) border-box;
+  animation: jade-spin var(--speed) linear infinite;
+}
+.border-grad-animated-gold {
+  --bw: 2px;
+  --inner: var(--jade-950);
+  border: var(--bw) solid transparent;
+  border-radius: var(--radius);
+  background:
+    linear-gradient(var(--inner), var(--inner)) padding-box,
+    conic-gradient(from var(--angle), var(--gold-700), var(--gold-200), var(--jade-400), var(--gold-200), var(--gold-700)) border-box;
+  animation: jade-spin var(--speed) linear infinite;
+}
+
+/* Frames — Islamic double-line borders */
+.frame-double-gold { border: 1px solid var(--gold-500); outline: 1px solid rgba(212, 175, 55, 0.5); outline-offset: 5px; }
+.frame-double-jade { border: 1px solid var(--jade-400); outline: 1px solid rgba(77, 186, 147, 0.45); outline-offset: 5px; }
+.frame-inset-gold { border: 1px solid var(--gold-500); box-shadow: inset 0 0 0 4px transparent, inset 0 0 0 5px rgba(212, 175, 55, 0.5); }
+.frame-inset-jade { border: 1px solid var(--jade-400); box-shadow: inset 0 0 0 4px transparent, inset 0 0 0 5px rgba(77, 186, 147, 0.45); }
+.border-dashed-jade { border: 1.5px dashed var(--jade-400); }
+.border-dashed-gold { border: 1.5px dashed var(--gold-400); }
+/* One-sided accents */
+.accent-start-jade { border-inline-start: 4px solid var(--jade-500); }
+.accent-start-gold { border-inline-start: 4px solid var(--gold-500); }
+.accent-top-jade { border-top: 3px solid var(--jade-500); }
+.accent-top-gold { border-top: 3px solid var(--gold-500); }
+
+/* ---------- 7. SHADOWS & GLOWS ---------- */
+.shadow-jade-sm { box-shadow: 0 2px 8px rgba(0, 168, 107, 0.25); }
+.shadow-jade-md { box-shadow: 0 8px 24px rgba(0, 168, 107, 0.3); }
+.shadow-jade-lg { box-shadow: 0 18px 48px rgba(0, 168, 107, 0.35); }
+.shadow-sm { box-shadow: var(--shadow-sm); }
+.shadow-md { box-shadow: var(--shadow-md); }
+.shadow-lg { box-shadow: var(--shadow-lg); }
+.shadow-xl { box-shadow: var(--shadow-xl); }
+.shadow-inset-jade { box-shadow: inset 0 2px 14px rgba(7, 38, 31, 0.45); }
+.shadow-none { box-shadow: none; }
+
+.glow-jade { box-shadow: var(--jade-glow); }
+.glow-jade-lg { box-shadow: 0 0 48px rgba(0, 168, 107, 0.55), 0 0 120px rgba(0, 168, 107, 0.25); }
+.glow-mint { box-shadow: 0 0 24px rgba(130, 211, 179, 0.5); }
+.glow-gold { box-shadow: var(--gold-glow); }
+.glow-lapis { box-shadow: 0 0 24px rgba(90, 130, 221, 0.5); }
+.glow-ruby { box-shadow: 0 0 24px rgba(192, 57, 43, 0.45); }
+.glow-teal { box-shadow: 0 0 24px rgba(31, 181, 176, 0.5); }
+
+/* ---------- 8. COMPONENTS-LITE (generic, reusable) ---------- */
+/* Surface scopes — set the tokens that .card, .badge, etc. read from */
+.surface-dark {
+  --surface: #12302a;
+  --surface-raised: #17392f;
+  --outline: #24493e;
+  --muted: #9fc2b5;
+  --heading: var(--ivory);
+  background: var(--jade-950);
+  color: var(--ivory);
+}
+.surface-light {
+  --surface: #ffffff;
+  --surface-raised: var(--jade-50);
+  --outline: var(--jade-100);
+  --muted: #5f6f68;
+  --heading: var(--jade-950);
+  background: var(--jade-50);
+  color: var(--jade-950);
+}
+.surface-ivory {
+  --surface: #fffdf5;
+  --surface-raised: var(--ivory);
+  --outline: var(--sand-200);
+  --muted: #6e6a55;
+  --heading: var(--jade-900);
+  background: var(--ivory);
+  color: var(--jade-950);
+}
+
+/* Card */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--outline);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  color: var(--heading);
+  box-shadow: var(--shadow-sm);
+}
+.card-raised { background: var(--surface-raised); }
+.card-hover { transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; }
+.card-hover:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--jade-500); }
+
+/* Badges / chips */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  padding: 0.2em 0.7em;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+.badge-jade { background: rgba(0, 168, 107, 0.15); color: var(--jade-700); }
+.badge-gold { background: rgba(212, 175, 55, 0.2); color: var(--gold-700); }
+.badge-lapis { background: rgba(58, 99, 196, 0.15); color: var(--lapis-600); }
+.badge-teal { background: rgba(31, 181, 176, 0.16); color: var(--teal-700); }
+.badge-ruby { background: rgba(192, 57, 43, 0.14); color: var(--ruby-700); }
+.badge-muted { background: rgba(107, 99, 117, 0.14); color: var(--muted); }
+.badge-solid { background: var(--jade-600); color: var(--ivory); }
+.badge-outline { border: 1px solid currentColor; background: transparent; color: var(--jade-600); }
+.surface-dark .badge-jade, .bg-jade-night .badge-jade { color: var(--jade-300); }
+.surface-dark .badge-gold, .bg-jade-night .badge-gold { color: var(--gold-200); }
+.surface-dark .badge-lapis, .bg-jade-night .badge-lapis { color: var(--lapis-200); }
+.surface-dark .badge-teal, .bg-jade-night .badge-teal { color: var(--teal-300); }
+.surface-dark .badge-ruby, .bg-jade-night .badge-ruby { color: var(--ruby-300); }
+
+/* Buttons — `.btn` is the base; color classes are modifiers.
+   <button class="btn btn-jade">…</button>
+   <button class="btn bg-jade-gradient">…</button>   (any bg-jade-* works) */
+.btn,
+.btn-jade, .btn-jade-50, .btn-jade-100, .btn-jade-200, .btn-jade-300, .btn-jade-400,
+.btn-jade-500, .btn-jade-600, .btn-jade-700, .btn-jade-800, .btn-jade-900, .btn-jade-950,
+.btn-gold, .btn-gold-shine, .btn-lapis, .btn-teal, .btn-henna, .btn-ruby, .btn-ivory,
+.btn-outline-jade, .btn-outline-gold, .btn-ghost-jade, .btn-glass {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  padding: 0.7rem 1.4rem;
+  border: 0;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(4, 20, 15, 0.16);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-jade { color: var(--ivory); background: linear-gradient(135deg, var(--jade-600), var(--jade-800)); box-shadow: 0 4px 18px rgba(0, 168, 107, 0.35); }
+.btn-jade-50 { color: var(--ink); background: var(--jade-50); }
+.btn-jade-100 { color: var(--ink); background: var(--jade-100); }
+.btn-jade-200 { color: var(--ink); background: var(--jade-200); }
+.btn-jade-300 { color: var(--ink); background: var(--jade-300); }
+.btn-jade-400 { color: var(--ink); background: var(--jade-400); }
+.btn-jade-500 { color: var(--ink); background: var(--jade-500); }
+.btn-jade-600 { color: var(--ink); background: var(--jade-600); }
+.btn-jade-700 { color: var(--ivory); background: var(--jade-700); }
+.btn-jade-800 { color: var(--ivory); background: var(--jade-800); }
+.btn-jade-900 { color: var(--ivory); background: var(--jade-900); }
+.btn-jade-950 { color: var(--ivory); background: var(--jade-950); }
+.btn-gold { color: var(--ink); background: var(--gold); }
+.btn-gold-shine { color: var(--ink); background: var(--grad-gold); }
+.btn-lapis { color: var(--ivory); background: linear-gradient(135deg, var(--lapis-500), var(--lapis-700)); }
+.btn-teal { color: var(--ink); background: linear-gradient(135deg, var(--teal-400), var(--teal-600)); }
+.btn-henna { color: var(--ivory); background: var(--grad-henna); }
+.btn-ruby { color: var(--ivory); background: linear-gradient(135deg, var(--ruby-500), var(--ruby-700)); }
+.btn-ivory { color: var(--ink); background: var(--ivory); }
+
+/* Outline / ghost / glass */
+.btn-outline-jade { background: transparent; color: var(--jade-500); border: 1.5px solid var(--jade-500); box-shadow: none; }
+.btn-outline-jade:hover { background: var(--jade-600); color: var(--ivory); border-color: var(--jade-600); }
+.btn-outline-gold { background: transparent; color: var(--gold-500); border: 1.5px solid var(--gold-500); box-shadow: none; }
+.btn-outline-gold:hover { background: var(--gold-500); color: var(--ink); }
+.btn-ghost-jade { background: transparent; color: var(--jade-600); box-shadow: none; }
+.btn-ghost-jade:hover { background: rgba(0, 168, 107, 0.12); }
+.btn-glass {
+  background: rgba(0, 168, 107, 0.14);
+  color: var(--ivory);
+  border: 1px solid rgba(130, 211, 179, 0.3);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.btn-glass:hover { background: rgba(0, 168, 107, 0.28); }
+
+/* Sizes & shapes */
+.btn-sm { padding: 0.4rem 0.9rem; font-size: 0.85rem; }
+.btn-lg { padding: 0.95rem 2rem; font-size: 1.1rem; }
+.btn-square { border-radius: var(--radius); }
+.btn-block { display: flex; width: 100%; }
+.btn-icon { padding: 0.65rem; aspect-ratio: 1; }
+
+/* States */
+.btn:hover:not(:disabled),
+.btn-jade:hover, .btn-jade-50:hover, .btn-jade-100:hover, .btn-jade-200:hover, .btn-jade-300:hover, .btn-jade-400:hover,
+.btn-jade-500:hover, .btn-jade-600:hover, .btn-jade-700:hover, .btn-jade-800:hover, .btn-jade-900:hover, .btn-jade-950:hover,
+.btn-gold:hover, .btn-gold-shine:hover, .btn-lapis:hover, .btn-teal:hover, .btn-henna:hover, .btn-ruby:hover, .btn-ivory:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 26px rgba(4, 20, 15, 0.26);
+}
+.btn-jade:hover { box-shadow: 0 8px 26px rgba(0, 168, 107, 0.5); }
+.btn:focus-visible,
+.btn-jade:focus-visible, .btn-jade-50:focus-visible, .btn-jade-100:focus-visible, .btn-jade-200:focus-visible, .btn-jade-300:focus-visible,
+.btn-jade-400:focus-visible, .btn-jade-500:focus-visible, .btn-jade-600:focus-visible, .btn-jade-700:focus-visible, .btn-jade-800:focus-visible,
+.btn-jade-900:focus-visible, .btn-jade-950:focus-visible, .btn-gold:focus-visible, .btn-gold-shine:focus-visible, .btn-lapis:focus-visible,
+.btn-teal:focus-visible, .btn-henna:focus-visible, .btn-ruby:focus-visible, .btn-ivory:focus-visible,
+.btn-outline-jade:focus-visible, .btn-outline-gold:focus-visible, .btn-ghost-jade:focus-visible, .btn-glass:focus-visible {
+  outline: 2px solid var(--jade-400);
+  outline-offset: 3px;
+}
+.btn:disabled,
+.btn-jade:disabled, .btn-jade-50:disabled, .btn-jade-100:disabled, .btn-jade-200:disabled, .btn-jade-300:disabled, .btn-jade-400:disabled,
+.btn-jade-500:disabled, .btn-jade-600:disabled, .btn-jade-700:disabled, .btn-jade-800:disabled, .btn-jade-900:disabled, .btn-jade-950:disabled,
+.btn-gold:disabled, .btn-gold-shine:disabled, .btn-lapis:disabled, .btn-teal:disabled, .btn-henna:disabled, .btn-ruby:disabled, .btn-ivory:disabled,
+.btn-outline-jade:disabled, .btn-outline-gold:disabled, .btn-ghost-jade:disabled, .btn-glass:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Sheen sweep on hover — add to any .btn */
+.btn-shine { position: relative; overflow: hidden; }
+.btn-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.35) 50%, transparent 70%);
+  transform: translateX(-120%);
+}
+.btn-shine:hover::after { transform: translateX(120%); transition: transform 0.7s ease; }
+
+/* Dividers */
+.divider-jade {
+  height: 1px;
+  border: 0;
+  background: linear-gradient(90deg, transparent, var(--jade-400), var(--gold), var(--jade-400), transparent);
+}
+.divider-gold {
+  height: 1px;
+  border: 0;
+  background: linear-gradient(90deg, transparent, var(--gold-300), var(--gold-600), var(--gold-300), transparent);
+}
+.divider-dashed { height: 0; border: 0; border-top: 1.5px dashed var(--jade-400); opacity: 0.6; }
+.divider-jade-v {
+  width: 1px;
+  align-self: stretch;
+  min-height: 1.5em;
+  border: 0;
+  background: linear-gradient(180deg, transparent, var(--jade-400), var(--gold), var(--jade-400), transparent);
+}
+.divider-jade-v.bw-2 { width: 2px; }
+.divider-jade-v.bw-3 { width: 3px; }
+/* Ornament divider — put a glyph inside: <div class="divider-ornament">۞</div> */
+.divider-ornament { display: flex; align-items: center; gap: 1rem; color: var(--gold-500); font-size: 1.25rem; line-height: 1; }
+.divider-ornament::before,
+.divider-ornament::after { content: ""; flex: 1; height: 1px; }
+.divider-ornament::before { background: linear-gradient(90deg, transparent, var(--jade-400)); }
+.divider-ornament::after { background: linear-gradient(270deg, transparent, var(--jade-400)); }
+
+/* ---------- 9. MOTION & HOVER ---------- */
+.float-slow, .anim-float { animation: jade-float 7s ease-in-out infinite; }
+.anim-pulse { animation: jade-pulse 2.4s ease-in-out infinite; }
+.anim-glow { animation: jade-glow 3s ease-in-out infinite; }
+.anim-spin-slow { animation: jade-rotate 40s linear infinite; }
+.anim-twinkle { animation: jade-twinkle 3.2s ease-in-out infinite; }
+.anim-fade-in { animation: jade-fade 600ms ease both; }
+.anim-fade-up { animation: jade-fade-up 520ms cubic-bezier(0.2, 0.7, 0.25, 1) both; }
+.anim-fade-down { animation: jade-fade-down 520ms cubic-bezier(0.2, 0.7, 0.25, 1) both; }
+.anim-slide-left { animation: jade-slide-left 500ms cubic-bezier(0.2, 0.7, 0.25, 1) both; }
+.anim-slide-right { animation: jade-slide-right 500ms cubic-bezier(0.2, 0.7, 0.25, 1) both; }
+.anim-pop { animation: jade-pop 420ms cubic-bezier(0.2, 0.8, 0.2, 1.2) both; }
+.anim-blur-in { animation: jade-blur-in 650ms ease both; }
+.anim-bounce { animation: jade-bounce 1.2s ease-in-out infinite; }
+.anim-wiggle { animation: jade-wiggle 2.4s ease-in-out infinite; }
+.anim-gradient { background-size: 250% 250%; animation: jade-drift 10s ease-in-out infinite; }
+.anim-scale-in { animation: jade-scale 360ms cubic-bezier(0.2, 0.7, 0.25, 1) both; }
+.anim-delay-1 { animation-delay: 100ms; }
+.anim-delay-2 { animation-delay: 200ms; }
+.anim-delay-3 { animation-delay: 300ms; }
+.anim-delay-4 { animation-delay: 450ms; }
+.anim-delay-5 { animation-delay: 600ms; }
+.anim-delay-6 { animation-delay: 800ms; }
+.anim-delay-7 { animation-delay: 1000ms; }
+.anim-delay-8 { animation-delay: 1200ms; }
+.anim-duration-fast { animation-duration: 220ms; }
+.anim-duration-normal { animation-duration: 500ms; }
+.anim-duration-slow { animation-duration: 900ms; }
+.anim-duration-slower { animation-duration: 1.6s; }
+.anim-once { animation-iteration-count: 1; }
+.anim-twice { animation-iteration-count: 2; }
+.anim-infinite { animation-iteration-count: infinite; }
+
+.hover-lift { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.hover-lift:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.hover-glow { transition: box-shadow 0.25s ease; }
+.hover-glow:hover { box-shadow: var(--jade-glow); }
+.hover-glow-gold { transition: box-shadow 0.25s ease; }
+.hover-glow-gold:hover { box-shadow: var(--gold-glow); }
+.hover-brighten { transition: filter 0.2s ease; }
+.hover-brighten:hover { filter: brightness(1.12) saturate(1.1); }
+.hover-dim { transition: filter 0.2s ease; }
+.hover-dim:hover { filter: brightness(0.88); }
+.hover-scale { transition: transform 0.2s ease; }
+.hover-scale:hover { transform: scale(1.035); }
+.hover-tilt { transition: transform 0.2s ease; }
+.hover-tilt:hover { transform: perspective(700px) rotateX(2deg) rotateY(-2deg) translateY(-2px); }
+.hover-sheen { position: relative; overflow: hidden; }
+.hover-sheen::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.28) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 650ms ease;
+}
+.hover-sheen:hover::after { transform: translateX(120%); }
+.hover-border-jade { transition: border-color 0.2s ease; }
+.hover-border-jade:hover { border-color: var(--jade-500); }
+.hover-border-gold { transition: border-color 0.2s ease; }
+.hover-border-gold:hover { border-color: var(--gold-500); }
+
+/* ---------- 10. MISC HELPERS ---------- */
+/* Radius helpers */
+.r-none { --radius: 0; border-radius: 0; }
+.r-sm { --radius: 8px; border-radius: 8px; }
+.r-md { --radius: 16px; border-radius: 16px; }
+.r-lg { --radius: 28px; border-radius: 28px; }
+.r-xl { --radius: 40px; border-radius: 40px; }
+.r-pill { --radius: 999px; border-radius: 999px; }
+/* Arch — a pointed-arch silhouette (mihrab-like) for images/cards */
+.r-arch { border-radius: 999px 999px 0 0; }
+
+/* Scrollbar */
+.scroll-jade { scrollbar-width: thin; scrollbar-color: var(--jade-500) transparent; }
+.scroll-jade::-webkit-scrollbar { width: 10px; height: 10px; }
+.scroll-jade::-webkit-scrollbar-track { background: transparent; }
+.scroll-jade::-webkit-scrollbar-thumb { background: var(--jade-600); border-radius: 999px; border: 2px solid transparent; background-clip: content-box; }
+.scroll-jade::-webkit-scrollbar-thumb:hover { background: var(--jade-400); background-clip: content-box; }
+
+/* Text selection */
+.selection-jade::selection, .selection-jade *::selection { background: var(--jade-600); color: var(--ivory); }
+.selection-gold::selection, .selection-gold *::selection { background: var(--gold-400); color: var(--ink); }
+
+/* Focus ring */
+.focus-jade:focus-visible { outline: 2px solid var(--jade-400); outline-offset: 3px; }
+.focus-gold:focus-visible { outline: 2px solid var(--gold-400); outline-offset: 3px; }
+
+/* Focus-visible ring on any interactive card */
+.ring-jade { box-shadow: 0 0 0 3px rgba(0, 168, 107, 0.35); }
+.ring-gold { box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.4); }
+
+/* ---------- KEYFRAMES ---------- */
+@keyframes jade-flow { to { background-position: -300% 0; } }
+@keyframes jade-shimmer {
+  0% { background-position: 150% 0; }
+  100% { background-position: -150% 0; }
+}
+@keyframes jade-drift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+@keyframes jade-spin { to { --angle: 360deg; } }
+@keyframes jade-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+@keyframes jade-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.75; transform: scale(1.04); }
+}
+@keyframes jade-glow {
+  0%, 100% { box-shadow: 0 0 12px rgba(0, 168, 107, 0.25); }
+  50% { box-shadow: 0 0 36px rgba(0, 168, 107, 0.65); }
+}
+@keyframes jade-rotate { to { transform: rotate(360deg); } }
+@keyframes jade-twinkle {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+@keyframes jade-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes jade-scale {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes jade-fade-up {
+  from { opacity: 0; transform: translate3d(0, 14px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes jade-fade-down {
+  from { opacity: 0; transform: translate3d(0, -14px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes jade-slide-left {
+  from { opacity: 0; transform: translate3d(18px, 0, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes jade-slide-right {
+  from { opacity: 0; transform: translate3d(-18px, 0, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes jade-pop {
+  0% { opacity: 0; transform: scale(0.86); }
+  75% { opacity: 1; transform: scale(1.035); }
+  100% { transform: scale(1); }
+}
+@keyframes jade-blur-in {
+  from { opacity: 0; filter: blur(8px); transform: translateY(6px); }
+  to { opacity: 1; filter: blur(0); transform: translateY(0); }
+}
+@keyframes jade-bounce {
+  0%, 100% { transform: translateY(0); }
+  45% { transform: translateY(-8px); }
+  65% { transform: translateY(-3px); }
+}
+@keyframes jade-wiggle {
+  0%, 100% { transform: rotate(0); }
+  15%, 45%, 75% { transform: rotate(-2deg); }
+  30%, 60%, 90% { transform: rotate(2deg); }
+}
+
+/* Respect users who prefer no motion */
+@media (prefers-reduced-motion: reduce) {
+  .text-grad-animated,
+  .text-grad-shimmer,
+  .text-grad-gold-animated,
+  .text-grad-zellige-animated,
+  .text-grad-oasis-animated,
+  .bg-jade-aurora,
+  .bg-jade-aurora-lapis,
+  .bg-grad-animated,
+  .bg-gradient-aurora,
+  .bg-gradient-aurora-warm,
+  .bg-gradient-aurora-stone,
+  .border-grad-animated,
+  .border-grad-animated-gold,
+  .float-slow,
+  .anim-float,
+  .anim-pulse,
+  .anim-glow,
+  .anim-spin-slow,
+  .anim-twinkle,
+  .anim-fade-in,
+  .anim-fade-up,
+  .anim-fade-down,
+  .anim-slide-left,
+  .anim-slide-right,
+  .anim-pop,
+  .anim-blur-in,
+  .anim-bounce,
+  .anim-wiggle,
+  .anim-gradient,
+  .anim-scale-in {
+    animation: none;
+  }
+  .btn-shine::after,
+  .hover-lift,
+  .card-hover,
+  .btn,
+  .underline-grow,
+  .hover-scale,
+  .hover-tilt,
+  .hover-sheen::after {
+    transition: none;
+  }
+}

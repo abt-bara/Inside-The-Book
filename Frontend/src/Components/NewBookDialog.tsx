@@ -5,7 +5,7 @@ import {
   type AnimationEvent,
   type SubmitEvent,
 } from "react";
-import apiConfig from "../../../shared/api-config.json";
+import userServices, { type BookUpdateFields } from "../api/UserServices";
 import type { Book } from "../types/Book";
 
 interface VolumeDraft {
@@ -128,14 +128,7 @@ interface BookPayload {
   }[];
 }
 
-interface BookUpdatePayload {
-  title?: string;
-  author?: string;
-  editor?: string;
-  distributor?: string;
-  description?: string;
-  year?: string;
-  new?: boolean;
+interface BookUpdatePayload extends BookUpdateFields {
   images: ImageSlot[];
   vols: {
     vol_id: number;
@@ -153,11 +146,9 @@ function toDraftDate(year: string): Pick<BookDraft, "year" | "month" | "day"> {
 }
 
 function toApiDate(draft: BookDraft): string {
-  return [
-    draft.year,
-    draft.month,
-    draft.day ? draft.day.padStart(2, "0") : "",
-  ].filter(Boolean).join("-");
+  return [draft.year, draft.month, draft.day ? draft.day.padStart(2, "0") : ""]
+    .filter(Boolean)
+    .join("-");
 }
 
 function normalizeApiDate(value: string): string {
@@ -167,15 +158,47 @@ function normalizeApiDate(value: string): string {
     .join("-");
 }
 
-function bookApiPath(bookId: number): string {
-  return apiConfig.api.book.replace("{book_id}", String(bookId));
+async function cropImageToSquare(file: File): Promise<File> {
+  const bitmap = await createImageBitmap(file);
+  const cropSize = Math.min(bitmap.width, bitmap.height);
+  const outputSize = Math.min(cropSize, 2048);
+  const canvas = document.createElement("canvas");
+  canvas.width = outputSize;
+  canvas.height = outputSize;
+
+  try {
+    const context = canvas.getContext("2d");
+    if (!context) throw new Error("Image cropping is unavailable.");
+
+    context.drawImage(
+      bitmap,
+      (bitmap.width - cropSize) / 2,
+      (bitmap.height - cropSize) / 2,
+      cropSize,
+      cropSize,
+      0,
+      0,
+      outputSize,
+      outputSize,
+    );
+
+    const blob = await new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob(
+        (croppedBlob) =>
+          croppedBlob
+            ? resolve(croppedBlob)
+            : reject(new Error("The first image could not be cropped.")),
+        file.type,
+      );
+    });
+
+    return new File([blob], file.name, { type: blob.type });
+  } finally {
+    bitmap.close();
+  }
 }
 
-function NewBookDialog({
-  onClose,
-  onSaved,
-  editBookId,
-}: NewBookDialogProps) {
+function NewBookDialog({ onClose, onSaved, editBookId }: NewBookDialogProps) {
   const isEditing = editBookId !== undefined;
   const dialogRef = useRef<HTMLDialogElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -213,16 +236,8 @@ function NewBookDialog({
 
     const controller = new AbortController();
 
-    fetch(`${apiConfig.apiPrefix}${bookApiPath(editBookId)}`, {
-      signal: controller.signal,
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const message = await response.text();
-          throw new Error(message || `Book loading failed (${response.status}).`);
-        }
-        return response.json() as Promise<Book>;
-      })
+    userServices
+      .getBook(editBookId, controller.signal)
       .then((book) => {
         setError("");
         setInitialBook(book);
@@ -249,7 +264,8 @@ function NewBookDialog({
         setIsEditReady(true);
       })
       .catch((loadError: unknown) => {
-        if (loadError instanceof Error && loadError.name === "AbortError") return;
+        if (loadError instanceof Error && loadError.name === "AbortError")
+          return;
         setError(
           loadError instanceof Error
             ? loadError.message
@@ -301,12 +317,14 @@ function NewBookDialog({
   };
 
   const addVolume = () => {
+    const nextVolumeNumber =
+      Math.max(1, ...volumes.map((volume) => Number(volume.number) || 1)) + 1;
     const nextVolumes = [
       ...volumes,
       {
         key: nextVolumeKey,
         title: "",
-        number: String(volumes.length + 1),
+        number: String(nextVolumeNumber),
         images: [],
         existingImageCount: 0,
       },
@@ -330,7 +348,10 @@ function NewBookDialog({
     saveDraft(draft, nextVolumes);
   };
 
-  const submitBook = async (event: SubmitEvent<HTMLFormElement>) => {
+  const submitBook = async (
+    event: SubmitEvent<HTMLFormElement>,
+    images: File[],
+  ) => {
     event.preventDefault();
     setError("");
 
@@ -359,18 +380,37 @@ function NewBookDialog({
         (volume) => !volume.title.trim() || !volume.number.trim(),
       );
       if (incompleteVolumeIndex !== -1) {
-        setError(`Complete the title and number for volume ${incompleteVolumeIndex + 1}.`);
+        setError(
+          `Complete the title and number for volume ${incompleteVolumeIndex + 2}.`,
+        );
         return;
       }
     }
 
     if (
       !isEditing &&
-      bookImages.length === 0 &&
+      images.length === 0 &&
       volumes.every((volume) => volume.images.length === 0)
     ) {
       setError("Select at least one image for the book or one of its volumes.");
       return;
+    }
+
+    let submissionImages = images;
+    if (images.length > 0) {
+      try {
+        submissionImages = [
+          await cropImageToSquare(images[0]),
+          ...images.slice(1),
+        ];
+      } catch (cropError) {
+        setError(
+          cropError instanceof Error
+            ? cropError.message
+            : "The first image could not be cropped.",
+        );
+        return;
+      }
     }
 
     if (isEditing && !initialBook) {
@@ -389,14 +429,16 @@ function NewBookDialog({
       new: true,
     };
 
-    let requestUrl = `${apiConfig.apiPrefix}${apiConfig.api.books}`;
-    let requestInit: RequestInit;
+    let sendRequest: () => Promise<Book>;
 
     if (editBookId !== undefined && initialBook) {
       const changedFields: Omit<BookUpdatePayload, "images" | "vols"> = {};
-      if (commonFields.title !== initialBook.title) changedFields.title = commonFields.title;
-      if (commonFields.author !== initialBook.author) changedFields.author = commonFields.author;
-      if (commonFields.editor !== initialBook.editor) changedFields.editor = commonFields.editor;
+      if (commonFields.title !== initialBook.title)
+        changedFields.title = commonFields.title;
+      if (commonFields.author !== initialBook.author)
+        changedFields.author = commonFields.author;
+      if (commonFields.editor !== initialBook.editor)
+        changedFields.editor = commonFields.editor;
       if (commonFields.distributor !== initialBook.distributor) {
         changedFields.distributor = commonFields.distributor;
       }
@@ -408,7 +450,7 @@ function NewBookDialog({
       }
       if (!initialBook.new) changedFields.new = true;
 
-      const bookImageSlots = bookImages.map((_, index) => ({
+      const bookImageSlots = submissionImages.map((_, index) => ({
         slot: `book-image-${index}`,
       }));
       const volumeImageUploads = volumes
@@ -431,7 +473,6 @@ function NewBookDialog({
         return;
       }
 
-      requestUrl = `${apiConfig.apiPrefix}${bookApiPath(editBookId)}`;
       if (hasImageChanges) {
         const payload: BookUpdatePayload = {
           ...changedFields,
@@ -443,7 +484,7 @@ function NewBookDialog({
         };
         const requestBody = new FormData();
         requestBody.append("payload", JSON.stringify(payload));
-        bookImages.forEach((image, index) => {
+        submissionImages.forEach((image, index) => {
           requestBody.append(`book-image-${index}`, image);
         });
         volumeImageUploads.forEach(({ volume }) => {
@@ -451,18 +492,16 @@ function NewBookDialog({
             requestBody.append(`volume-${volume.id}-image-${index}`, image);
           });
         });
-        requestInit = { method: "PATCH", body: requestBody };
+        sendRequest = () => userServices.updateBook(editBookId, requestBody);
       } else {
-        requestInit = {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(changedFields),
-        };
+        sendRequest = () => userServices.updateBook(editBookId, changedFields);
       }
     } else {
       const payload: BookPayload = {
         ...commonFields,
-        images: bookImages.map((_, index) => ({ slot: `book-image-${index}` })),
+        images: submissionImages.map((_, index) => ({
+          slot: `book-image-${index}`,
+        })),
         vols: volumes.map((volume, volumeIndex) => ({
           title: volume.title.trim(),
           number: Number(volume.number),
@@ -473,29 +512,22 @@ function NewBookDialog({
       };
       const requestBody = new FormData();
       requestBody.append("payload", JSON.stringify(payload));
-      bookImages.forEach((image, index) => {
+      submissionImages.forEach((image, index) => {
         requestBody.append(`book-image-${index}`, image);
       });
       volumes.forEach((volume, volumeIndex) => {
         volume.images.forEach((image, imageIndex) => {
-          requestBody.append(`volume-${volumeIndex}-image-${imageIndex}`, image);
+          requestBody.append(
+            `volume-${volumeIndex}-image-${imageIndex}`,
+            image,
+          );
         });
       });
-      requestInit = { method: "POST", body: requestBody };
+      sendRequest = () => userServices.createBook(requestBody);
     }
 
     try {
-      const response = await fetch(requestUrl, requestInit);
-
-      if (!response.ok) {
-        const message = await response.text();
-        throw new Error(
-          message ||
-            `Book ${isEditing ? "update" : "creation"} failed (${response.status}).`,
-        );
-      }
-
-      await response.json();
+      await sendRequest();
       if (!isEditing) {
         try {
           localStorage.removeItem(draftStorageKey);
@@ -536,7 +568,9 @@ function NewBookDialog({
       <div className="new-book-dialog__header">
         <div>
           <p className="new-book-dialog__eyebrow">Library</p>
-          <h2 id="book-dialog-title">{isEditing ? "Edit book" : "Add a new book"}</h2>
+          <h2 id="book-dialog-title">
+            {isEditing ? "Edit book" : "Add a new book"}
+          </h2>
         </div>
         <button
           className="new-book-dialog__close"
@@ -548,318 +582,398 @@ function NewBookDialog({
         </button>
       </div>
       {isEditing && !isEditReady ? (
-        <p className="new-book-form__loading" role={isLoadingEdit ? "status" : "alert"}>
+        <p
+          className="new-book-form__loading"
+          role={isLoadingEdit ? "status" : "alert"}
+        >
           {isLoadingEdit ? "Loading book details…" : error}
         </p>
       ) : (
-      <form
-        ref={formRef}
-        className="new-book-form"
-        onSubmit={submitBook}
-        onInvalid={() => setError("Please complete all required fields before saving.")}
-        onChange={() => {
-          if (error) setError("");
-        }}
-      >
-        <div className="new-book-form__fields">
-          <label className="new-book-form__field new-book-form__field--wide">
-            <span>Book name <span aria-hidden="true">*</span></span>
-            <input
-              name="title"
-              required
-              maxLength={200}
-              value={draft.title}
-              onChange={(event) => updateDraft({ title: event.currentTarget.value })}
-            />
-          </label>
-          <label className="new-book-form__field">
-            <span>
-              Author {!isEditing && <span aria-hidden="true">*</span>}
-            </span>
-            <input
-              name="author"
-              required={!isEditing}
-              maxLength={100}
-              value={draft.author}
-              onChange={(event) => updateDraft({ author: event.currentTarget.value })}
-            />
-          </label>
-          <label className="new-book-form__field">
-            <span>
-              Editor {!isEditing && <span aria-hidden="true">*</span>}
-            </span>
-            <input
-              name="editor"
-              required={!isEditing}
-              maxLength={100}
-              value={draft.editor}
-              onChange={(event) => updateDraft({ editor: event.currentTarget.value })}
-            />
-          </label>
-          <label className="new-book-form__field">
-            <span>
-              Distributor {!isEditing && <span aria-hidden="true">*</span>}
-            </span>
-            <input
-              name="distributor"
-              required={!isEditing}
-              maxLength={100}
-              value={draft.distributor}
-              onChange={(event) => updateDraft({ distributor: event.currentTarget.value })}
-            />
-          </label>
-          <div
-            className="new-book-form__date-group"
-            role="group"
-            aria-labelledby="publication-date-label"
-          >
-            <span id="publication-date-label" className="new-book-form__date-label">
-              Publication date {!isEditing && <span aria-hidden="true">*</span>}
-            </span>
-            <div className="new-book-form__date-fields">
-              <label className="new-book-form__field">
-                <span>Year</span>
-                <input
-                  name="year"
-                  type="number"
-                  min="1500"
-                  max={currentYear}
-                  step="1"
-                  inputMode="numeric"
-                  placeholder="YYYY"
-                  required={!isEditing}
-                  value={draft.year}
-                  onChange={(event) => updateDraft({ year: event.currentTarget.value, day: "" })}
-                />
-              </label>
-              <label className="new-book-form__field">
-                <span>
-                  Month <span className="new-book-form__optional">(optional)</span>
-                </span>
-                <select
-                  name="month"
-                  value={draft.month}
-                  onChange={(event) => updateDraft({ month: event.currentTarget.value, day: "" })}
-                >
-                  <option value="">Select month</option>
-                  {months.map((month, index) => (
-                    <option key={month} value={String(index + 1).padStart(2, "0")}>{month}</option>
-                  ))}
-                </select>
-              </label>
-              <label className="new-book-form__field">
-                <span>
-                  Day <span className="new-book-form__optional">(optional)</span>
-                </span>
-                <select
-                  name="day"
-                  value={draft.day}
-                  disabled={!draft.month}
-                  onChange={(event) => updateDraft({ day: event.currentTarget.value })}
-                >
-                  <option value="">Select day</option>
-                  {Array.from(
-                    {
-                      length: draft.month
-                        ? new Date(
-                            Number(draft.year) || 2000,
-                            Number(draft.month),
-                            0,
-                          ).getDate()
-                        : 0,
-                    },
-                    (_, index) => String(index + 1).padStart(2, "0"),
-                  ).map((day) => (
-                    <option key={day} value={day}>{Number(day)}</option>
-                  ))}
-                </select>
-              </label>
-            </div>
-          </div>
-          <label className="new-book-form__field new-book-form__field--wide">
-            <span>
-              Description {!isEditing && <span aria-hidden="true">*</span>}
-            </span>
-            <textarea
-              name="description"
-              rows={4}
-              required={!isEditing}
-              value={draft.description}
-              onChange={(event) => updateDraft({ description: event.currentTarget.value })}
-            />
-          </label>
-        </div>
-
-        <section className="new-book-form__image-section" aria-labelledby="book-images-title">
-          <div className="new-book-form__section-heading">
-            <div>
-              <h3 id="book-images-title">Book images</h3>
-              <p>
-                {isEditing
-                  ? `${initialBook?.images.length ?? 0} existing image(s). Add more images below if needed.`
-                  : "At least one image is required across the book and its volumes. Text and volume details are cached; image files must be selected again when reopening a saved draft."}
-              </p>
-            </div>
-          </div>
-          <label className="new-book-form__file">
-            <span>Select book images</span>
-            <input
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              multiple
-              onChange={(event) => setBookImages(Array.from(event.currentTarget.files ?? []))}
-            />
-            <small>
-              {bookImages.length
-                ? `${bookImages.length} image(s) selected`
-                : isEditing
-                  ? `${initialBook?.images.length ?? 0} existing image(s) · JPEG, PNG, or WebP · 5 MB max each.`
-                  : "JPEG, PNG, or WebP · 5 MB max each."}
-            </small>
-          </label>
-        </section>
-
-        <section className="new-book-form__volumes" aria-labelledby="book-volumes-title">
-          <div className="new-book-form__section-heading">
-            <div>
-              <h3 id="book-volumes-title">Volumes</h3>
-              <p>
-                {isEditing
-                  ? "Existing volumes are kept. Add images to any volume below."
-                  : "Volume images are stored separately from book images."}
-              </p>
-            </div>
-            {!isEditing && (
-              <button className="new-book-form__add-volume" type="button" onClick={addVolume}>
-                + Add volume
-              </button>
-            )}
-          </div>
-          {volumes.map((volume, index) => (
-            <fieldset className="new-book-volume" key={volume.key}>
-              <legend>Volume {index + 1}</legend>
-              {!isEditing && (
-                <button
-                  className="new-book-volume__remove"
-                  type="button"
-                  onClick={() => removeVolume(volume.key)}
-                >
-                  Remove
-                </button>
-              )}
-              <div className="new-book-form__fields">
+        <form
+          ref={formRef}
+          className="new-book-form"
+          onSubmit={(event) => submitBook(event, bookImages)}
+          onInvalid={() =>
+            setError("Please complete all required fields before saving.")
+          }
+          onChange={() => {
+            if (error) setError("");
+          }}
+        >
+          <div className="new-book-form__fields">
+            <label className="new-book-form__field new-book-form__field--wide">
+              <span>
+                Book name <span aria-hidden="true">*</span>
+              </span>
+              <input
+                name="title"
+                required
+                maxLength={200}
+                value={draft.title}
+                onChange={(event) =>
+                  updateDraft({ title: event.currentTarget.value })
+                }
+              />
+            </label>
+            <label className="new-book-form__field">
+              <span>
+                Author {!isEditing && <span aria-hidden="true">*</span>}
+              </span>
+              <input
+                name="author"
+                required={!isEditing}
+                maxLength={100}
+                value={draft.author}
+                onChange={(event) =>
+                  updateDraft({ author: event.currentTarget.value })
+                }
+              />
+            </label>
+            <label className="new-book-form__field">
+              <span>
+                Editor {!isEditing && <span aria-hidden="true">*</span>}
+              </span>
+              <input
+                name="editor"
+                required={!isEditing}
+                maxLength={100}
+                value={draft.editor}
+                onChange={(event) =>
+                  updateDraft({ editor: event.currentTarget.value })
+                }
+              />
+            </label>
+            <label className="new-book-form__field">
+              <span>
+                Distributor {!isEditing && <span aria-hidden="true">*</span>}
+              </span>
+              <input
+                name="distributor"
+                required={!isEditing}
+                maxLength={100}
+                value={draft.distributor}
+                onChange={(event) =>
+                  updateDraft({ distributor: event.currentTarget.value })
+                }
+              />
+            </label>
+            <div
+              className="new-book-form__date-group"
+              role="group"
+              aria-labelledby="publication-date-label"
+            >
+              <span
+                id="publication-date-label"
+                className="new-book-form__date-label"
+              >
+                Publication date{" "}
+                {!isEditing && <span aria-hidden="true">*</span>}
+              </span>
+              <div className="new-book-form__date-fields">
                 <label className="new-book-form__field">
-                  <span>Volume title <span aria-hidden="true">*</span></span>
+                  <span>Year</span>
                   <input
-                    aria-label={`Volume ${index + 1} title`}
-                    required
-                    maxLength={200}
-                    value={volume.title}
-                    disabled={isEditing}
-                    onChange={(event) => updateVolume(volume.key, { title: event.currentTarget.value })}
-                  />
-                </label>
-                <label className="new-book-form__field">
-                  <span>Volume number <span aria-hidden="true">*</span></span>
-                  <input
-                    aria-label={`Volume ${index + 1} number`}
+                    name="year"
                     type="number"
-                    min="0"
+                    min="1500"
+                    max={currentYear}
                     step="1"
-                    required
-                    value={volume.number}
-                    disabled={isEditing}
-                    onChange={(event) => updateVolume(volume.key, { number: event.currentTarget.value })}
-                  />
-                </label>
-                <label className="new-book-form__file new-book-form__field--wide">
-                  <span>Images for this volume</span>
-                  <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    multiple
+                    inputMode="numeric"
+                    placeholder="YYYY"
+                    required={!isEditing}
+                    value={draft.year}
                     onChange={(event) =>
-                      updateVolume(volume.key, {
-                        images: Array.from(event.currentTarget.files ?? []),
-                      })
+                      updateDraft({ year: event.currentTarget.value, day: "" })
                     }
                   />
-                  <small>
-                    {volume.images.length
-                      ? `${volume.images.length} image(s) selected`
-                      : isEditing
-                        ? `${volume.existingImageCount} existing image(s) · JPEG, PNG, or WebP · 5 MB max each`
-                        : "JPEG, PNG, or WebP · 5 MB max each"}
-                  </small>
+                </label>
+                <label className="new-book-form__field">
+                  <span>
+                    Month{" "}
+                    <span className="new-book-form__optional">(optional)</span>
+                  </span>
+                  <select
+                    name="month"
+                    value={draft.month}
+                    onChange={(event) =>
+                      updateDraft({ month: event.currentTarget.value, day: "" })
+                    }
+                  >
+                    <option value="">Select month</option>
+                    {months.map((month, index) => (
+                      <option
+                        key={month}
+                        value={String(index + 1).padStart(2, "0")}
+                      >
+                        {month}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="new-book-form__field">
+                  <span>
+                    Day{" "}
+                    <span className="new-book-form__optional">(optional)</span>
+                  </span>
+                  <select
+                    name="day"
+                    value={draft.day}
+                    disabled={!draft.month}
+                    onChange={(event) =>
+                      updateDraft({ day: event.currentTarget.value })
+                    }
+                  >
+                    <option value="">Select day</option>
+                    {Array.from(
+                      {
+                        length: draft.month
+                          ? new Date(
+                              Number(draft.year) || 2000,
+                              Number(draft.month),
+                              0,
+                            ).getDate()
+                          : 0,
+                      },
+                      (_, index) => String(index + 1).padStart(2, "0"),
+                    ).map((day) => (
+                      <option key={day} value={day}>
+                        {Number(day)}
+                      </option>
+                    ))}
+                  </select>
                 </label>
               </div>
-            </fieldset>
-          ))}
-        </section>
-
-        {cacheWarning && <p className="new-book-form__cache-warning" role="status">{cacheWarning}</p>}
-        {error && <p className="new-book-form__error" role="alert">{error}</p>}
-        <div className="new-book-form__actions">
-          <button
-            className="new-book-form__cancel"
-            type="button"
-            onClick={() => {
-              if (isEditing && initialBook) {
-                setDraft({
-                  title: initialBook.title,
-                  author: initialBook.author,
-                  editor: initialBook.editor,
-                  distributor: initialBook.distributor,
-                  description: initialBook.description,
-                  ...toDraftDate(initialBook.year),
-                });
-                setVolumes(
-                  initialBook.vols.map((volume, key) => ({
-                    key,
-                    id: volume.id,
-                    title: volume.title,
-                    number: String(volume.number),
-                    images: [],
-                    existingImageCount: volume.images.length,
-                  })),
-                );
-                setNextVolumeKey(initialBook.vols.length);
-                setBookImages([]);
-                setError("");
-              } else {
-                formRef.current?.reset();
-                setDraft(emptyBookDraft);
-                setBookImages([]);
-                setVolumes([]);
-                setNextVolumeKey(0);
-                setError("");
-                try {
-                  localStorage.removeItem(draftStorageKey);
-                  setCacheWarning("");
-                } catch {
-                  setCacheWarning("The saved draft could not be cleared.");
+            </div>
+            <label className="new-book-form__field new-book-form__field--wide">
+              <span>
+                Description {!isEditing && <span aria-hidden="true">*</span>}
+              </span>
+              <textarea
+                name="description"
+                rows={4}
+                required={!isEditing}
+                value={draft.description}
+                onChange={(event) =>
+                  updateDraft({ description: event.currentTarget.value })
                 }
-              }
-            }}
-            disabled={isSubmitting}
+              />
+            </label>
+          </div>
+
+          <section
+            className="new-book-form__image-section"
+            aria-labelledby="book-images-title"
           >
-            {isEditing ? "Reset changes" : "Reset form"}
-          </button>
-          <button
-            className="new-book-form__cancel"
-            type="button"
-            onClick={() => closeWithAnimation()}
-            disabled={isSubmitting}
+            <div className="new-book-form__section-heading">
+              <div>
+                <h3 id="book-images-title">Book images</h3>
+                <p>
+                  {isEditing
+                    ? `${initialBook?.images.length ?? 0} existing image(s). Add more images below if needed.`
+                    : "At least one image is required across the book and its volumes. Text and volume details are cached; image files must be selected again when reopening a saved draft."}
+                </p>
+                <small className="accent-start-jade tint-jade-500 bg-tint-05 new-book-form__image-tip">
+                  Tip: choose a square (1:1) image first; the first image is
+                  center-cropped when saved.
+                </small>
+              </div>
+            </div>
+            <label className="new-book-form__file">
+              <span>Select book images</span>
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                multiple
+                onChange={(event) =>
+                  setBookImages(Array.from(event.currentTarget.files ?? []))
+                }
+              />
+              <small>
+                {bookImages.length
+                  ? `${bookImages.length} image(s) selected`
+                  : isEditing
+                    ? `${initialBook?.images.length ?? 0} existing image(s) · JPEG, PNG, or WebP · 5 MB max each.`
+                    : "JPEG, PNG, or WebP · 5 MB max each."}
+              </small>
+            </label>
+          </section>
+
+          <section
+            className="new-book-form__volumes"
+            aria-labelledby="book-volumes-title"
           >
-            Cancel
-          </button>
-          <button className="btn-jade new-book-form__submit" type="submit" disabled={isSubmitting}>
-            {isSubmitting
-              ? isEditing ? "Updating book…" : "Saving book…"
-              : isEditing ? "Save changes" : "Save book"}
-          </button>
-        </div>
-      </form>
+            <div className="new-book-form__section-heading">
+              <div>
+                <h3 id="book-volumes-title">Volumes</h3>
+                <p>
+                  {isEditing
+                    ? "Existing volumes are kept. Add images to any volume below."
+                    : "Volume images are stored separately from book images."}
+                </p>
+              </div>
+              {!isEditing && (
+                <button
+                  className="new-book-form__add-volume"
+                  type="button"
+                  onClick={addVolume}
+                >
+                  + Add volume
+                </button>
+              )}
+            </div>
+            {volumes.map((volume, index) => (
+              <fieldset className="new-book-volume" key={volume.key}>
+                <legend>Volume {volume.number || index + 2}</legend>
+                {!isEditing && (
+                  <button
+                    className="new-book-volume__remove"
+                    type="button"
+                    onClick={() => removeVolume(volume.key)}
+                  >
+                    Remove
+                  </button>
+                )}
+                <div className="new-book-form__fields">
+                  <label className="new-book-form__field">
+                    <span>
+                      Volume title <span aria-hidden="true">*</span>
+                    </span>
+                    <input
+                      aria-label={`Volume ${volume.number || index + 2} title`}
+                      required
+                      maxLength={200}
+                      value={volume.title}
+                      disabled={isEditing}
+                      onChange={(event) =>
+                        updateVolume(volume.key, {
+                          title: event.currentTarget.value,
+                        })
+                      }
+                    />
+                  </label>
+                  <label className="new-book-form__field">
+                    <span>
+                      Volume number <span aria-hidden="true">*</span>
+                    </span>
+                    <input
+                      aria-label={`Volume ${volume.number || index + 2} number`}
+                      type="number"
+                      min="2"
+                      step="1"
+                      required
+                      value={volume.number}
+                      disabled={isEditing}
+                      onChange={(event) =>
+                        updateVolume(volume.key, {
+                          number: event.currentTarget.value,
+                        })
+                      }
+                    />
+                  </label>
+                  <label className="new-book-form__file new-book-form__field--wide">
+                    <span>Images for this volume</span>
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      multiple
+                      onChange={(event) =>
+                        updateVolume(volume.key, {
+                          images: Array.from(event.currentTarget.files ?? []),
+                        })
+                      }
+                    />
+                    <small>
+                      {volume.images.length
+                        ? `${volume.images.length} image(s) selected`
+                        : isEditing
+                          ? `${volume.existingImageCount} existing image(s) · JPEG, PNG, or WebP · 5 MB max each`
+                          : "JPEG, PNG, or WebP · 5 MB max each"}
+                    </small>
+                  </label>
+                </div>
+              </fieldset>
+            ))}
+          </section>
+
+          {cacheWarning && (
+            <p className="new-book-form__cache-warning" role="status">
+              {cacheWarning}
+            </p>
+          )}
+          {error && (
+            <p className="new-book-form__error" role="alert">
+              {error}
+            </p>
+          )}
+          <div className="new-book-form__actions">
+            <button
+              className="new-book-form__cancel"
+              type="button"
+              onClick={() => {
+                if (isEditing && initialBook) {
+                  setDraft({
+                    title: initialBook.title,
+                    author: initialBook.author,
+                    editor: initialBook.editor,
+                    distributor: initialBook.distributor,
+                    description: initialBook.description,
+                    ...toDraftDate(initialBook.year),
+                  });
+                  setVolumes(
+                    initialBook.vols.map((volume, key) => ({
+                      key,
+                      id: volume.id,
+                      title: volume.title,
+                      number: String(volume.number),
+                      images: [],
+                      existingImageCount: volume.images.length,
+                    })),
+                  );
+                  setNextVolumeKey(initialBook.vols.length);
+                  setBookImages([]);
+                  setError("");
+                } else {
+                  formRef.current?.reset();
+                  setDraft(emptyBookDraft);
+                  setBookImages([]);
+                  setVolumes([]);
+                  setNextVolumeKey(0);
+                  setError("");
+                  try {
+                    localStorage.removeItem(draftStorageKey);
+                    setCacheWarning("");
+                  } catch {
+                    setCacheWarning("The saved draft could not be cleared.");
+                  }
+                }
+              }}
+              disabled={isSubmitting}
+            >
+              {isEditing ? "Reset changes" : "Reset form"}
+            </button>
+            <button
+              className="new-book-form__cancel"
+              type="button"
+              onClick={() => closeWithAnimation()}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </button>
+            <button
+              className="btn-jade new-book-form__submit"
+              type="submit"
+              disabled={isSubmitting}
+            >
+              {isSubmitting
+                ? isEditing
+                  ? "Updating book…"
+                  : "Saving book…"
+                : isEditing
+                  ? "Save changes"
+                  : "Save book"}
+            </button>
+          </div>
+        </form>
       )}
     </dialog>
   );

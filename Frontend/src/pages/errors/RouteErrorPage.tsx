@@ -1,4 +1,5 @@
 import { Link, isRouteErrorResponse } from "react-router-dom";
+import { ApiError } from "../../api/UserServices";
 
 type RouteErrorPageProps = {
   error: unknown;
@@ -15,6 +16,10 @@ function getErrorMessage(error: unknown, notFoundMessage: string): string {
     }
 
     return error.statusText || `The request failed with status ${error.status}.`;
+  }
+
+  if (error instanceof ApiError && error.status === 404) {
+    return notFoundMessage;
   }
 
   if (error instanceof Error && error.message) {

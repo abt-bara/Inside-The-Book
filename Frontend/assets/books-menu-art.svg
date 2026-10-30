@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="500" viewBox="0 0 720 500" fill="none">
+  <rect width="720" height="500" fill="#263B31"/>
+  <path d="M0 370C135 307 234 426 372 356C506 288 600 327 720 257V500H0V370Z" fill="#152920"/>
+  <g opacity=".22" stroke="#E8D8AC" stroke-width="2">
+    <path d="M480 0V500M560 0V500M640 0V500M480 90H720M480 180H720M480 270H720M480 360H720M0 90H240M0 180H240M0 270H240M0 360H240"/>
+    <path d="M520 0V500M600 0V500M680 0V500M0 0V500M80 0V500M160 0V500M240 0V500"/>
+  </g>
+  <g transform="translate(145 105) rotate(-8 180 150)">
+    <path d="M40 43C98 24 154 33 192 55V315C153 293 95 284 40 303V43Z" fill="#F5EBD1" stroke="#C9AD70" stroke-width="8"/>
+    <path d="M192 55C234 32 290 25 346 43V303C289 284 232 293 192 315V55Z" fill="#E8D7AE" stroke="#C9AD70" stroke-width="8"/>
+    <path d="M192 57V315" stroke="#9A7945" stroke-width="6"/>
+    <g stroke="#72836E" stroke-width="5" stroke-linecap="round" opacity=".8">
+      <path d="M69 94H158M69 119H158M69 144H144M69 169H158M69 194H145M69 219H158"/>
+      <path d="M227 94H316M227 119H316M227 144H302M227 169H316M227 194H303M227 219H316"/>
+    </g>
+    <path d="M192 56C178 40 160 30 142 27" stroke="#D8C38E" stroke-width="6"/>
+  </g>
+</svg>

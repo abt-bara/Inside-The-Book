@@ -11,7 +11,10 @@ function BookGridElement({
   const cover = images[0]?.image_url;
 
   return (
-    <Link className="border-gold book-grid-card entry-widget   "  to={getBookDetailPagePath(id)}>
+    <Link
+      className="book-grid-card entry-widget"
+      to={getBookDetailPagePath(id)}
+    >
       <span className="book-grid-card__cover">
         {cover ? (
           <img src={cover} alt={`Cover of ${title}`} loading="lazy" />

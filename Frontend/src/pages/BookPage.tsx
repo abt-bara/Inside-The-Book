@@ -1,29 +1,48 @@
 import { useLoaderData, useRevalidator } from "react-router-dom";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import BookGridElement from "../Components/BookGridElement";
+import BookFilters from "../Components/BookFilters";
 import NewBookDialog from "../Components/NewBookDialog";
 import type { Book } from "../types/Book";
 import BooksPageLoader from "../services/loaders/BooksPageLoader";
+import {
+  emptyBookFilters,
+  filterBooks,
+  type BookFilters as BookFiltersState,
+} from "../services/bookFilters";
 
 function BooksPage() {
   const books = useLoaderData() as Awaited<ReturnType<typeof BooksPageLoader>>;
   const [isNewBookOpen, setIsNewBookOpen] = useState(false);
+  const [filters, setFilters] = useState<BookFiltersState>(emptyBookFilters);
   const revalidator = useRevalidator();
+  const filteredBooks = useMemo(
+    () => filterBooks(books, filters),
+    [books, filters],
+  );
 
   return (
     <main className="books-page">
       <div className="books-page__heading">
-        <h1 className="books-page__title">Inside the Book — في الكتاب</h1>
+        <h1 className="books-page__title">
+          Inside the Book — في الكتاب
+        </h1>
         <button
-          className="btn-jade-gold books-page__add-button"
+          className="btn btn-gold-shine books-page__add-button"
           type="button"
           onClick={() => setIsNewBookOpen(true)}
         >
           <span aria-hidden="true">+</span> New book
         </button>
       </div>
+      <BookFilters
+        filters={filters}
+        onChange={setFilters}
+        totalCount={books.length}
+        resultCount={filteredBooks.length}
+      />
       {books.length === 0 ? (
-        <div className="books-page__empty entry-widget">
+        <div className="books-page__empty d entry-widget">
           <p>There are no books right now.</p>
           <button
             className="btn-jade"
@@ -33,9 +52,13 @@ function BooksPage() {
             Add your first book
           </button>
         </div>
+      ) : filteredBooks.length === 0 ? (
+        <div className="books-page__empty entry-widget">
+          <p>No books match these filters.</p>
+        </div>
       ) : (
         <div className="books-grid">
-          {books.map((book: Book) => (
+          {filteredBooks.map((book: Book) => (
             <BookGridElement key={book.id} {...book} />
           ))}
         </div>

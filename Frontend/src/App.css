@@ -1,697 +1,137 @@
 /* =========================================================
-   JADE.CSS — Jade green (Islamic-inspired) utility theme
-   Pure CSS. Drop in, add class names. No JS needed.
-   Sections: 0 Fonts · 1 Tokens · 2 Colors · 3 Backgrounds
-             4 Blur/Glass · 5 Text gradients · 6 Border gradients
-             7 Extras
+   APP.CSS — application styles
+   Load AFTER jade.css. Uses its tokens:
+   --ivory, --jade-*, --gold, --red, --ruby-500, --stone-500, --font-base
+
+   1  Shell & theme tokens
+   2  Header, theme switch, menu
+   3  Books page (heading, filters, grid, empty, skeleton)
+   4  New-book dialog & form
+   5  Book details (card, metadata, volumes)
+   6  Image gallery (carousel + popup)
+   7  QR page
+   8  Route error
+   9  Overrides of jade.css
+   10 Responsive
+   11 Print
+   12 Motion
    ========================================================= */
 
-/* ---------- 0. FONTS ---------- */
+/* ---------- 1. SHELL & THEME TOKENS ---------- */
+.app-shell {
+  --app-shell-gutter: clamp(14px, 4vw, 28px);
 
-@import url("https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400..900;1,400..900&family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Arvo:ital,wght@0,400;0,700;1,400;1,700&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Fustat:wght@200..800&family=Katibeh&family=Kufam:ital,wght@0,400..900;1,400..900&family=Mirza:wght@400;500;600;700&family=Oxanium:wght@200..800&family=Rakkas&display=swap");
+  /* light (default) */
+  --app-canvas: #f5f2e9;
+  --app-surface: #fffdf8;
+  --app-surface-raised: #f6f2e8;
+  --app-outline: #e2dccb;
+  --app-muted: #746f61;
+  --app-heading: #283a31;
+  --app-accent: #527963;
+  --app-accent-strong: #365d49;
+  --app-gold: #ad9054;
+  --app-heading-gradient: linear-gradient(110deg, #365d49 5%, #75815b 58%, #ad9054 100%);
+  --app-shadow: 0 12px 32px rgba(48, 57, 43, 0.08);
 
-/* ---------- 1. TOKENS ---------- */
-:root {
-  --jade-50: #effaf5;
-  --jade-100: #d8f3e6;
-  --jade-200: #b3e6cf;
-  --jade-300: #82d3b3;
-  --jade-400: #4dba93;
-  --jade-500: #25a07a;
-  --jade-600: #00a86b; /* classic jade */
-  --jade-700: #146851;
-  --jade-800: #135342;
-  --jade-900: #0f4337;
-  --jade-950: #07261f;
+  /* aliases so jade.css components (.card, .badge…) follow the app theme */
+  --surface: var(--app-surface);
+  --surface-raised: var(--app-surface-raised);
+  --outline: var(--app-outline);
+  --muted: var(--app-muted);
+  --heading: var(--app-heading);
 
-  --gold: #d4af37; /* accent used in Islamic ornament */
-  --gold-soft: #f0d98a;
-  --ivory: #f7f3e3;
-  --ink: #04140f;
-
-  /* Neutral text */
-  --text-black: #111111;
-  --text-grey: #6b7280;
-
-  --lattice-size: 44px; /* diamond size */
-  --lattice-line: rgba(130, 211, 179, 0.1);
-  --zakhrafa-size: 64px;
-
-  /* Fonts — change --font-base to switch the whole app's font */
-  --font-alegreya: "Alegreya", serif;
-  --font-amiri: "Amiri", serif;
-  --font-arvo: "Arvo", serif;
-  --font-fraunces: "Fraunces", serif;
-  --font-katibeh: "Katibeh", serif;
-  --font-kufam: "Kufam", sans-serif;
-  --font-oxanium: "Oxanium", sans-serif;
-  --font-rakkas: "Rakkas", serif;
-  --font-base: var(--font-fustat);
-  --font-fustat: "Fustat", sans-serif;
-  --font-mirza: "Mirza", serif;
-
-  --jade-glow: 0 0 24px rgba(0, 168, 107, 0.45);
-  --radius: 1px;
-  --speed: 6s; /* change to speed up / slow down all motion */
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 100svh;
+  padding: 0 var(--app-shell-gutter) 56px;
+  background: var(--app-canvas);
+  color: var(--app-heading);
+  text-align: start;
+  transition: background 180ms ease, color 180ms ease;
 }
 
-/* Needed for the rotating border (modern browsers) */
-@property --angle {
-  syntax: "<angle>";
-  initial-value: 0deg;
-  inherits: false;
+.app-shell > main {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
 }
 
-/* ---------- 2. COLORS ---------- */
-/* Neutral text */
-.text-black {
-  color: var(--text-black);
-}
-.text-grey {
-  color: var(--text-grey);
-}
-
-/* Font pickers — add to any element (or <body>) */
-.font-base {
-  font-family: var(--font-base);
-}
-.font-alegreya {
-  font-family: var(--font-alegreya);
-}
-.font-amiri {
-  font-family: var(--font-amiri);
-}
-.font-arvo {
-  font-family: var(--font-arvo);
-}
-.font-fraunces {
-  font-family: var(--font-fraunces);
-}
-.font-katibeh {
-  font-family: var(--font-katibeh);
-}
-.font-kufam {
-  font-family: var(--font-kufam);
-}
-.font-oxanium {
-  font-family: var(--font-oxanium);
-}
-.font-rakkas {
-  font-family: var(--font-rakkas);
-}
-.font-fustat {
-  font-family: var(--font-fustat);
-}
-.font-mirza {
-  font-family: var(--font-mirza);
+.app-shell--dark {
+  --app-canvas: #18251f;
+  --app-surface: #202f28;
+  --app-surface-raised: #283a31;
+  --app-outline: #3a4b3f;
+  --app-muted: #c1c2ad;
+  --app-heading: #f0ead8;
+  --app-accent: #a9bea0;
+  --app-accent-strong: #d6e0c8;
+  --app-gold: #d2bd83;
+  --app-heading-gradient: linear-gradient(110deg, #c8d6b7 5%, #a9bea0 58%, #d2bd83 100%);
+  --app-shadow: 0 14px 36px rgba(5, 14, 10, 0.24);
 }
 
-/* Jade / gold text */
-.text-jade-50 {
-  color: var(--jade-50);
-}
-.text-jade-100 {
-  color: var(--jade-100);
-}
-.text-jade-200 {
-  color: var(--jade-200);
-}
-.text-jade-300 {
-  color: var(--jade-300);
-}
-.text-jade-400 {
-  color: var(--jade-400);
-}
-.text-jade-500 {
-  color: var(--jade-500);
-}
-.text-jade-600 {
-  color: var(--jade-600);
-}
-.text-jade-700 {
-  color: var(--jade-700);
-}
-.text-jade-800 {
-  color: var(--jade-800);
-}
-.text-jade-900 {
-  color: var(--jade-900);
-}
-.text-gold {
-  color: var(--gold);
-}
-.text-ivory {
-  color: var(--ivory);
+/* One focus ring for every custom interactive element */
+:is(
+    .theme-switch__option,
+    .app-menu-toggle,
+    .book-grid-card,
+    .book-details-back,
+    .book-details-edit,
+    .book-details-delete
+  ):focus-visible {
+  outline: 2px solid var(--jade-400);
+  outline-offset: 3px;
 }
 
-.bg-jade-50 {
-  background: var(--jade-50);
-}
-.bg-jade-100 {
-  background: var(--jade-100);
-}
-.bg-jade-200 {
-  background: var(--jade-200);
-}
-.bg-jade-300 {
-  background: var(--jade-300);
-}
-.bg-jade-400 {
-  background: var(--jade-400);
-}
-.bg-jade-500 {
-  background: var(--jade-500);
-}
-.bg-jade-600 {
-  background: var(--jade-600);
-}
-.bg-jade-700 {
-  background: var(--jade-700);
-}
-.bg-jade-800 {
-  background: var(--jade-800);
-}
-.bg-jade-900 {
-  background: var(--jade-900);
-}
-.bg-jade-950 {
-  background: var(--jade-950);
-}
-.bg-gold {
-  background: var(--gold);
-}
-.bg-ivory {
-  background: var(--ivory);
-}
-
-.border-jade-300 {
-  border: 1px solid var(--jade-300);
-}
-.border-jade-500 {
-  border: 1px solid var(--jade-500);
-}
-.border-jade-700 {
-  border: 1px solid var(--jade-700);
-}
-.border-gold {
-  border: 1px solid var(--gold);
-}
-
-.glow-jade {
-  box-shadow: var(--jade-glow);
-}
-.glow-gold {
-  box-shadow: 0 0 24px rgba(212, 175, 55, 0.4);
-}
-
-/* ---------- 3. BACKGROUNDS ---------- */
-/* Base dark page: use on <body> */
-.bg-jade-night {
-  background: var(--jade-950);
-  color: var(--ivory);
-}
-
-.bg-jade-gradient,
-.btn-jade-gradient {
-  background: linear-gradient(
-    135deg,
-    var(--jade-950) 0%,
-    var(--jade-800) 55%,
-    var(--jade-600) 100%
-  );
-  color: var(--ivory);
-}
-
-.bg-jade-light,
-.btn-jade-light {
-  background: linear-gradient(
-    160deg,
-    var(--jade-50) 0%,
-    var(--jade-100) 50%,
-    var(--jade-200) 100%
-  );
-  color: var(--jade-950);
-}
-
-.bg-jade-radial,
-.btn-jade-radial {
-  background: radial-gradient(
-    circle at 50% 0%,
-    var(--jade-700) 0%,
-    var(--jade-900) 45%,
-    var(--jade-950) 100%
-  );
-  color: var(--ivory);
-}
-
-.bg-jade-gold,
-.btn-jade-gold {
-  background: linear-gradient(
-    135deg,
-    var(--jade-900),
-    var(--jade-700) 60%,
-    var(--gold) 140%
-  );
-  color: var(--ivory);
-}
-
-/* Soft glowing blobs — still pure CSS, no animation */
-.bg-jade-mesh,
-.btn-jade-mesh {
-  background:
-    radial-gradient(at 15% 20%, rgba(0, 168, 107, 0.55) 0, transparent 45%),
-    radial-gradient(at 85% 10%, rgba(212, 175, 55, 0.22) 0, transparent 40%),
-    radial-gradient(at 70% 85%, rgba(37, 160, 122, 0.45) 0, transparent 50%),
-    var(--jade-950);
-  color: var(--ivory);
-}
-
-/* Slowly drifting aurora (simple motion) */
-.bg-jade-aurora,
-.btn-jade-aurora {
-  background: linear-gradient(
-    120deg,
-    var(--jade-950),
-    var(--jade-700),
-    var(--jade-500),
-    var(--jade-800),
-    var(--jade-950)
-  );
-  background-size: 300% 300%;
-  animation: jade-drift calc(var(--speed) * 3) ease-in-out infinite;
-  color: var(--ivory);
-}
-
-/* 3 huge soft color glows melting into the dark jade bg */
-.bg-jade-orbs,
-.btn-jade-orbs {
-  background:
-    /* gold glow — top right */
-    radial-gradient(
-      ellipse 60% 55% at 85% 12%,
-      rgba(212, 175, 55, 0.55) 0%,
-      rgba(212, 175, 55, 0.34) 25%,
-      rgba(212, 175, 55, 0.15) 50%,
-      rgba(212, 175, 55, 0.04) 75%,
-      transparent 100%
-    ),
-    /* bright jade glow — left */
-    radial-gradient(
-        ellipse 70% 60% at 8% 40%,
-        rgba(0, 168, 107, 0.6) 0%,
-        rgba(0, 168, 107, 0.36) 28%,
-        rgba(0, 168, 107, 0.16) 52%,
-        rgba(0, 168, 107, 0.04) 76%,
-        transparent 100%
-      ),
-    /* deep emerald glow — bottom */
-    radial-gradient(
-        ellipse 65% 55% at 60% 105%,
-        rgba(37, 160, 122, 0.5) 0%,
-        rgba(37, 160, 122, 0.3) 28%,
-        rgba(37, 160, 122, 0.13) 52%,
-        rgba(37, 160, 122, 0.03) 76%,
-        transparent 100%
-      ),
-    var(--jade-950);
-  color: var(--ivory);
-}
-/* Lattice pattern sitting on top of 3 huge soft glows */
-.bg-jade-lattice,
-.btn-jade-lattice {
-  background-color: var(--jade-900);
-  background-image:
-    linear-gradient(
-      45deg,
-      transparent calc(50% - 0.5px),
-      var(--lattice-line) 50%,
-      transparent calc(50% + 0.5px)
-    ),
-    linear-gradient(
-      -45deg,
-      transparent calc(50% - 0.5px),
-      var(--lattice-line) 50%,
-      transparent calc(50% + 0.5px)
-    );
-  background-size: var(--lattice-size) var(--lattice-size);
-  color: var(--ivory);
-}
-
-/* 2) Same lattice over 3 soft glows */
-.bg-jade-lattice-glow,
-.btn-jade-lattice-glow {
-  background-color: var(--jade-950);
-  background-image:
-    linear-gradient(
-      45deg,
-      transparent calc(50% - 0.5px),
-      var(--lattice-line) 50%,
-      transparent calc(50% + 0.5px)
-    ),
-    linear-gradient(
-      -45deg,
-      transparent calc(50% - 0.5px),
-      var(--lattice-line) 50%,
-      transparent calc(50% + 0.5px)
-    ),
-    radial-gradient(
-      ellipse 60% 55% at 85% 12%,
-      rgba(212, 175, 55, 0.5),
-      rgba(212, 175, 55, 0.14) 50%,
-      transparent 100%
-    ),
-    radial-gradient(
-      ellipse 70% 60% at 8% 40%,
-      rgba(0, 168, 107, 0.55),
-      rgba(0, 168, 107, 0.15) 52%,
-      transparent 100%
-    ),
-    radial-gradient(
-      ellipse 65% 55% at 60% 105%,
-      rgba(37, 160, 122, 0.45),
-      rgba(37, 160, 122, 0.12) 52%,
-      transparent 100%
-    );
-  background-size:
-    var(--lattice-size) var(--lattice-size),
-    var(--lattice-size) var(--lattice-size),
-    100% 100%,
-    100% 100%,
-    100% 100%;
-  background-repeat: repeat, repeat, no-repeat, no-repeat, no-repeat;
-  color: var(--ivory);
-}
-
-/* 1) Khatam (8-point star) zakhrafa on dark jade */
-.bg-jade-zakhrafa,
-.btn-jade-zakhrafa {
-  background-color: var(--jade-900);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64' fill='none' stroke='%2382d3b3' stroke-opacity='.22'%3E%3Crect x='15' y='15' width='34' height='34'/%3E%3Crect x='15' y='15' width='34' height='34' transform='rotate(45 32 32)'/%3E%3Ccircle cx='32' cy='32' r='5'/%3E%3Ccircle cx='32' cy='32' r='1.6' fill='%23d4af37' fill-opacity='.55' stroke='none'/%3E%3Cpath d='M0 7L7 0M57 0L64 7M64 57L57 64M7 64L0 57'/%3E%3C/svg%3E");
-  background-size: var(--zakhrafa-size) var(--zakhrafa-size);
-  color: var(--ivory);
-}
-
-/* 2) Same zakhrafa over 3 huge soft glows */
-.bg-jade-zakhrafa-glow,
-.btn-jade-zakhrafa-glow {
-  background-color: var(--jade-950);
-  background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64' fill='none' stroke='%2382d3b3' stroke-opacity='.22'%3E%3Crect x='15' y='15' width='34' height='34'/%3E%3Crect x='15' y='15' width='34' height='34' transform='rotate(45 32 32)'/%3E%3Ccircle cx='32' cy='32' r='5'/%3E%3Ccircle cx='32' cy='32' r='1.6' fill='%23d4af37' fill-opacity='.55' stroke='none'/%3E%3Cpath d='M0 7L7 0M57 0L64 7M64 57L57 64M7 64L0 57'/%3E%3C/svg%3E"),
-    radial-gradient(
-      ellipse 60% 55% at 85% 12%,
-      rgba(212, 175, 55, 0.5),
-      rgba(212, 175, 55, 0.14) 50%,
-      transparent 100%
-    ),
-    radial-gradient(
-      ellipse 70% 60% at 8% 40%,
-      rgba(0, 168, 107, 0.55),
-      rgba(0, 168, 107, 0.15) 52%,
-      transparent 100%
-    ),
-    radial-gradient(
-      ellipse 65% 55% at 60% 105%,
-      rgba(37, 160, 122, 0.45),
-      rgba(37, 160, 122, 0.12) 52%,
-      transparent 100%
-    );
-  background-size:
-    var(--zakhrafa-size) var(--zakhrafa-size),
-    100% 100%,
-    100% 100%,
-    100% 100%;
-  background-repeat: repeat, no-repeat, no-repeat, no-repeat;
-  color: var(--ivory);
-}
-/* ---------- 4. BLUR / GLASS ---------- */
-.blur-sm {
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-}
-.blur-md {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-.blur-lg {
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-}
-
-/* Frosted jade glass card (put it over a gradient / image) */
-.glass-jade {
-  background: rgba(0, 168, 107, 0.12);
-  border: 1px solid rgba(130, 211, 179, 0.25);
-  backdrop-filter: blur(16px) saturate(140%);
-  -webkit-backdrop-filter: blur(16px) saturate(140%);
-  border-radius: var(--radius);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-}
-
-.glass-dark {
-  background: rgba(7, 38, 31, 0.55);
-  border: 1px solid rgba(130, 211, 179, 0.15);
-  backdrop-filter: blur(20px) saturate(130%);
-  -webkit-backdrop-filter: blur(20px) saturate(130%);
-  border-radius: var(--radius);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
-}
-
-.glass-light {
-  background: rgba(247, 243, 227, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-radius: var(--radius);
-  color: var(--jade-950);
-}
-
-/* Decorative blurred orbs — put on an empty absolutely-positioned <div> */
-.orb-jade {
-  background: var(--jade-500);
-  filter: blur(80px);
-  opacity: 0.5;
-  border-radius: 50%;
-}
-.orb-gold {
-  background: var(--gold);
-  filter: blur(90px);
-  opacity: 0.25;
-  border-radius: 50%;
-}
-
-/* ---------- 5. TEXT GRADIENTS ---------- */
-.text-grad-jade,
-.text-grad-gold,
-.text-grad-ivory,
-.text-grad-animated,
-.text-grad-shimmer,
-.text-grad-gold-animated {
+/* Gradient headings */
+.app-header__brand span,
+.books-page__title,
+.book-details-card__title,
+.route-error__title {
+  background-image: var(--app-heading-gradient);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
 }
 
-/* Static */
-.text-grad-jade {
-  background-image: linear-gradient(90deg, var(--jade-300), var(--jade-600));
-}
-.text-grad-gold {
-  background-image: linear-gradient(90deg, var(--gold-soft), var(--gold));
-}
-.text-grad-ivory {
-  background-image: linear-gradient(180deg, var(--ivory), var(--jade-200));
-}
-
-/* Animated: flowing jade → mint → gold */
-.text-grad-animated {
-  background-image: linear-gradient(
-    90deg,
-    var(--jade-600),
-    var(--jade-300),
-    var(--gold-soft),
-    var(--jade-300),
-    var(--jade-600)
-  );
-  background-size: 300% 100%;
-  animation: jade-flow var(--speed) linear infinite;
-}
-
-/* Animated: light sweep passing over the text */
-.text-grad-shimmer {
-  background-image: linear-gradient(
-    110deg,
-    var(--jade-500) 35%,
-    var(--jade-50) 50%,
-    var(--jade-500) 65%
-  );
-  background-size: 250% 100%;
-  animation: jade-shimmer 3.5s ease-in-out infinite;
-}
-
-/* Animated gold */
-.text-grad-gold-animated {
-  background-image: linear-gradient(
-    90deg,
-    var(--gold),
-    var(--gold-soft),
-    var(--gold)
-  );
-  background-size: 250% 100%;
-  animation: jade-flow var(--speed) linear infinite;
-}
-
-/* Soft text glow */
-.text-glow-jade {
-  text-shadow: 0 0 18px rgba(0, 168, 107, 0.7);
-}
-.text-glow-gold {
-  text-shadow: 0 0 18px rgba(212, 175, 55, 0.6);
-}
-
-/* ---------- 6. BORDER GRADIENTS ---------- */
-/* A) Solid inside — set --inner to match your background.
-      <div class="border-grad" style="--inner:#07261f"> */
-.border-grad {
-  --bw: 2px;
-  --inner: var(--jade-950);
-  border: var(--bw) solid transparent;
-  border-radius: var(--radius);
-  background:
-    linear-gradient(var(--inner), var(--inner)) padding-box,
-    linear-gradient(135deg, var(--jade-300), var(--jade-600), var(--gold))
-      border-box;
-}
-
-/* B) Transparent inside (works over any background / glass).
-      Uses a mask, so inner content stays untouched. */
-.border-grad-glass {
-  --bw: 2px;
-  position: relative;
-  border-radius: var(--radius);
-}
-.border-grad-glass::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  padding: var(--bw);
-  border-radius: inherit;
-  background: linear-gradient(
-    135deg,
-    var(--jade-300),
-    var(--jade-600),
-    var(--gold)
-  );
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask:
-    linear-gradient(#000 0 0) content-box exclude,
-    linear-gradient(#000 0 0);
-  pointer-events: none;
-}
-
-/* C) Animated rotating border (conic). Set --inner to your bg. */
-.border-grad-animated {
-  --bw: 2px;
-  --inner: var(--jade-950);
-  border: var(--bw) solid transparent;
-  border-radius: var(--radius);
-  background:
-    linear-gradient(var(--inner), var(--inner)) padding-box,
-    conic-gradient(
-        from var(--angle),
-        var(--jade-700),
-        var(--jade-300),
-        var(--gold),
-        var(--jade-300),
-        var(--jade-700)
-      )
-      border-box;
-  animation: jade-spin var(--speed) linear infinite;
-}
-
-/* Border thickness helpers (combine with any border-grad*) */
-.bw-1 {
-  --bw: 1px;
-}
-.bw-2 {
-  --bw: 2px;
-}
-.bw-3 {
-  --bw: 3px;
-}
-.bw-4 {
-  --bw: 4px;
-}
-
-/* Radius helpers */
-.r-sm {
-  --radius: 8px;
-  border-radius: 8px;
-}
-.r-md {
-  --radius: 16px;
-  border-radius: 16px;
-}
-.r-lg {
-  --radius: 28px;
-  border-radius: 28px;
-}
-.r-pill {
-  --radius: 999px;
-  border-radius: 999px;
-}
-
-/* ---------- 7. EXTRAS ---------- */
-
-.app-shell {
-  --app-surface: #fff;
-  --app-surface-raised: #fff;
-  --app-outline: #e5e4e7;
-  --app-muted: #6b6375;
-  --app-heading: #08060d;
-  min-height: 100svh;
-  padding: 0 clamp(14px, 4vw, 28px) 56px;
-  box-sizing: border-box;
-  background: var(--bg);
-  color: var(--text);
-  text-align: left;
-  transition:
-    background-color 180ms ease,
-    color 180ms ease;
-}
-
-.app-shell--dark {
-  --app-surface: #1d2027;
-  --app-surface-raised: #242831;
-  --app-outline: #393e49;
-  --app-muted: #a6adbb;
-  --app-heading: #f2f4f7;
-}
-
-.app-shell--light {
-  --app-surface: #fff;
-  --app-surface-raised: #f8f8fa;
-  --app-outline: #e5e4e7;
-  --app-muted: #6b6375;
-  --app-heading: #08060d;
-}
-
+/* ---------- 2. HEADER, THEME SWITCH, MENU ---------- */
 .app-header {
+  box-sizing: border-box;
   display: flex;
+  width: calc(100% + 2 * var(--app-shell-gutter));
+  min-height: 76px;
+  margin-inline: calc(0px - var(--app-shell-gutter));
+  padding-inline: var(--app-shell-gutter);
   align-items: center;
   justify-content: space-between;
-  min-height: 76px;
+  gap: 16px;
   border-bottom: 1px solid var(--app-outline);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+/* class name kept as-is because the JSX uses it */
+.app-shell .app-header .div-1 {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: fit-content;
+  height: 50px;
+  margin: 0;
+  padding: 0;
 }
 
 .app-header__brand {
   display: inline-flex;
+  min-width: 0;
   align-items: center;
   gap: 10px;
-  color: var(--app-heading);
+  color: var(--app-accent-strong);
   font-size: 1rem;
   font-weight: 700;
   text-decoration: none;
@@ -710,7 +150,7 @@
   padding: 4px;
   border: 1px solid var(--app-outline);
   border-radius: 999px;
-  background: var(--app-surface-raised);
+  background: transparent;
 }
 
 .theme-switch__option {
@@ -722,9 +162,7 @@
   color: var(--app-muted);
   cursor: pointer;
   font: 600 0.75rem/1 var(--font-base);
-  transition:
-    background-color 160ms ease,
-    color 160ms ease;
+  transition: background-color 160ms ease, color 160ms ease;
 }
 
 .theme-switch__option:hover {
@@ -732,21 +170,147 @@
 }
 
 .theme-switch__option.is-active {
-  background: var(--jade-700);
+  background: linear-gradient(145deg, var(--app-accent), var(--app-accent-strong));
   color: var(--ivory);
 }
 
-.theme-switch__option:focus-visible,
-.book-grid-card:focus-visible,
-.book-details-back:focus-visible {
-  outline: 2px solid var(--jade-400);
-  outline-offset: 3px;
-}
-.theme-image{
-  max-height: 22px;
+.theme-image {
   max-width: 22px;
+  max-height: 22px;
 }
 
+.app-menu-toggle {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  margin-inline-start: 8px;
+  padding: 2px;
+  place-items: center;
+  border: 1px solid var(--app-outline);
+  border-radius: 10px;
+  background: var(--app-surface);
+  cursor: pointer;
+}
+
+.app-menu-toggle:hover {
+  border-color: var(--app-gold);
+}
+
+.burger-menu {
+  box-sizing: border-box;
+  width: 38px;
+  height: 38px;
+  margin: 0;
+  padding: 8px;
+  border: 0;
+  object-fit: contain;
+}
+
+.app-menu-backdrop {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: grid;
+  padding: 20px;
+  place-items: center;
+  background: rgba(15, 25, 20, 0.62);
+  backdrop-filter: blur(5px);
+}
+
+.app-menu-dialog {
+  width: min(45vw, 760px);
+  min-width: min(560px, calc(100vw - 40px));
+  padding: 24px;
+  border: 1px solid var(--app-outline);
+  border-radius: 18px;
+  background: var(--app-surface);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+}
+
+.app-menu-dialog__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.app-menu-dialog__heading h2 {
+  margin: 0;
+  color: var(--app-heading);
+  font-size: 1.15rem;
+}
+
+.app-menu-dialog__close {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid var(--app-outline);
+  border-radius: 50%;
+  background: var(--app-surface-raised);
+  color: var(--app-heading);
+  cursor: pointer;
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.app-menu-dialog__choices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.app-menu-choice {
+  position: relative;
+  display: flex;
+  min-height: 190px;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  overflow: hidden;
+  padding: 18px;
+  border: 1px solid color-mix(in srgb, var(--app-gold) 54%, var(--app-outline));
+  border-radius: 14px;
+  background-color: var(--app-accent-strong);
+  background-image:
+    linear-gradient(180deg, rgba(20, 32, 25, 0.12), rgba(15, 27, 21, 0.88)),
+    var(--menu-art);
+  background-position: center;
+  background-size: cover;
+  color: #fffdf6;
+  text-decoration: none;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.app-menu-choice:hover,
+.app-menu-choice:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(15, 27, 21, 0.25);
+}
+
+.app-menu-choice svg {
+  width: 36px;
+  height: 36px;
+  margin-bottom: auto;
+  fill: currentColor;
+}
+
+.app-menu-choice > span {
+  margin-top: 20px;
+  font-size: 1.2rem;
+  font-weight: 750;
+}
+
+.app-menu-choice small {
+  margin-top: 4px;
+  color: rgba(255, 253, 246, 0.88);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+/* ---------- 3. BOOKS PAGE ---------- */
 .books-page {
   padding-top: 18px;
 }
@@ -760,8 +324,8 @@
 
 .books-page__title {
   grid-row: 2;
-  margin: 0;
-  color: var(--app-heading);
+  margin: 24px;
+  padding: 24px;
   text-align: center;
 }
 
@@ -772,22 +336,353 @@
 }
 
 .books-page__add-button > span {
-  margin-right: 5px;
   font-size: 1.1em;
 }
 
 .books-page__empty {
-  animation: widget-entry 420ms cubic-bezier(0.2, 0.7, 0.25, 1) both;
   width: 100%;
-  padding: 24px 0;
+  max-width: 36rem;
+  margin-inline: auto;
+  padding: 24px;
   color: var(--app-muted);
   text-align: center;
+  animation: widget-entry 420ms cubic-bezier(0.2, 0.7, 0.25, 1) both;
 }
 
 .books-page__empty > p {
   margin-bottom: 16px;
 }
 
+/* Filters */
+.book-filters {
+  display: grid;
+  gap: 10px;
+  max-width: 900px;
+  margin: 0 auto 24px;
+}
+
+.book-filters__search {
+  display: flex;
+  min-height: 50px;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  border: 1px solid var(--app-outline);
+  border-radius: 12px;
+  background: var(--app-surface);
+  box-shadow: var(--app-shadow);
+}
+
+.book-filters__search:focus-within {
+  border-color: var(--app-accent);
+  outline: 2px solid color-mix(in srgb, var(--app-accent) 24%, transparent);
+}
+
+.book-filters__search-icon {
+  color: var(--app-muted);
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.book-filters__search input {
+  box-sizing: border-box;
+  flex: 1 1 0%;
+  width: 0;
+  min-width: 0;
+  margin: 0;
+  padding: 8px 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--app-heading);
+  font: inherit;
+}
+
+.book-filters__search input::placeholder,
+.book-filters__fields input::placeholder {
+  color: var(--app-muted);
+  opacity: 0.8;
+}
+
+.book-filters__clear-search {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--app-surface-raised);
+  color: var(--app-muted);
+  cursor: pointer;
+  font-size: 1.15rem;
+}
+
+.book-filters__advanced,
+.qr-settings {
+  border: 1px solid var(--app-outline);
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--app-surface) 86%, transparent);
+}
+
+.book-filters__advanced summary,
+.qr-settings summary {
+  padding: 12px 14px;
+  color: var(--app-accent-strong);
+  cursor: pointer;
+  font-weight: 650;
+}
+
+.book-filters__fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding: 2px 14px 14px;
+}
+
+.book-filters__fields label {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+  color: var(--app-muted);
+  font-size: 0.78rem;
+}
+
+.book-filters__fields :is(input, select) {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 38px;
+  margin: 0;
+  padding: 7px 9px;
+  border: 1px solid var(--app-outline);
+  border-radius: 8px;
+  background: var(--app-surface);
+  color: var(--app-heading);
+  font: inherit;
+  font-size: 0.88rem;
+}
+
+.book-filters__fields :is(input, select):focus-visible {
+  border-color: var(--app-accent);
+  outline: 2px solid color-mix(in srgb, var(--app-accent) 24%, transparent);
+}
+
+.book-filters__count {
+  margin: 0;
+  color: var(--app-muted);
+  font-size: 0.82rem;
+  text-align: end;
+}
+
+/* Grid of book cards */
+.books-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 260px));
+  justify-content: center;
+  align-self: center;
+  gap: clamp(14px, 2.5vw, 22px);
+  margin-bottom: 34px;
+}
+
+.entry-widget {
+  animation: widget-entry 420ms cubic-bezier(0.2, 0.7, 0.25, 1) both;
+}
+
+.book-grid-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: var(--app-shadow);
+  color: inherit;
+  text-decoration: none;
+  transition: scale 0.2s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.book-grid-card:not(.border-grad-animated) {
+  border: 1px solid color-mix(in srgb, var(--app-outline) 58%, var(--app-gold));
+  border-radius: 14px;
+  background: var(--app-surface);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--app-gold) 16%, transparent),
+    var(--app-shadow);
+}
+
+.book-grid-card.border-grad-animated {
+  --inner: var(--app-surface);
+  --radius: 14px;
+}
+
+.book-grid-card:hover {
+  transform: translateY(-2px);
+  scale: 1.028;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--app-gold) 24%, transparent),
+    0 16px 34px rgba(38, 49, 39, 0.14);
+}
+
+.book-grid-card__cover {
+  display: grid;
+  aspect-ratio: 4 / 3;
+  place-items: center;
+  overflow: hidden;
+  background: linear-gradient(
+    145deg,
+    var(--app-surface-raised),
+    color-mix(in srgb, var(--app-gold) 8%, var(--app-surface))
+  );
+}
+
+.book-grid-card__cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.book-grid-card__placeholder,
+.book-details-card__cover-placeholder {
+  color: var(--app-muted);
+  font-size: 0.85rem;
+}
+
+.book-grid-card__content {
+  display: grid;
+  gap: 5px;
+  padding: 15px 16px 18px;
+}
+
+.book-grid-card__title {
+  overflow: hidden;
+  color: var(--app-heading);
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.book-grid-card__author {
+  color: var(--app-muted);
+  font-size: 0.88rem;
+}
+
+.book-grid-card__writer-row {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+}
+
+.book-grid-card__writer-label {
+  color: var(--app-heading);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+/* Route skeleton */
+.route-skeleton {
+  position: relative;
+}
+
+.route-skeleton__status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.route-skeleton__heading,
+.route-skeleton__cover,
+.route-skeleton__line,
+.route-skeleton__toolbar-link,
+.route-skeleton__toolbar-button,
+.route-skeleton__details-cover {
+  border-radius: 8px;
+  background: linear-gradient(
+    100deg,
+    var(--app-surface-raised) 25%,
+    var(--app-outline) 45%,
+    var(--app-surface-raised) 65%
+  );
+  background-size: 240% 100%;
+  animation: route-skeleton-shimmer 1.35s ease-in-out infinite;
+}
+
+.route-skeleton__heading {
+  width: min(48%, 340px);
+  height: 34px;
+  margin: 0 auto;
+}
+
+.route-skeleton__book {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--app-outline);
+  border-radius: 14px;
+  background: var(--app-surface);
+}
+
+.route-skeleton__cover {
+  aspect-ratio: 4 / 3;
+  border-radius: 0;
+}
+
+.route-skeleton__book-content {
+  display: grid;
+  gap: 10px;
+  padding: 15px 16px 18px;
+}
+
+.route-skeleton__line {
+  width: 58%;
+  height: 14px;
+}
+
+.route-skeleton__line--title {
+  width: 78%;
+  height: 20px;
+}
+
+.route-skeleton__line--short {
+  width: 42%;
+}
+
+.route-skeleton__line--status {
+  width: 110px;
+  height: 24px;
+}
+
+.route-skeleton__line--paragraph {
+  width: 90%;
+  height: 76px;
+  margin-top: 8px;
+}
+
+.route-skeleton__toolbar-link {
+  width: 110px;
+  height: 18px;
+}
+
+.route-skeleton__toolbar-button {
+  width: 126px;
+  height: 38px;
+}
+
+.route-skeleton__details {
+  grid-template-columns: minmax(0, 34%) 2px minmax(0, 1fr);
+}
+
+.route-skeleton__details-cover {
+  min-height: 310px;
+}
+
+.route-skeleton__details-content {
+  display: grid;
+  align-content: center;
+  gap: 18px;
+  padding: 22px 4px 4px;
+}
+
+/* ---------- 4. NEW-BOOK DIALOG & FORM ---------- */
 .new-book-dialog {
   display: grid;
   width: min(760px, calc(100vw - 32px));
@@ -797,10 +692,14 @@
   padding: 0;
   overflow: hidden;
   border: 1px solid var(--app-outline);
-  border-radius: 18px;
-  background: var(--app-surface);
+  border-radius: 16px;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--app-surface) 96%, white),
+    var(--app-surface)
+  );
   color: var(--app-heading);
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.32);
+  box-shadow: 0 24px 80px rgba(20, 33, 25, 0.28);
 }
 
 .new-book-dialog:not([open]) {
@@ -828,19 +727,20 @@
   gap: 16px;
   padding: 22px clamp(20px, 4vw, 32px);
   border-bottom: 1px solid var(--app-outline);
+  background: linear-gradient(
+    110deg,
+    color-mix(in srgb, var(--app-accent) 9%, var(--app-surface)),
+    var(--app-surface)
+  );
 }
 
 .new-book-dialog__eyebrow {
   margin: 0 0 4px;
-  color: var(--jade-600);
+  color: var(--app-accent);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-}
-
-.app-shell--dark .new-book-dialog__eyebrow {
-  color: var(--jade-300);
 }
 
 .new-book-dialog__header h2 {
@@ -864,8 +764,8 @@
 }
 
 .new-book-dialog__close:hover {
-  border-color: var(--jade-500);
-  color: var(--jade-600);
+  border-color: var(--app-accent);
+  color: var(--app-accent-strong);
 }
 
 .new-book-form {
@@ -889,20 +789,19 @@
   font-weight: 600;
 }
 
-.new-book-form__field > span > span {
-  color: #cf5147;
+.new-book-form__field > span > span,
+.new-book-form__date-label > span {
+  color: #a94e42; /* required marker */
 }
 
 .new-book-form__field--wide {
   grid-column: 1 / -1;
 }
 
-.new-book-form__field input,
-.new-book-form__field textarea,
-.new-book-form__field select {
+.new-book-form__field :is(input, textarea, select) {
+  box-sizing: border-box;
   width: 100%;
   min-width: 0;
-  box-sizing: border-box;
   padding: 10px 12px;
   border: 1px solid var(--app-outline);
   border-radius: 9px;
@@ -915,11 +814,14 @@
   resize: vertical;
 }
 
-.new-book-form__field input:focus,
-.new-book-form__field textarea:focus,
-.new-book-form__field select:focus {
-  border-color: var(--jade-500);
-  outline: 2px solid rgba(37, 160, 122, 0.2);
+.new-book-form__field :is(input, textarea, select):focus {
+  border-color: var(--app-accent);
+  outline: 2px solid color-mix(in srgb, var(--app-accent) 22%, transparent);
+}
+
+.new-book-form__field select:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .new-book-form__date-group {
@@ -929,10 +831,6 @@
   color: var(--app-heading);
   font-size: 0.88rem;
   font-weight: 600;
-}
-
-.new-book-form__date-label > span {
-  color: #cf5147;
 }
 
 .new-book-form__date-fields {
@@ -952,11 +850,6 @@
   font-weight: 400;
 }
 
-.new-book-form__field select:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
 .new-book-form__checkbox {
   display: flex;
   grid-column: 1 / -1;
@@ -969,7 +862,7 @@
 .new-book-form__checkbox input {
   width: 17px;
   height: 17px;
-  accent-color: var(--jade-600);
+  accent-color: var(--app-accent);
 }
 
 .new-book-form__image-section,
@@ -997,6 +890,16 @@
   margin: 4px 0 0;
   color: var(--app-muted);
   font-size: 0.82rem;
+}
+
+.new-book-form__image-tip {
+  display: block;
+  margin-top: 12px;
+  padding: 8px 10px;
+  border-radius: 0 8px 8px 0;
+  color: var(--app-muted);
+  font-size: 0.78rem;
+  font-weight: 400;
 }
 
 .new-book-form__file {
@@ -1036,16 +939,13 @@
 }
 
 .new-book-form__add-volume {
-  border-color: rgba(37, 160, 122, 0.5);
-  color: var(--jade-700);
-}
-
-.app-shell--dark .new-book-form__add-volume {
-  color: var(--jade-300);
+  border-color: color-mix(in srgb, var(--app-accent) 48%, transparent);
+  background: transparent;
+  color: var(--app-accent-strong);
 }
 
 .new-book-form__add-volume:hover {
-  background: rgba(37, 160, 122, 0.12);
+  background: color-mix(in srgb, var(--app-accent) 12%, transparent);
 }
 
 .new-book-volume {
@@ -1068,19 +968,19 @@
 .new-book-volume__remove {
   position: absolute;
   top: 8px;
-  right: 10px;
+  inset-inline-end: 10px;
   border: 0;
   background: transparent;
-  color: #b64a42;
+  color: var(--ruby-500);
 }
 
 .new-book-form__error {
   margin-top: 18px;
   padding: 11px 13px;
-  border: 1px solid rgba(207, 81, 71, 0.35);
+  border: 1px solid color-mix(in srgb, #a94e42 35%, transparent);
   border-radius: 9px;
-  background: rgba(207, 81, 71, 0.1);
-  color: #bd453b;
+  background: color-mix(in srgb, #a94e42 10%, transparent);
+  color: #a94e42;
   font-size: 0.88rem;
   overflow-wrap: anywhere;
 }
@@ -1126,185 +1026,83 @@
   cursor: wait;
   opacity: 0.65;
 }
-.books-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr));
-  gap: clamp(14px, 2.5vw, 22px);
-}
 
-.entry-widget {
-  animation: widget-entry 420ms cubic-bezier(0.2, 0.7, 0.25, 1) both;
-}
-
-.book-grid-card {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  overflow: hidden;
-  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.09);
-  color: inherit;
-  text-decoration: none;
-  transition:
-    transform 160ms ease,
-    box-shadow 160ms ease;
-}
-
-.book-grid-card:not(.border-grad-animated) {
-  border: 1px solid var(--app-outline);
-  border-radius: 14px;
-  background: var(--app-surface);
-}
-
-.book-grid-card.border-grad-animated {
-  --inner: var(--app-surface);
-  --radius: 14px;
-}
-
-.book-grid-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.15);
-}
-
-.book-grid-card__cover {
-  display: grid;
-  aspect-ratio: 4 / 3;
-  place-items: center;
-  overflow: hidden;
-  background: var(--app-surface-raised);
-}
-
-.book-grid-card__cover img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.book-grid-card__placeholder,
-.book-details-card__cover-placeholder {
-  color: var(--app-muted);
-  font-size: 0.85rem;
-}
-
-.book-grid-card__content {
-  display: grid;
-  gap: 5px;
-  padding: 15px 16px 18px;
-}
-
-.book-grid-card__title {
-  overflow: hidden;
-  color: var(--app-heading);
-  font-weight: 650;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.book-grid-card__author {
-  color: var(--app-muted);
-  font-size: 0.88rem;
-}
-
-.route-error {
-  display: grid;
-  justify-items: center;
-  gap: 12px;
-  padding: clamp(48px, 12vh, 120px) 16px 48px;
-  text-align: center;
-}
-
-.route-error__eyebrow,
-.route-error__title,
-.route-error__message {
-  margin: 0;
-}
-
-.route-error__eyebrow {
-  color: var(--app-muted);
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.route-error__title {
-  color: var(--app-heading);
-  font-size: clamp(1.5rem, 4vw, 2rem);
-}
-
-.route-error__message {
-  max-width: 38rem;
-  color: var(--app-muted);
-}
-
-.route-error__link {
-  margin-top: 8px;
-  color: var(--jade-600);
-  font-weight: 600;
-}
-
-.app-shell--dark .route-error__link {
-  color: var(--jade-300);
-}
-
-.book-grid-card__writer-row {
-  display: flex;
-  align-items: baseline;
-  gap: 5px;
-}
-
-.book-grid-card__writer-label {
-  color: var(--app-heading);
-  font-size: 0.82rem;
-  font-weight: 600;
-}
-
+/* ---------- 5. BOOK DETAILS ---------- */
 .book-details-page {
   padding-top: 28px;
 }
 
 .book-details-page__toolbar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
   margin-bottom: 20px;
 }
 
+.book-details-page__toolbar .book-details-back {
+  margin-inline-end: auto;
+}
+
+.book-details-page__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.book-details-page__actions > :is(.book-details-edit, .book-details-delete) {
+  flex: 0 0 auto;
+}
+
 .book-details-back {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: var(--jade-600);
+  padding: 8px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: var(--app-accent-strong);
   font-size: 0.9rem;
   font-weight: 600;
   text-decoration: none;
 }
 
-.app-shell--dark .book-details-back {
-  color: var(--jade-300);
+.book-details-back:hover {
+  border-color: var(--app-outline);
 }
 
-.book-details-edit {
+.book-details-edit,
+.book-details-delete {
   display: inline-flex;
   align-items: center;
   gap: 7px;
   padding: 8px 12px;
-  border: 1px solid var(--app-outline);
   border-radius: 8px;
-  background: var(--app-surface);
-  color: var(--app-heading);
   cursor: pointer;
   font: inherit;
   font-weight: 600;
 }
 
-.book-details-edit:hover {
-  border-color: var(--jade-500);
+.book-details-edit {
+  border: 1px solid color-mix(in srgb, var(--app-accent) 70%, transparent);
+  background: transparent;
+  color: var(--app-accent-strong);
 }
 
-.book-details-edit:focus-visible {
-  outline: 2px solid var(--jade-400);
-  outline-offset: 3px;
+.book-details-edit:hover {
+  border-color: var(--app-accent);
+  background: color-mix(in srgb, var(--app-accent) 12%, transparent);
+}
+
+.book-details-delete {
+  border: 1px solid var(--app-outline);
+  background: var(--app-surface);
+  color: var(--red);
+}
+
+.book-details-delete:hover {
+  border-color: var(--red);
 }
 
 .book-details-card {
@@ -1315,29 +1113,14 @@
   align-items: stretch;
   min-height: 380px;
   padding: 34px;
-  border: 1px solid var(--app-outline);
-  border-radius: 18px;
-  background: var(--app-surface);
-  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.12);
-}
-
-@media (max-width: 900px) {
-  .book-details-card {
-    gap: 22px;
-    padding: 26px;
-  }
-
-  .book-details-card__content {
-    padding-top: 18px;
-  }
-}
-
-.book-details-card--dark {
-  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.3);
-}
-
-.book-details-card--light {
-  box-shadow: 0 8px 26px rgba(28, 22, 35, 0.1);
+  border: 1px solid color-mix(in srgb, var(--app-outline) 84%, var(--app-gold));
+  border-radius: 16px;
+  background: linear-gradient(
+    145deg,
+    var(--app-surface),
+    color-mix(in srgb, var(--app-gold) 4%, var(--app-surface))
+  );
+  box-shadow: var(--app-shadow);
 }
 
 .book-details-card__cover {
@@ -1345,210 +1128,11 @@
   min-height: 310px;
   overflow: hidden;
   border-radius: 10px;
-  background: var(--app-surface-raised);
-}
-
-.book-details-card__cover .book-image-carousel {
-  width: 100%;
-}
-
-.book-image-carousel {
-  min-width: 0;
-}
-
-.book-image-carousel__track {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  scroll-behavior: smooth;
-  scroll-snap-type: x mandatory;
-  scrollbar-color: var(--jade-500) var(--app-surface-raised);
-  scrollbar-width: thin;
-}
-
-.book-image-carousel__track:focus-visible {
-  outline: 2px solid var(--jade-400);
-  outline-offset: -2px;
-}
-
-.book-image-carousel__slide {
-  position: relative;
-  display: grid;
-  flex: 0 0 100%;
-  min-width: 0;
-  min-height: 240px;
-  place-items: center;
-  scroll-snap-align: start;
-}
-
-.book-image-carousel__slide img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  max-height: 540px;
-  object-fit: contain;
-}
-
-.book-image-carousel__expand {
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
-  display: grid;
-  width: 38px;
-  height: 38px;
-  place-items: center;
-  border: 1px solid var(--app-outline);
-  border-radius: 10px;
-  background: color-mix(in srgb, var(--app-surface) 88%, transparent);
-  color: var(--app-heading);
-  cursor: pointer;
-  font-size: 1.25rem;
-}
-
-.book-image-carousel__expand:hover,
-.book-image-carousel__controls button:hover,
-.book-image-viewer__controls button:hover {
-  background: var(--jade-700);
-  color: var(--ivory);
-}
-
-.book-image-carousel__controls,
-.book-image-viewer__controls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  padding: 8px 0 2px;
-  color: var(--app-muted);
-  font-size: 0.85rem;
-}
-
-.book-image-carousel__controls button,
-.book-image-viewer__controls button {
-  display: grid;
-  width: 34px;
-  height: 32px;
-  place-items: center;
-  border: 1px solid var(--app-outline);
-  border-radius: 8px;
-  background: var(--app-surface);
-  color: var(--app-heading);
-  cursor: pointer;
-  font-size: 1.25rem;
-}
-
-.book-image-carousel__empty {
-  display: grid;
-  width: 100%;
-  min-height: 240px;
-  place-items: center;
-  color: var(--app-muted);
-  font-size: 0.85rem;
-}
-
-.book-image-viewer {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100dvh;
-  max-width: none;
-  max-height: none;
-  margin: 0;
-  padding: 20px;
-  overflow: hidden;
-  border: 0;
-  background: #080b0a;
-  color: #f7f3e3;
-}
-
-.book-image-viewer::backdrop {
-  background: rgba(0, 0, 0, 0.92);
-}
-
-.book-image-viewer__content {
-  position: relative;
-  display: grid;
-  width: 100%;
-  height: 100%;
-  grid-template-rows: minmax(0, 1fr) auto;
-  place-items: center;
-}
-
-.book-image-viewer__content > img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  min-height: 0;
-  object-fit: contain;
-}
-
-.book-image-viewer__close {
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  right: 0;
-  padding: 10px 14px;
-  border: 1px solid rgba(247, 243, 227, 0.4);
-  border-radius: 8px;
-  background: rgba(8, 11, 10, 0.75);
-  color: #f7f3e3;
-  cursor: pointer;
-}
-
-.book-image-viewer__controls {
-  color: #f7f3e3;
-}
-
-.book-image-viewer__controls button {
-  border-color: rgba(247, 243, 227, 0.4);
-  background: rgba(8, 11, 10, 0.75);
-  color: #f7f3e3;
-}
-
-.book-volumes {
-  animation: widget-entry 420ms cubic-bezier(0.2, 0.7, 0.25, 1) both;
-  margin-top: clamp(28px, 5vw, 48px);
-}
-
-.book-volumes > h2 {
-  margin-bottom: 18px;
-  color: var(--app-heading);
-}
-
-.book-volumes__grid {
-  display: grid;
-  grid-template-columns: repeat(
-    auto-fit,
-    minmax(min(100%, max(260px, calc((100% - 36px) / 3))), 1fr)
+  background: linear-gradient(
+    145deg,
+    var(--app-surface-raised),
+    color-mix(in srgb, var(--app-accent) 8%, var(--app-surface))
   );
-  gap: 18px;
-}
-
-.book-volume-card {
-  min-width: 0;
-  overflow: hidden;
-  padding: 16px;
-  border: 1px solid var(--app-outline);
-  border-radius: 14px;
-  background: var(--app-surface);
-  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.09);
-}
-
-.book-volume-card > h3 {
-  margin: 0 0 12px;
-  color: var(--app-heading);
-  font-size: 1rem;
-}
-
-.book-volume-card .book-image-carousel__slide {
-  min-height: 240px;
-  max-height: 360px;
-}
-
-.book-volume-card .book-image-carousel__slide img {
-  max-height: 360px;
 }
 
 .book-details-card__divider {
@@ -1561,8 +1145,8 @@
 }
 
 .book-details-card__title {
-  margin: 0 120px 26px 0;
-  color: var(--app-heading);
+  margin: 0 0 26px;
+  margin-inline-end: 120px; /* room for the status badge */
   font-size: clamp(1.6rem, 3.3vw, 2.7rem);
   line-height: 1.12;
   overflow-wrap: anywhere;
@@ -1571,7 +1155,7 @@
 .book-status {
   position: absolute;
   top: 28px;
-  right: 30px;
+  inset-inline-end: 30px;
   padding: 6px 11px;
   border-radius: 999px;
   font-size: 0.75rem;
@@ -1579,17 +1163,13 @@
 }
 
 .book-status--new {
-  background: rgba(0, 168, 107, 0.14);
-  color: var(--jade-700);
+  background: color-mix(in srgb, var(--app-accent) 16%, transparent);
+  color: var(--app-accent-strong);
 }
 
 .book-status--existing {
-  background: rgba(107, 99, 117, 0.13);
+  background: color-mix(in srgb, var(--stone-500) 16%, transparent);
   color: var(--app-muted);
-}
-
-.app-shell--dark .book-status--new {
-  color: var(--jade-300);
 }
 
 .book-metadata {
@@ -1624,7 +1204,528 @@
   line-height: 1.65;
 }
 
+/* Volumes */
+.book-volumes {
+  margin-top: clamp(28px, 5vw, 48px);
+  animation: widget-entry 420ms cubic-bezier(0.2, 0.7, 0.25, 1) both;
+}
+
+.book-volumes > h2 {
+  margin-bottom: 18px;
+  color: var(--app-heading);
+}
+
+.book-volumes__grid {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, max(260px, calc((100% - 36px) / 3))), 1fr)
+  );
+  gap: 18px;
+}
+
+.book-volume-card {
+  min-width: 0;
+  overflow: hidden;
+  padding: 16px;
+  border: 1px solid color-mix(in srgb, var(--app-outline) 84%, var(--app-gold));
+  border-radius: 12px;
+  background: linear-gradient(
+    145deg,
+    var(--app-surface),
+    color-mix(in srgb, var(--app-accent) 3%, var(--app-surface))
+  );
+  box-shadow: var(--app-shadow);
+}
+
+.book-volume-card > h3 {
+  margin: 0 0 12px;
+  color: var(--app-heading);
+  font-size: 1rem;
+}
+
+/* ---------- 6. IMAGE GALLERY ---------- */
+/* 6a. Inline carousel */
+.book-image-carousel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+}
+
+.book-details-card__cover .book-image-carousel {
+  flex: 1 1 auto;
+}
+
+/* The ratio gives the track a real height from its width alone,
+   so the image can never size the card (no circular percentages). */
+.book-image-carousel__track {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  aspect-ratio: 4 / 3;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: var(--app-accent) transparent;
+}
+
+.book-image-carousel__track:focus-visible {
+  outline: 2px solid var(--jade-400);
+  outline-offset: -2px;
+}
+
+.book-image-carousel__slide {
+  position: relative;
+  flex: 0 0 100%;
+  min-width: 0;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+.book-image-carousel__slide img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+}
+
+.book-image-carousel__empty {
+  display: grid;
+  width: 100%;
+  min-height: 240px;
+  place-items: center;
+  color: var(--app-muted);
+  font-size: 0.85rem;
+}
+
+.book-image-carousel__expand,
+.book-image-carousel__controls button {
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--app-outline);
+  background: color-mix(in srgb, var(--app-surface) 88%, transparent);
+  color: var(--app-heading);
+  cursor: pointer;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.book-image-carousel__expand {
+  position: absolute;
+  inset-inline-end: 10px;
+  bottom: 10px;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  font-size: 1.25rem;
+}
+
+.book-image-carousel__controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 8px 0 2px;
+  color: var(--app-muted);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.book-image-carousel__controls button {
+  width: 34px;
+  height: 32px;
+  border-radius: 8px;
+  font-size: 1.25rem;
+}
+
+.book-image-carousel__expand:hover,
+.book-image-carousel__controls button:hover {
+  background: var(--app-accent-strong);
+  color: var(--ivory);
+}
+
+.book-image-carousel__expand:focus-visible,
+.book-image-carousel__controls button:focus-visible {
+  outline: 2px solid var(--jade-400);
+  outline-offset: 2px;
+}
+
+/* 6b. Popup — native <dialog> opened with showModal().
+   No `display` is set on .image-popup, so the browser still hides it when closed. */
+.image-popup {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  background: #15241d;
+  color: var(--ivory);
+}
+
+.image-popup::backdrop {
+  background: rgba(9, 17, 13, 0.94);
+}
+
+/* toolbar / image / navigation — the middle row takes the leftover space */
+.image-popup__content {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  padding: clamp(12px, 2vw, 24px);
+}
+
+.image-popup__toolbar,
+.image-popup__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.image-popup__nav {
+  justify-content: center;
+  gap: 16px;
+  min-height: 42px;
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.image-popup__zoom {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.image-popup__btn {
+  min-width: 40px;
+  min-height: 38px;
+  padding: 6px 12px;
+  border: 1px solid color-mix(in srgb, var(--app-gold) 55%, transparent);
+  border-radius: 8px;
+  background: rgba(21, 36, 29, 0.88);
+  color: var(--ivory);
+  cursor: pointer;
+  font: inherit;
+  font-size: 1.15rem;
+  line-height: 1;
+  transition: background-color 160ms ease;
+}
+
+.image-popup__btn--wide {
+  min-width: 58px;
+  font-size: 0.85rem;
+}
+
+.image-popup__btn:hover:not(:disabled) {
+  background: var(--app-accent-strong);
+}
+
+.image-popup__btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.image-popup__btn:focus-visible {
+  outline: 2px solid var(--jade-400);
+  outline-offset: 2px;
+}
+
+/* The viewport scrolls; the stage grows with zoom, so every edge stays reachable. */
+.image-popup__viewport {
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.image-popup__stage {
+  display: grid;
+  place-items: center;
+  width: calc(var(--zoom, 1) * 100%);
+  height: calc(var(--zoom, 1) * 100%);
+}
+
+.image-popup__stage img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  cursor: zoom-in;
+  user-select: none;
+}
+
+/* ---------- 7. QR PAGE ---------- */
+.qr-page__heading {
+  margin-bottom: 20px;
+}
+
+.qr-page__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  max-width: 900px;
+  margin: 0 auto 14px;
+  padding: 16px;
+  border: 1px solid var(--app-outline);
+  border-radius: 12px;
+  background: var(--app-surface);
+}
+
+.qr-page__actions p {
+  margin: 0;
+  color: var(--app-muted);
+  line-height: 1.5;
+}
+
+.qr-page__actions .btn {
+  flex: 0 0 auto;
+}
+
+.qr-page .btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
+.qr-settings {
+  max-width: 900px;
+  margin: 0 auto 24px;
+}
+
+.qr-settings__fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  padding: 0 14px 14px;
+}
+
+.qr-settings__fields label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--app-muted);
+  font-size: 0.84rem;
+}
+
+.qr-settings__fields input {
+  width: 44px;
+  height: 32px;
+  padding: 2px;
+  border: 1px solid var(--app-outline);
+  border-radius: 7px;
+  background: var(--app-surface);
+  cursor: pointer;
+}
+
+.qr-settings__message,
+.qr-page__error,
+.qr-page__empty {
+  margin: 0;
+  padding: 0 14px 14px;
+  color: var(--app-muted);
+  font-size: 0.84rem;
+}
+
+.qr-page__error {
+  max-width: 900px;
+  margin: 0 auto 16px;
+  color: var(--red);
+}
+
+.qr-print-area {
+  max-width: 1180px;
+  margin: 30px auto 0;
+}
+
+.qr-print-area__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.qr-print-area__toolbar h2 {
+  margin: 0;
+  color: var(--app-heading);
+  font-size: 1.15rem;
+}
+
+.qr-print-area__toolbar h2 span {
+  color: var(--app-muted);
+  font-weight: 500;
+}
+
+.qr-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 260px));
+  justify-content: center;
+  align-items: start;
+  gap: 18px;
+}
+
+.qr-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--qr-gradient-start) 50%, var(--qr-gradient-end));
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--qr-gradient-start), var(--qr-gradient-end));
+  box-shadow: var(--app-shadow);
+  color: var(--qr-text-color);
+  text-align: center;
+  break-inside: avoid;
+}
+
+.qr-card__image {
+  display: grid;
+  width: 100%;
+  aspect-ratio: 1;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.qr-card__image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.qr-card__scan {
+  margin: 7px 0 0;
+  font-size: clamp(1.35rem, 3vw, 2rem);
+  font-weight: 350;
+  letter-spacing: 0.08em;
+  line-height: 1.15;
+}
+
+.qr-card__title {
+  margin: 8px 0 0;
+  overflow-wrap: anywhere;
+  font-size: 1rem;
+}
+
+.qr-card__author {
+  margin: 4px 0 0;
+  font-size: 0.84rem;
+  opacity: 0.9;
+}
+
+/* ---------- 8. ROUTE ERROR ---------- */
+.route-error {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: clamp(48px, 12vh, 120px) 16px 48px;
+  text-align: center;
+}
+
+.route-error__eyebrow,
+.route-error__title,
+.route-error__message {
+  margin: 0;
+}
+
+.route-error__eyebrow {
+  color: var(--app-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.route-error__title {
+  font-size: clamp(1.5rem, 4vw, 2rem);
+}
+
+.route-error__message {
+  max-width: 38rem;
+  color: var(--app-muted);
+}
+
+.route-error__link {
+  margin-top: 8px;
+  color: var(--app-accent-strong);
+  font-weight: 600;
+}
+
+/* ---------- 9. OVERRIDES OF jade.css ---------- */
+/* Dividers follow the app theme instead of the jade palette */
+.app-shell .divider-jade {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--app-accent),
+    var(--app-gold),
+    var(--app-accent),
+    transparent
+  );
+}
+
+.app-shell .divider-jade-v {
+  background: linear-gradient(
+    180deg,
+    transparent,
+    var(--app-accent),
+    var(--app-gold),
+    var(--app-accent),
+    transparent
+  );
+}
+
+/* Buttons keep the jade.css look; only the focus ring uses the app heading colour */
+.app-shell :is(.btn, [class*="btn-"]):focus-visible {
+  outline: 2px solid var(--app-heading);
+  outline-offset: 3px;
+}
+
+/* ---------- 10. RESPONSIVE ---------- */
+@media (max-width: 900px) {
+  .book-details-card {
+    gap: 22px;
+    padding: 26px;
+  }
+
+  .book-details-card__content {
+    padding-top: 18px;
+  }
+}
+
 @media (max-width: 760px) {
+  .app-menu-dialog {
+    width: min(680px, calc(100vw - 32px));
+    min-width: 0;
+  }
+
+  .book-filters__fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .qr-page__actions {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .qr-card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 185px), 240px));
+  }
+
   .book-details-card {
     grid-template-columns: minmax(0, 1fr);
     gap: 18px;
@@ -1633,30 +1734,30 @@
 
   .book-details-card__cover {
     min-height: clamp(200px, 52vw, 320px);
-    max-height: 360px;
   }
 
-  .book-details-card__cover .book-image-carousel__slide {
-    min-height: 240px;
-    max-height: 360px;
-  }
-
-  .book-details-card__cover .book-image-carousel__slide img {
-    max-height: 360px;
-  }
-
-  .book-details-card__divider {
+  /* Divider turns horizontal when the card stacks.
+     The .app-shell prefix is needed to beat `.app-shell .divider-jade-v`. */
+  .app-shell .book-details-card__divider {
     width: 100%;
     height: 2px;
     min-height: 2px;
     background: linear-gradient(
       90deg,
       transparent,
-      var(--jade-400),
-      var(--gold),
-      var(--jade-400),
+      var(--app-accent),
+      var(--app-gold),
+      var(--app-accent),
       transparent
     );
+  }
+
+  .route-skeleton__details .book-details-card__divider {
+    display: none;
+  }
+
+  .route-skeleton__details-cover {
+    min-height: 220px;
   }
 
   .book-details-card__content {
@@ -1664,32 +1765,19 @@
   }
 
   .book-details-card__title {
-    margin-right: 0;
+    margin-inline-end: 0;
     padding-top: 34px;
   }
 
   .book-status {
     top: 18px;
-    right: 20px;
+    inset-inline-end: 20px;
   }
 }
 
 @media (max-width: 480px) {
   .app-shell {
     padding-bottom: 32px;
-  }
-
-  .books-page__heading {
-    gap: 10px;
-    margin: 24px 0;
-  }
-
-  .books-page__title {
-    grid-row: 2;
-  }
-
-  .books-page__add-button {
-    grid-row: 1;
   }
 
   .app-header {
@@ -1701,9 +1789,47 @@
     font-size: 0.9rem;
   }
 
-  .books-page__title {
+  .app-menu-backdrop {
+    padding: 12px;
+  }
+
+  .app-menu-dialog {
+    width: 100%;
+    padding: 18px;
+  }
+
+  .app-menu-dialog__choices {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-menu-choice {
+    min-height: 145px;
+  }
+
+  .books-page__heading {
     margin: 24px 0;
+  }
+
+  .books-page__title {
     font-size: clamp(1.8rem, 9vw, 2.25rem);
+  }
+
+  .book-filters__fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .qr-settings__fields {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .qr-card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 220px));
+    gap: 10px;
+  }
+
+  .qr-card {
+    padding: 8px;
   }
 
   .book-metadata__row {
@@ -1736,309 +1862,46 @@
   }
 }
 
-/* Gradient divider line */
-.divider-jade {
-  height: 1px;
-  border: 0;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--jade-400),
-    var(--gold),
-    var(--jade-400),
-    transparent
-  );
-}
-/* Vertical gradient divider — mirrors .divider-jade */
-.divider-jade-v {
-  width: 1px;
-  align-self: stretch; /* fills the height of a flex/grid row */
-  min-height: 1.5em; /* fallback when the parent has no height */
-  border: 0;
-  background: linear-gradient(
-    180deg,
-    transparent,
-    var(--jade-400),
-    var(--gold),
-    var(--jade-400),
-    transparent
-  );
+/* ---------- 11. PRINT ---------- */
+@page {
+  margin: 12mm;
 }
 
-/* Thickness helpers */
-.divider-jade-v.bw-2 {
-  width: 2px;
-}
-.divider-jade-v.bw-3 {
-  width: 3px;
-}
-/* Jade button — hover lift */
-.btn-jade,
-.btn-jade-50,
-.btn-jade-100,
-.btn-jade-200,
-.btn-jade-300,
-.btn-jade-400,
-.btn-jade-500,
-.btn-jade-600,
-.btn-jade-700,
-.btn-jade-800,
-.btn-jade-900,
-.btn-jade-950,
-.btn-gold,
-.btn-ivory,
-.btn-jade-gradient,
-.btn-jade-light,
-.btn-jade-radial,
-.btn-jade-gold,
-.btn-jade-mesh,
-.btn-jade-aurora,
-.btn-jade-orbs,
-.btn-jade-lattice,
-.btn-jade-lattice-glow,
-.btn-jade-zakhrafa,
-.btn-jade-zakhrafa-glow {
-  display: inline-block;
-  padding: 0.7rem 1.4rem;
-  border: 0;
-  border-radius: 999px;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 4px 18px rgba(4, 20, 15, 0.16);
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
+@media print {
+  body * {
+    visibility: hidden !important;
+  }
 
-.btn-jade {
-  color: var(--ivory);
-  background: linear-gradient(135deg, var(--jade-600), var(--jade-800));
-  box-shadow: 0 4px 18px rgba(0, 168, 107, 0.35);
-}
+  .qr-print-area,
+  .qr-print-area * {
+    visibility: visible !important;
+  }
 
-.btn-jade-50 {
-  color: var(--ink);
-  background: var(--jade-50);
-}
+  .qr-print-area {
+    position: absolute !important;
+    inset: 0 auto auto 0;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+  }
 
-.btn-jade-100 {
-  color: var(--ink);
-  background: var(--jade-100);
-}
+  .qr-print-area__toolbar {
+    display: none !important;
+  }
 
-.btn-jade-200 {
-  color: var(--ink);
-  background: var(--jade-200);
-}
+  .qr-card-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8mm;
+  }
 
-.btn-jade-300 {
-  color: var(--ink);
-  background: var(--jade-300);
-}
-
-.btn-jade-400 {
-  color: var(--ink);
-  background: var(--jade-400);
-}
-
-.btn-jade-500 {
-  color: var(--ink);
-  background: var(--jade-500);
-}
-
-.btn-jade-600 {
-  color: var(--ink);
-  background: var(--jade-600);
-}
-
-.btn-jade-700 {
-  color: var(--ivory);
-  background: var(--jade-700);
-}
-
-.btn-jade-800 {
-  color: var(--ivory);
-  background: var(--jade-800);
-}
-
-.btn-jade-900 {
-  color: var(--ivory);
-  background: var(--jade-900);
-}
-
-.btn-jade-950 {
-  color: var(--ivory);
-  background: var(--jade-950);
-}
-
-.btn-gold {
-  color: var(--ink);
-  background: var(--gold);
-}
-
-.btn-ivory {
-  color: var(--ink);
-  background: var(--ivory);
-}
-
-.btn-jade:hover,
-.btn-jade-50:hover,
-.btn-jade-100:hover,
-.btn-jade-200:hover,
-.btn-jade-300:hover,
-.btn-jade-400:hover,
-.btn-jade-500:hover,
-.btn-jade-600:hover,
-.btn-jade-700:hover,
-.btn-jade-800:hover,
-.btn-jade-900:hover,
-.btn-jade-950:hover,
-.btn-gold:hover,
-.btn-ivory:hover,
-.btn-jade-gradient:hover,
-.btn-jade-light:hover,
-.btn-jade-radial:hover,
-.btn-jade-gold:hover,
-.btn-jade-mesh:hover,
-.btn-jade-aurora:hover,
-.btn-jade-orbs:hover,
-.btn-jade-lattice:hover,
-.btn-jade-lattice-glow:hover,
-.btn-jade-zakhrafa:hover,
-.btn-jade-zakhrafa-glow:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 26px rgba(0, 168, 107, 0.5);
-}
-
-.btn-jade:focus-visible,
-.btn-jade-50:focus-visible,
-.btn-jade-100:focus-visible,
-.btn-jade-200:focus-visible,
-.btn-jade-300:focus-visible,
-.btn-jade-400:focus-visible,
-.btn-jade-500:focus-visible,
-.btn-jade-600:focus-visible,
-.btn-jade-700:focus-visible,
-.btn-jade-800:focus-visible,
-.btn-jade-900:focus-visible,
-.btn-jade-950:focus-visible,
-.btn-gold:focus-visible,
-.btn-ivory:focus-visible,
-.btn-jade-gradient:focus-visible,
-.btn-jade-light:focus-visible,
-.btn-jade-radial:focus-visible,
-.btn-jade-gold:focus-visible,
-.btn-jade-mesh:focus-visible,
-.btn-jade-aurora:focus-visible,
-.btn-jade-orbs:focus-visible,
-.btn-jade-lattice:focus-visible,
-.btn-jade-lattice-glow:focus-visible,
-.btn-jade-zakhrafa:focus-visible,
-.btn-jade-zakhrafa-glow:focus-visible {
-  outline: 2px solid var(--app-heading);
-  outline-offset: 3px;
-}
-
-.btn-jade-50:hover,
-.btn-jade-100:hover,
-.btn-jade-200:hover,
-.btn-jade-300:hover,
-.btn-jade-400:hover,
-.btn-jade-500:hover,
-.btn-jade-600:hover,
-.btn-jade-700:hover,
-.btn-jade-800:hover,
-.btn-jade-900:hover,
-.btn-jade-950:hover,
-.btn-gold:hover,
-.btn-ivory:hover,
-.btn-jade-gradient:hover,
-.btn-jade-light:hover,
-.btn-jade-radial:hover,
-.btn-jade-gold:hover,
-.btn-jade-mesh:hover,
-.btn-jade-aurora:hover,
-.btn-jade-orbs:hover,
-.btn-jade-lattice:hover,
-.btn-jade-lattice-glow:hover,
-.btn-jade-zakhrafa:hover,
-.btn-jade-zakhrafa-glow:hover {
-  box-shadow: 0 8px 26px rgba(4, 20, 15, 0.24);
-}
-
-.btn-jade:disabled,
-.btn-jade-50:disabled,
-.btn-jade-100:disabled,
-.btn-jade-200:disabled,
-.btn-jade-300:disabled,
-.btn-jade-400:disabled,
-.btn-jade-500:disabled,
-.btn-jade-600:disabled,
-.btn-jade-700:disabled,
-.btn-jade-800:disabled,
-.btn-jade-900:disabled,
-.btn-jade-950:disabled,
-.btn-gold:disabled,
-.btn-ivory:disabled,
-.btn-jade-gradient:disabled,
-.btn-jade-light:disabled,
-.btn-jade-radial:disabled,
-.btn-jade-gold:disabled,
-.btn-jade-mesh:disabled,
-.btn-jade-aurora:disabled,
-.btn-jade-orbs:disabled,
-.btn-jade-lattice:disabled,
-.btn-jade-lattice-glow:disabled,
-.btn-jade-zakhrafa:disabled,
-.btn-jade-zakhrafa-glow:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-  transform: none;
-  box-shadow: none;
-}
-
-/* Gentle floating (for orbs, icons) */
-.float-slow {
-  animation: jade-float 7s ease-in-out infinite;
-}
-
-/* ---------- KEYFRAMES ---------- */
-@keyframes jade-flow {
-  to {
-    background-position: -300% 0;
+  .qr-card {
+    box-shadow: none;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
   }
 }
-@keyframes jade-shimmer {
-  0% {
-    background-position: 150% 0;
-  }
-  100% {
-    background-position: -150% 0;
-  }
-}
-@keyframes jade-drift {
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-}
-@keyframes jade-spin {
-  to {
-    --angle: 360deg;
-  }
-}
-@keyframes jade-float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-12px);
-  }
-}
+
+/* ---------- 12. MOTION ---------- */
 @keyframes widget-entry {
   from {
     opacity: 0;
@@ -2049,6 +1912,7 @@
     transform: translateY(0);
   }
 }
+
 @keyframes widget-exit {
   from {
     opacity: 1;
@@ -2060,20 +1924,29 @@
   }
 }
 
-/* Respect users who prefer no motion */
+@keyframes route-skeleton-shimmer {
+  0%,
+  100% {
+    background-position: 100% 0;
+  }
+  50% {
+    background-position: 0 0;
+  }
+}
+
+/* jade.css already disables its own animations; these are the app's */
 @media (prefers-reduced-motion: reduce) {
-  .text-grad-animated,
-  .text-grad-shimmer,
-  .text-grad-gold-animated,
-  .bg-jade-aurora,
-  .btn-jade-aurora,
-  .border-grad-animated,
-  .float-slow,
   .entry-widget,
   .books-page__empty,
   .book-volumes,
   .new-book-dialog[open],
-  .new-book-dialog[open].is-closing {
+  .new-book-dialog[open].is-closing,
+  .route-skeleton__heading,
+  .route-skeleton__cover,
+  .route-skeleton__line,
+  .route-skeleton__toolbar-link,
+  .route-skeleton__toolbar-button,
+  .route-skeleton__details-cover {
     animation: none;
   }
 }
