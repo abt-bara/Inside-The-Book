@@ -8,9 +8,10 @@ import {
 import type { BookImage } from "../types/Book";
 import { useSettings } from "../Hooks/useSettings";
 
-const MIN_ZOOM = 1;
+const MIN_ZOOM = 0.5;
 const MAX_ZOOM = 4;
 const ZOOM_STEP = 0.5;
+type ImageOrientation = "portrait" | "landscape";
 
 interface BookImagePopupProps {
   images: BookImage[];
@@ -31,6 +32,10 @@ function BookImagePopup({ images, label, initialIndex, onClose }: BookImagePopup
     Math.min(Math.max(initialIndex, 0), Math.max(count - 1, 0)),
   );
   const [zoom, setZoom] = useState(MIN_ZOOM);
+  const [imageOrientation, setImageOrientation] = useState<{
+    id: number;
+    value: ImageOrientation;
+  } | null>(null);
 
   // Open as a real modal on mount; lock the page scroll while it is open.
   useEffect(() => {
@@ -55,6 +60,8 @@ function BookImagePopup({ images, label, initialIndex, onClose }: BookImagePopup
 
   const image = images[index];
   if (!image) return null;
+  const orientation =
+    imageOrientation?.id === image.id ? imageOrientation.value : "landscape";
 
   const step = (delta: number) => {
     setIndex((current) => (current + delta + count) % count);
@@ -144,13 +151,23 @@ function BookImagePopup({ images, label, initialIndex, onClose }: BookImagePopup
         <div className="image-popup__viewport" ref={viewportRef}>
           <div
             className="image-popup__stage"
+            data-orientation={orientation}
             style={{ "--zoom": zoom } as CSSProperties}
           >
             <img
               src={image.image_url}
               alt={`${label}, ${t("image")} ${index + 1} ${t("of")} ${count}`}
               draggable={false}
-              onDoubleClick={() => setZoom((z) => (z === MIN_ZOOM ? 2 : MIN_ZOOM))}
+              onLoad={(event) => {
+                const { naturalWidth, naturalHeight } = event.currentTarget;
+                setImageOrientation({
+                  id: image.id,
+                  value: naturalHeight > naturalWidth ? "portrait" : "landscape",
+                });
+              }}
+              onDoubleClick={() =>
+                setZoom((z) => (z === MIN_ZOOM ? 2 : MIN_ZOOM))
+              }
             />
           </div>
         </div>
