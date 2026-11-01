@@ -1,6 +1,7 @@
 import { bookDetailPagePath, booksPagePath, qrPagePath } from "../services/pagePaths";
+import { useSettings } from "../Hooks/useSettings";
 
-function BooksSkeleton() {
+function BooksSkeleton({ t }: { t: (text: string) => string }) {
   return (
     <main className="books-page route-skeleton" aria-busy="true">
       <div className="books-page__heading">
@@ -17,12 +18,14 @@ function BooksSkeleton() {
           </div>
         ))}
       </div>
-      <span className="route-skeleton__status" role="status">Loading books…</span>
+      <span className="route-skeleton__status" role="status">
+        {t("Loading books…")}
+      </span>
     </main>
   );
 }
 
-function BookDetailsSkeleton() {
+function BookDetailsSkeleton({ t }: { t: (text: string) => string }) {
   return (
     <main className="book-details-page route-skeleton" aria-busy="true">
       <div className="book-details-page__toolbar" aria-hidden="true">
@@ -40,27 +43,31 @@ function BookDetailsSkeleton() {
           <div className="route-skeleton__line route-skeleton__line--paragraph" />
         </div>
       </article>
-      <span className="route-skeleton__status" role="status">Loading book details…</span>
+      <span className="route-skeleton__status" role="status">
+        {t("Loading book details…")}
+      </span>
     </main>
   );
 }
 
 export default function RouteSkeleton({ pathname }: { pathname: string }) {
+  const { t } = useSettings();
+
   if (pathname === booksPagePath || pathname === "/" || pathname === `${booksPagePath}/`) {
-    return <BooksSkeleton />;
+    return <BooksSkeleton t={t} />;
   }
 
   if (pathname === qrPagePath || pathname === `${qrPagePath}/`) {
-    return <BooksSkeleton />;
+    return <BooksSkeleton t={t} />;
   }
 
   if (pathname.startsWith(bookDetailPagePath.replace(":book_id", ""))) {
-    return <BookDetailsSkeleton />;
+    return <BookDetailsSkeleton t={t} />;
   }
 
   return (
     <main className="books-page route-skeleton" aria-busy="true">
-      <span className="route-skeleton__status" role="status">Loading page…</span>
+      <span className="route-skeleton__status" role="status">{t("Loading page…")}</span>
     </main>
   );
 }

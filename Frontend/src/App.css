@@ -46,16 +46,20 @@
   min-width: 0;
   min-height: 100svh;
   padding: 0 var(--app-shell-gutter) 56px;
-  background: var(--app-canvas);
+  background-color: var(--app-canvas);
   color: var(--app-heading);
   text-align: start;
-  transition: background 180ms ease, color 180ms ease;
+  transition: background-color 180ms ease, color 180ms ease;
 }
 
 .app-shell > main {
   box-sizing: border-box;
   width: 100%;
   min-width: 0;
+}
+
+.app-shell[dir="rtl"] {
+  font-family: var(--font-tajawal), var(--sans);
 }
 
 .app-shell--dark {
@@ -124,6 +128,68 @@
   height: 50px;
   margin: 0;
   padding: 0;
+}
+
+.language-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  border: 1px solid var(--app-outline);
+  border-radius: 999px;
+  background: var(--app-surface);
+  color: var(--app-muted);
+}
+
+.language-switch__icon {
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.language-switch select {
+  max-width: 118px;
+  padding: 3px 2px;
+  border: 0;
+  background: transparent;
+  color: var(--app-heading);
+  cursor: pointer;
+  font: 600 0.75rem/1.2 var(--font-base);
+}
+
+.language-switch select:focus-visible {
+  outline: 2px solid var(--jade-400);
+  outline-offset: 2px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+.app-navigation-status,
+.app-settings-message {
+  position: fixed;
+  z-index: 20;
+  inset-block-end: 16px;
+  inset-inline-end: 16px;
+  max-width: min(420px, calc(100vw - 32px));
+  padding: 10px 14px;
+  border: 1px solid var(--app-outline);
+  border-radius: 10px;
+  background: var(--app-surface);
+  box-shadow: var(--app-shadow);
+  color: var(--app-heading);
+  font-size: 0.84rem;
+}
+
+.app-settings-message {
+  inset-block-end: 72px;
 }
 
 .app-header__brand {
@@ -1126,6 +1192,7 @@
 .book-details-card__cover {
   display: flex;
   min-height: 310px;
+  max-height: min(65svh, 600px);
   overflow: hidden;
   border-radius: 10px;
   background: linear-gradient(
@@ -1200,8 +1267,10 @@
 
 .book-details-card__description {
   margin-top: 20px;
+  max-width: 100%;
   color: var(--app-muted);
   line-height: 1.65;
+  overflow-wrap: anywhere;
 }
 
 /* Volumes */
@@ -1357,8 +1426,10 @@
 /* 6b. Popup — native <dialog> opened with showModal().
    No `display` is set on .image-popup, so the browser still hides it when closed. */
 .image-popup {
+  position: fixed;
+  inset: 0;
   box-sizing: border-box;
-  width: 100%;
+  width: 100vw;
   height: 100dvh;
   max-width: none;
   max-height: none;
@@ -1443,6 +1514,7 @@
 
 /* The viewport scrolls; the stage grows with zoom, so every edge stays reachable. */
 .image-popup__viewport {
+  display: grid;
   min-width: 0;
   min-height: 0;
   overflow: auto;
@@ -1476,6 +1548,8 @@
   justify-content: space-between;
   gap: 20px;
   max-width: 900px;
+  width: 100%;
+  box-sizing: border-box;
   margin: 0 auto 14px;
   padding: 16px;
   border: 1px solid var(--app-outline);
@@ -1499,7 +1573,8 @@
 }
 
 .qr-settings {
-  max-width: 900px;
+  box-sizing: border-box;
+  width: min(100%, 900px);
   margin: 0 auto 24px;
 }
 
@@ -1526,6 +1601,33 @@
   border-radius: 7px;
   background: var(--app-surface);
   cursor: pointer;
+}
+
+.qr-settings__numeric {
+  min-width: 104px;
+}
+
+.qr-settings__numeric input {
+  width: 88px;
+  padding: 0 8px;
+  font: inherit;
+  text-align: center;
+}
+
+.qr-settings__ratio {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 96px;
+  padding: 6px 8px;
+  border: 1px dashed var(--app-outline);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--app-surface-raised) 84%, transparent);
+  color: var(--app-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .qr-settings__message,
@@ -1569,7 +1671,10 @@
 
 .qr-card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 260px));
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, var(--qr-card-width, 7cm)), var(--qr-card-width, 7cm))
+  );
   justify-content: center;
   align-items: start;
   gap: 18px;
@@ -1577,9 +1682,14 @@
 
 .qr-card {
   display: flex;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--qr-card-width, 7cm);
   min-width: 0;
+  height: var(--qr-card-height, 9cm);
   flex-direction: column;
   align-items: center;
+  justify-content: space-between;
   padding: 12px;
   border: 1px solid color-mix(in srgb, var(--qr-gradient-start) 50%, var(--qr-gradient-end));
   border-radius: 12px;
@@ -1723,7 +1833,10 @@
   }
 
   .qr-card-grid {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 185px), 240px));
+    grid-template-columns: repeat(
+      auto-fit,
+      minmax(min(100%, var(--qr-card-width, 7cm)), var(--qr-card-width, 7cm))
+    );
   }
 
   .book-details-card {
@@ -1789,6 +1902,51 @@
     font-size: 0.9rem;
   }
 
+  .app-header__brand img {
+    width: 30px;
+    height: 30px;
+  }
+
+  .language-switch {
+    gap: 0;
+    padding: 3px 4px;
+  }
+
+  .language-switch__icon {
+    display: none;
+  }
+
+  .language-switch select {
+    max-width: 76px;
+    font-size: 0.68rem;
+  }
+
+  .theme-switch {
+    gap: 0;
+    padding: 2px;
+  }
+
+  .theme-switch__option {
+    width: 29px;
+    height: 28px;
+  }
+
+  .theme-image {
+    max-width: 19px;
+    max-height: 19px;
+  }
+
+  .app-menu-toggle {
+    width: 38px;
+    height: 38px;
+    margin-inline-start: 0;
+  }
+
+  .burger-menu {
+    width: 32px;
+    height: 32px;
+  }
+
   .app-menu-backdrop {
     padding: 12px;
   }
@@ -1824,7 +1982,10 @@
   }
 
   .qr-card-grid {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 220px));
+    grid-template-columns: repeat(
+      auto-fit,
+      minmax(min(100%, var(--qr-card-width, 7cm)), var(--qr-card-width, 7cm))
+    );
     gap: 10px;
   }
 
@@ -1862,9 +2023,19 @@
   }
 }
 
+@media (max-width: 380px) {
+  .app-header__brand span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+}
+
 /* ---------- 11. PRINT ---------- */
 @page {
-  margin: 12mm;
+  margin: 0;
 }
 
 @media print {
@@ -1880,21 +2051,38 @@
   .qr-print-area {
     position: absolute !important;
     inset: 0 auto auto 0;
+    box-sizing: border-box;
     width: 100%;
     max-width: none;
     margin: 0;
+    padding: 0;
+  }
+
+  [dir="rtl"] .app-navigation-status,
+  [dir="rtl"] .app-settings-message {
+    text-align: right;
   }
 
   .qr-print-area__toolbar {
     display: none !important;
   }
 
+  .qr-print-area .qr-page__error {
+    display: none !important;
+  }
+
   .qr-card-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(
+      auto-fit,
+      minmax(min(100%, var(--qr-card-width, 7cm)), var(--qr-card-width, 7cm))
+    );
+    justify-content: start;
     gap: 8mm;
   }
 
   .qr-card {
+    width: 100%;
+    height: var(--qr-card-height, 9cm);
     box-shadow: none;
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
