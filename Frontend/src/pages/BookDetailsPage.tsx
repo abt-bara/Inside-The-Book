@@ -11,10 +11,12 @@ import { useTheme } from "../Hooks/useTheme";
 import userServices from "../api/UserServices";
 import { booksPagePath } from "../services/pagePaths";
 import type { Book } from "../types/Book";
+import { useSettings } from "../Hooks/useSettings";
 
 function BookDetailsPage() {
   const book = useLoaderData() as Book;
   const { theme } = useTheme();
+  const { t } = useSettings();
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState("");
@@ -22,14 +24,14 @@ function BookDetailsPage() {
   const navigate = useNavigate();
   const volumeCount = book.vols?.length ?? 0;
   const metadata = [
-    ["Author", book.author],
-    ["Editor", book.editor],
-    ["Distributor", book.distributor],
+    [t("Author"), book.author],
+    [t("Editor"), book.editor],
+    [t("Distributor"), book.distributor],
     [
-      "Number of volumes",
-      `${volumeCount} ${volumeCount === 1 ? "volume" : "volumes"}`,
+      t("Number of volumes"),
+      `${volumeCount} ${t(volumeCount === 1 ? "volume" : "volumes")}`,
     ],
-    ["Publication date", book.year],
+    [t("Publication year"), book.year],
   ];
 
   const deleteBook = async () => {
@@ -46,7 +48,7 @@ function BookDetailsPage() {
       setDeleteError(
         error instanceof Error
           ? error.message
-          : "The book could not be deleted. Please try again.",
+          : t("The book could not be deleted. Please try again."),
       );
     } finally {
       setIsDeleting(false);
@@ -57,26 +59,26 @@ function BookDetailsPage() {
     <main className="book-details-page">
       <div className="book-details-page__toolbar">
         <Link className="book-details-back" to={booksPagePath}>
-          <span aria-hidden="true">←</span> All books
+          <span aria-hidden="true">←</span> {t("All books")}
         </Link>
         <div className="book-details-page__actions">
           <button
             className="book-details-edit"
             type="button"
-            aria-label={`Edit ${book.title}`}
+            aria-label={`${t("Edit book")}: ${book.title}`}
             onClick={() => setIsEditOpen(true)}
           >
-            <span aria-hidden="true">✎</span> Edit book
+            <span aria-hidden="true">✎</span> {t("Edit book")}
           </button>
           <button
             className="book-details-delete"
             type="button"
-            aria-label={`Delete ${book.title}`}
+            aria-label={`${t("Delete book")}: ${book.title}`}
             onClick={deleteBook}
             disabled={isDeleting}
           >
             <span aria-hidden="true">🗑 </span>
-            {isDeleting ? "Deleting…" : "Delete book"}
+            {isDeleting ? t("Deleting…") : t("Delete book")}
           </button>
         </div>
       </div>
@@ -104,9 +106,9 @@ function BookDetailsPage() {
         >
           <span
             className={`book-status ${book.new ? "book-status--new" : "book-status--existing"}`}
-            aria-label={`Print status: ${book.new ? "new" : "existing"}`}
+            aria-label={`${t("Print status")}: ${t(book.new ? "New" : "Existing")}`}
           >
-            Print status · {book.new ? "New" : "Existing"}
+            {t("Print status")} · {t(book.new ? "New" : "Existing")}
           </span>
           <h1 id="book-title" className="book-details-card__title">
             {book.title}
@@ -115,7 +117,7 @@ function BookDetailsPage() {
             {metadata.map(([label, value]) => (
               <div className="book-metadata__row" key={label}>
                 <dt>{label}</dt>
-                <dd>{value || "Not provided"}</dd>
+                <dd>{value || t("Not provided")}</dd>
               </div>
             ))}
           </dl>
@@ -127,9 +129,9 @@ function BookDetailsPage() {
       {book.vols?.some((volume) => (volume.images?.length ?? 0) > 0) && (
         <section
           className="book-volumes"
-          aria-label={`${book.title} volume images`}
+          aria-label={`${book.title} — ${t("Volume images")}`}
         >
-          <h2>Volumes</h2>
+          <h2>{t("Volumes")}</h2>
           <div className="book-volumes__grid">
             {book.vols.map((volume) => (
               <article

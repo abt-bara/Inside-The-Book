@@ -1,5 +1,6 @@
 import type { ChangeEvent } from "react";
 import type { BookFilters as BookFiltersState } from "../services/bookFilters";
+import { useSettings } from "../Hooks/useSettings";
 
 interface BookFiltersProps {
   filters: BookFiltersState;
@@ -14,6 +15,8 @@ function BookFilters({
   totalCount,
   resultCount,
 }: BookFiltersProps) {
+  const { t } = useSettings();
+
   function updateText(
     field: keyof Pick<
       BookFiltersState,
@@ -32,22 +35,22 @@ function BookFilters({
   }
 
   return (
-    <section className="book-filters" aria-label="Filter books">
+    <section className="book-filters" aria-label={t("Filter books")}>
       <label className="book-filters__search">
         <span className="book-filters__search-icon" aria-hidden="true">⌕</span>
         <input
           type="search"
           value={filters.query}
           onChange={(event) => updateText("query", event)}
-          placeholder="Search books, authors, editors, volumes…"
-          aria-label="Search all book information"
+          placeholder={t("Search books, authors, editors, volumes…")}
+          aria-label={t("Search all book information")}
         />
         {filters.query && (
           <button
             type="button"
             className="book-filters__clear-search"
             onClick={() => onChange({ ...filters, query: "" })}
-            aria-label="Clear search"
+            aria-label={t("Clear search")}
           >
             ×
           </button>
@@ -55,66 +58,66 @@ function BookFilters({
       </label>
 
       <details className="book-filters__advanced">
-        <summary>Advanced filters</summary>
+        <summary>{t("Advanced filters")}</summary>
         <div className="book-filters__fields">
           <label>
-            <span>Title</span>
+            <span>{t("Title")}</span>
             <input
               value={filters.title}
               onChange={(event) => updateText("title", event)}
-              placeholder="Book title"
+              placeholder={t("Book title")}
             />
           </label>
           <label>
-            <span>Author</span>
+            <span>{t("Author")}</span>
             <input
               value={filters.author}
               onChange={(event) => updateText("author", event)}
-              placeholder="Author"
+              placeholder={t("Author")}
             />
           </label>
           <label>
-            <span>Editor</span>
+            <span>{t("Editor")}</span>
             <input
               value={filters.editor}
               onChange={(event) => updateText("editor", event)}
-              placeholder="Editor"
+              placeholder={t("Editor")}
             />
           </label>
           <label>
-            <span>Distributor</span>
+            <span>{t("Distributor")}</span>
             <input
               value={filters.distributor}
               onChange={(event) => updateText("distributor", event)}
-              placeholder="Distributor"
+              placeholder={t("Distributor")}
             />
           </label>
           <label>
-            <span>Publication year</span>
+            <span>{t("Publication year")}</span>
             <input
               value={filters.year}
               onChange={(event) => updateText("year", event)}
-              placeholder="Year"
+              placeholder={t("Year")}
             />
           </label>
           <label>
-            <span>Description</span>
+            <span>{t("Description")}</span>
             <input
               value={filters.description}
               onChange={(event) => updateText("description", event)}
-              placeholder="Words in the description"
+              placeholder={t("Words in the description")}
             />
           </label>
           <label>
-            <span>Volume</span>
+            <span>{t("Volume")}</span>
             <input
               value={filters.volume}
               onChange={(event) => updateText("volume", event)}
-              placeholder="Volume title or number"
+              placeholder={t("Volume title or number")}
             />
           </label>
           <label>
-            <span>Book status</span>
+            <span>{t("Book status")}</span>
             <select
               value={filters.newStatus}
               onChange={(event) => {
@@ -124,13 +127,13 @@ function BookFilters({
                 }
               }}
             >
-              <option value="any">Any status</option>
-              <option value="new">New books</option>
-              <option value="not-new">Not marked new</option>
+              <option value="any">{t("Any status")}</option>
+              <option value="new">{t("New books")}</option>
+              <option value="not-new">{t("Not marked new")}</option>
             </select>
           </label>
           <label>
-            <span>Cover images</span>
+            <span>{t("Cover images")}</span>
             <select
               value={filters.imageStatus}
               onChange={(event) => {
@@ -144,16 +147,18 @@ function BookFilters({
                 }
               }}
             >
-              <option value="any">Any</option>
-              <option value="with-images">Has images</option>
-              <option value="without-images">No images</option>
+              <option value="any">{t("Any")}</option>
+              <option value="with-images">{t("Has images")}</option>
+              <option value="without-images">{t("No images")}</option>
             </select>
           </label>
         </div>
       </details>
 
       <p className="book-filters__count" role="status" aria-live="polite">
-        Showing {resultCount} of {totalCount} books
+        {t("Showing {resultCount} of {totalCount} books")
+          .replace("{resultCount}", String(resultCount))
+          .replace("{totalCount}", String(totalCount))}
       </p>
     </section>
   );

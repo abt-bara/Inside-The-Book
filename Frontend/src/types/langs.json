@@ -1,0 +1,686 @@
+{
+  "Inside the Book": {
+    "en": "Inside the Book",
+    "ar": "داخل الكتاب"
+  },
+  "Color theme": {
+    "en": "Color theme",
+    "ar": "السمة اللونية"
+  },
+  "Dark theme": {
+    "en": "Dark theme",
+    "ar": "السمة الداكنة"
+  },
+  "System theme": {
+    "en": "System theme",
+    "ar": "سمة النظام"
+  },
+  "Light theme": {
+    "en": "Light theme",
+    "ar": "السمة الفاتحة"
+  },
+  "Language": {
+    "en": "Language",
+    "ar": "اللغة"
+  },
+  "Arabic": {
+    "en": "Arabic",
+    "ar": "العربية"
+  },
+  "English": {
+    "en": "English",
+    "ar": "الإنجليزية"
+  },
+  "Open page navigation": {
+    "en": "Open page navigation",
+    "ar": "فتح التنقل بين الصفحات"
+  },
+  "Close page navigation": {
+    "en": "Close page navigation",
+    "ar": "إغلاق التنقل بين الصفحات"
+  },
+  "Where would you like to go?": {
+    "en": "Where would you like to go?",
+    "ar": "إلى أين تريد الذهاب؟"
+  },
+  "Close navigation": {
+    "en": "Close navigation",
+    "ar": "إغلاق التنقل"
+  },
+  "Main pages": {
+    "en": "Main pages",
+    "ar": "الصفحات الرئيسية"
+  },
+  "Books": {
+    "en": "Books",
+    "ar": "الكتب"
+  },
+  "Browse and manage the collection": {
+    "en": "Browse and manage the collection",
+    "ar": "تصفح المجموعة وإدارتها"
+  },
+  "QR codes": {
+    "en": "QR codes",
+    "ar": "رموز QR"
+  },
+  "Filter books and prepare print-ready codes": {
+    "en": "Filter books and prepare print-ready codes",
+    "ar": "صفِّ الكتب وجهّز الرموز للطباعة"
+  },
+  "Loading page…": {
+    "en": "Loading page…",
+    "ar": "جارٍ تحميل الصفحة…"
+  },
+  "Loading books…": {
+    "en": "Loading books…",
+    "ar": "جارٍ تحميل الكتب…"
+  },
+  "Book collection": {
+    "en": "Book collection",
+    "ar": "مجموعة الكتب"
+  },
+  "New book": {
+    "en": "New book",
+    "ar": "كتاب جديد"
+  },
+  "There are no books right now.": {
+    "en": "There are no books right now.",
+    "ar": "لا توجد كتب حالياً."
+  },
+  "Add your first book": {
+    "en": "Add your first book",
+    "ar": "أضف كتابك الأول"
+  },
+  "No books match these filters.": {
+    "en": "No books match these filters.",
+    "ar": "لا توجد كتب تطابق عوامل التصفية."
+  },
+  "Filter books": {
+    "en": "Filter books",
+    "ar": "تصفية الكتب"
+  },
+  "Search books, authors, editors, volumes…": {
+    "en": "Search books, authors, editors, volumes…",
+    "ar": "ابحث عن الكتب أو المؤلفين أو المحررين أو الأجزاء…"
+  },
+  "Search all book information": {
+    "en": "Search all book information",
+    "ar": "البحث في جميع معلومات الكتاب"
+  },
+  "Clear search": {
+    "en": "Clear search",
+    "ar": "مسح البحث"
+  },
+  "Advanced filters": {
+    "en": "Advanced filters",
+    "ar": "عوامل تصفية متقدمة"
+  },
+  "Title": {
+    "en": "Title",
+    "ar": "العنوان"
+  },
+  "Book title": {
+    "en": "Book title",
+    "ar": "عنوان الكتاب"
+  },
+  "Cover of {title}": {
+    "en": "Cover of {title}",
+    "ar": "غلاف {title}"
+  },
+  "Author": {
+    "en": "Author",
+    "ar": "المؤلف"
+  },
+  "Editor": {
+    "en": "Editor",
+    "ar": "المحرر"
+  },
+  "Distributor": {
+    "en": "Distributor",
+    "ar": "الموزع"
+  },
+  "Publication year": {
+    "en": "Publication year",
+    "ar": "سنة النشر"
+  },
+  "Year": {
+    "en": "Year",
+    "ar": "السنة"
+  },
+  "Description": {
+    "en": "Description",
+    "ar": "الوصف"
+  },
+  "Words in the description": {
+    "en": "Words in the description",
+    "ar": "كلمات في الوصف"
+  },
+  "Volume": {
+    "en": "Volume",
+    "ar": "الجزء"
+  },
+  "Volume title or number": {
+    "en": "Volume title or number",
+    "ar": "عنوان الجزء أو رقمه"
+  },
+  "Book status": {
+    "en": "Book status",
+    "ar": "حالة الكتاب"
+  },
+  "Any status": {
+    "en": "Any status",
+    "ar": "كل الحالات"
+  },
+  "New books": {
+    "en": "New books",
+    "ar": "كتب جديدة"
+  },
+  "Not marked new": {
+    "en": "Not marked new",
+    "ar": "غير محددة كجديدة"
+  },
+  "Cover images": {
+    "en": "Cover images",
+    "ar": "صور الغلاف"
+  },
+  "Any": {
+    "en": "Any",
+    "ar": "الكل"
+  },
+  "Has images": {
+    "en": "Has images",
+    "ar": "تحتوي على صور"
+  },
+  "No images": {
+    "en": "No images",
+    "ar": "لا تحتوي على صور"
+  },
+  "Showing {resultCount} of {totalCount} books": {
+    "en": "Showing {resultCount} of {totalCount} books",
+    "ar": "عرض {resultCount} من أصل {totalCount} كتاب"
+  },
+  "Writer": {
+    "en": "Writer",
+    "ar": "المؤلف"
+  },
+  "Author unknown": {
+    "en": "Author unknown",
+    "ar": "مؤلف غير معروف"
+  },
+  "No cover": {
+    "en": "No cover",
+    "ar": "لا يوجد غلاف"
+  },
+  "Book QR Codes": {
+    "en": "Book QR Codes",
+    "ar": "رموز QR للكتب"
+  },
+  "Select books with the search and filters, then generate a QR code for each matching book.": {
+    "en": "Select books with the search and filters, then generate a QR code for each matching book.",
+    "ar": "حدد الكتب باستخدام البحث وعوامل التصفية، ثم أنشئ رمز QR لكل كتاب مطابق."
+  },
+  "Generating…": {
+    "en": "Generating…",
+    "ar": "جارٍ الإنشاء…"
+  },
+  "Generate QR codes ({count})": {
+    "en": "Generate QR codes ({count})",
+    "ar": "إنشاء رموز QR ({count})"
+  },
+  "QR appearance settings": {
+    "en": "QR appearance settings",
+    "ar": "إعدادات مظهر رمز QR"
+  },
+  "Gradient start": {
+    "en": "Gradient start",
+    "ar": "بداية التدرج"
+  },
+  "Gradient end": {
+    "en": "Gradient end",
+    "ar": "نهاية التدرج"
+  },
+  "Text color": {
+    "en": "Text color",
+    "ar": "لون النص"
+  },
+  "Width (cm)": {
+    "en": "Width (cm)",
+    "ar": "العرض (سم)"
+  },
+  "Height (cm)": {
+    "en": "Height (cm)",
+    "ar": "الارتفاع (سم)"
+  },
+  "Ratio {ratio}": {
+    "en": "Ratio {ratio}",
+    "ar": "النسبة {ratio}"
+  },
+  "Saved QR settings were invalid; using the defaults.": {
+    "en": "Saved QR settings were invalid; using the defaults.",
+    "ar": "إعدادات QR المحفوظة غير صالحة؛ ستُستخدم الإعدادات الافتراضية."
+  },
+  "QR settings could not be loaded from this browser.": {
+    "en": "QR settings could not be loaded from this browser.",
+    "ar": "تعذر تحميل إعدادات QR من هذا المتصفح."
+  },
+  "QR settings are active but could not be saved in this browser.": {
+    "en": "QR settings are active but could not be saved in this browser.",
+    "ar": "إعدادات QR مفعّلة، لكن تعذر حفظها في هذا المتصفح."
+  },
+  "QR codes could not be generated.": {
+    "en": "QR codes could not be generated.",
+    "ar": "تعذر إنشاء رموز QR."
+  },
+  "QR codes could not be generated: {message}": {
+    "en": "QR codes could not be generated: {message}",
+    "ar": "تعذر إنشاء رموز QR: {message}"
+  },
+  "QR code actions": {
+    "en": "QR code actions",
+    "ar": "إجراءات رموز QR"
+  },
+  "Generated book QR codes": {
+    "en": "Generated book QR codes",
+    "ar": "رموز QR المُنشأة للكتب"
+  },
+  "Generated codes ({count})": {
+    "en": "Generated codes ({count})",
+    "ar": "الرموز المُنشأة ({count})"
+  },
+  "Print QR codes": {
+    "en": "Print QR codes",
+    "ar": "طباعة رموز QR"
+  },
+  "No books matched the selected filters.": {
+    "en": "No books matched the selected filters.",
+    "ar": "لا توجد كتب تطابق عوامل التصفية المحددة."
+  },
+  "SCAN ME": {
+    "en": "SCAN ME",
+    "ar": "امسح الرمز"
+  },
+  "QR code linking to {title}": {
+    "en": "QR code linking to {title}",
+    "ar": "رمز QR لرابط {title}"
+  },
+  "Print status: {status}": {
+    "en": "Print status: {status}",
+    "ar": "حالة الطباعة: {status}"
+  },
+  "New": {
+    "en": "New",
+    "ar": "جديد"
+  },
+  "Existing": {
+    "en": "Existing",
+    "ar": "موجود"
+  },
+  "Print status": {
+    "en": "Print status",
+    "ar": "حالة الطباعة"
+  },
+  "All books": {
+    "en": "All books",
+    "ar": "كل الكتب"
+  },
+  "Edit book": {
+    "en": "Edit book",
+    "ar": "تعديل الكتاب"
+  },
+  "Delete book": {
+    "en": "Delete book",
+    "ar": "حذف الكتاب"
+  },
+  "Deleting…": {
+    "en": "Deleting…",
+    "ar": "جارٍ الحذف…"
+  },
+  "The book could not be deleted. Please try again.": {
+    "en": "The book could not be deleted. Please try again.",
+    "ar": "تعذر حذف الكتاب. يرجى المحاولة مرة أخرى."
+  },
+  "Not provided": {
+    "en": "Not provided",
+    "ar": "غير متوفر"
+  },
+  "Number of volumes": {
+    "en": "Number of volumes",
+    "ar": "عدد الأجزاء"
+  },
+  "volume": {
+    "en": "volume",
+    "ar": "جزء"
+  },
+  "volumes": {
+    "en": "volumes",
+    "ar": "أجزاء"
+  },
+  "Volumes": {
+    "en": "Volumes",
+    "ar": "الأجزاء"
+  },
+  "Book details": {
+    "en": "Book details",
+    "ar": "تفاصيل الكتاب"
+  },
+  "Volume images": {
+    "en": "Volume images",
+    "ar": "صور الأجزاء"
+  },
+  "Printed books could not all be marked as existing: {details}": {
+    "en": "Printed books could not all be marked as existing: {details}",
+    "ar": "تعذر تحديث حالة الطباعة لبعض الكتب: {details}"
+  },
+  "Updating print status…": {
+    "en": "Updating print status…",
+    "ar": "جارٍ تحديث حالة الطباعة…"
+  },
+  "Language changed for this session, but could not be saved in this browser.": {
+    "en": "Language changed for this session, but could not be saved in this browser.",
+    "ar": "تم تغيير اللغة لهذه الجلسة، لكن تعذر حفظها في هذا المتصفح."
+  },
+  "Library": {
+    "en": "Library",
+    "ar": "المكتبة"
+  },
+  "Add a new book": {
+    "en": "Add a new book",
+    "ar": "إضافة كتاب جديد"
+  },
+  "Close book form": {
+    "en": "Close book form",
+    "ar": "إغلاق نموذج الكتاب"
+  },
+  "Loading book details…": {
+    "en": "Loading book details…",
+    "ar": "جارٍ تحميل تفاصيل الكتاب…"
+  },
+  "Please complete all required fields before saving.": {
+    "en": "Please complete all required fields before saving.",
+    "ar": "يرجى إكمال جميع الحقول المطلوبة قبل الحفظ."
+  },
+  "Book name": {
+    "en": "Book name",
+    "ar": "اسم الكتاب"
+  },
+  "Publication date": {
+    "en": "Publication date",
+    "ar": "تاريخ النشر"
+  },
+  "Month": {
+    "en": "Month",
+    "ar": "الشهر"
+  },
+  "Day": {
+    "en": "Day",
+    "ar": "اليوم"
+  },
+  "(optional)": {
+    "en": "(optional)",
+    "ar": "(اختياري)"
+  },
+  "Select month": {
+    "en": "Select month",
+    "ar": "اختر الشهر"
+  },
+  "Select day": {
+    "en": "Select day",
+    "ar": "اختر اليوم"
+  },
+  "Book images": {
+    "en": "Book images",
+    "ar": "صور الكتاب"
+  },
+  "{count} existing image(s). Add more images below if needed.": {
+    "en": "{count} existing image(s). Add more images below if needed.",
+    "ar": "عدد الصور الحالية {count}. أضف صوراً أخرى أدناه عند الحاجة."
+  },
+  "At least one image is required across the book and its volumes. Text and volume details are cached; image files must be selected again when reopening a saved draft.": {
+    "en": "At least one image is required across the book and its volumes. Text and volume details are cached; image files must be selected again when reopening a saved draft.",
+    "ar": "يلزم وجود صورة واحدة على الأقل للكتاب أو أجزائه. تُحفظ البيانات النصية وتفاصيل الأجزاء مؤقتاً؛ ويجب اختيار الصور مجدداً عند فتح مسودة محفوظة."
+  },
+  "Tip: choose a square (1:1) image first; the first image is center-cropped when saved.": {
+    "en": "Tip: choose a square (1:1) image first; the first image is center-cropped when saved.",
+    "ar": "نصيحة: اختر صورة مربعة (1:1) أولاً؛ ستُقص الصورة الأولى من المنتصف عند الحفظ."
+  },
+  "Select book images": {
+    "en": "Select book images",
+    "ar": "اختيار صور الكتاب"
+  },
+  "{count} image(s) selected": {
+    "en": "{count} image(s) selected",
+    "ar": "تم اختيار {count} صورة"
+  },
+  "{count} existing image(s) · JPEG, PNG, or WebP · 5 MB max each.": {
+    "en": "{count} existing image(s) · JPEG, PNG, or WebP · 5 MB max each.",
+    "ar": "{count} صورة حالية · JPEG أو PNG أو WebP · بحد أقصى 5 ميغابايت لكل صورة."
+  },
+  "JPEG, PNG, or WebP · 5 MB max each.": {
+    "en": "JPEG, PNG, or WebP · 5 MB max each.",
+    "ar": "JPEG أو PNG أو WebP · بحد أقصى 5 ميغابايت لكل صورة."
+  },
+  "Existing volumes are kept. Add images to any volume below.": {
+    "en": "Existing volumes are kept. Add images to any volume below.",
+    "ar": "تُحفظ الأجزاء الحالية. أضف صوراً إلى أي جزء أدناه."
+  },
+  "Volume images are stored separately from book images.": {
+    "en": "Volume images are stored separately from book images.",
+    "ar": "تُحفظ صور الأجزاء بشكل منفصل عن صور الكتاب."
+  },
+  "Add volume": {
+    "en": "Add volume",
+    "ar": "إضافة جزء"
+  },
+  "Volume {number}": {
+    "en": "Volume {number}",
+    "ar": "الجزء {number}"
+  },
+  "Remove": {
+    "en": "Remove",
+    "ar": "إزالة"
+  },
+  "Volume title": {
+    "en": "Volume title",
+    "ar": "عنوان الجزء"
+  },
+  "Volume number": {
+    "en": "Volume number",
+    "ar": "رقم الجزء"
+  },
+  "Images for this volume": {
+    "en": "Images for this volume",
+    "ar": "صور هذا الجزء"
+  },
+  "Reset changes": {
+    "en": "Reset changes",
+    "ar": "إعادة تعيين التغييرات"
+  },
+  "Reset form": {
+    "en": "Reset form",
+    "ar": "إعادة تعيين النموذج"
+  },
+  "Cancel": {
+    "en": "Cancel",
+    "ar": "إلغاء"
+  },
+  "Updating book…": {
+    "en": "Updating book…",
+    "ar": "جارٍ تحديث الكتاب…"
+  },
+  "Saving book…": {
+    "en": "Saving book…",
+    "ar": "جارٍ حفظ الكتاب…"
+  },
+  "Save changes": {
+    "en": "Save changes",
+    "ar": "حفظ التغييرات"
+  },
+  "Save book": {
+    "en": "Save book",
+    "ar": "حفظ الكتاب"
+  },
+  "Book name is required.": {
+    "en": "Book name is required.",
+    "ar": "اسم الكتاب مطلوب."
+  },
+  "{field} is required.": {
+    "en": "{field} is required.",
+    "ar": "حقل {field} مطلوب."
+  },
+  "Complete the title and number for volume {number}.": {
+    "en": "Complete the title and number for volume {number}.",
+    "ar": "أكمل العنوان والرقم للجزء {number}."
+  },
+  "Select at least one image for the book or one of its volumes.": {
+    "en": "Select at least one image for the book or one of its volumes.",
+    "ar": "اختر صورة واحدة على الأقل للكتاب أو لأحد أجزائه."
+  },
+  "The first image could not be cropped.": {
+    "en": "The first image could not be cropped.",
+    "ar": "تعذر قص الصورة الأولى."
+  },
+  "The book data has not loaded yet. Please try again.": {
+    "en": "The book data has not loaded yet. Please try again.",
+    "ar": "لم يتم تحميل بيانات الكتاب بعد. يرجى المحاولة مرة أخرى."
+  },
+  "There are no changes to save.": {
+    "en": "There are no changes to save.",
+    "ar": "لا توجد تغييرات لحفظها."
+  },
+  "The saved draft could not be cleared.": {
+    "en": "The saved draft could not be cleared.",
+    "ar": "تعذر مسح المسودة المحفوظة."
+  },
+  "Draft caching is unavailable in this browser.": {
+    "en": "Draft caching is unavailable in this browser.",
+    "ar": "حفظ المسودات غير متاح في هذا المتصفح."
+  },
+  "The saved draft could not be loaded. A fresh form is ready.": {
+    "en": "The saved draft could not be loaded. A fresh form is ready.",
+    "ar": "تعذر تحميل المسودة المحفوظة. النموذج الجديد جاهز."
+  },
+  "An unexpected error occurred while loading the book.": {
+    "en": "An unexpected error occurred while loading the book.",
+    "ar": "حدث خطأ غير متوقع أثناء تحميل الكتاب."
+  },
+  "An unexpected error occurred while updating the book.": {
+    "en": "An unexpected error occurred while updating the book.",
+    "ar": "حدث خطأ غير متوقع أثناء تحديث الكتاب."
+  },
+  "An unexpected error occurred while creating the book.": {
+    "en": "An unexpected error occurred while creating the book.",
+    "ar": "حدث خطأ غير متوقع أثناء إنشاء الكتاب."
+  },
+  "January": {
+    "en": "January",
+    "ar": "يناير"
+  },
+  "February": {
+    "en": "February",
+    "ar": "فبراير"
+  },
+  "March": {
+    "en": "March",
+    "ar": "مارس"
+  },
+  "April": {
+    "en": "April",
+    "ar": "أبريل"
+  },
+  "May": {
+    "en": "May",
+    "ar": "مايو"
+  },
+  "June": {
+    "en": "June",
+    "ar": "يونيو"
+  },
+  "July": {
+    "en": "July",
+    "ar": "يوليو"
+  },
+  "August": {
+    "en": "August",
+    "ar": "أغسطس"
+  },
+  "September": {
+    "en": "September",
+    "ar": "سبتمبر"
+  },
+  "October": {
+    "en": "October",
+    "ar": "أكتوبر"
+  },
+  "November": {
+    "en": "November",
+    "ar": "نوفمبر"
+  },
+  "December": {
+    "en": "December",
+    "ar": "ديسمبر"
+  },
+  "No images available": {
+    "en": "No images available",
+    "ar": "لا توجد صور متاحة"
+  },
+  "image gallery": {
+    "en": "image gallery",
+    "ar": "معرض الصور"
+  },
+  "images": {
+    "en": "images",
+    "ar": "صور"
+  },
+  "image": {
+    "en": "image",
+    "ar": "صورة"
+  },
+  "of": {
+    "en": "of",
+    "ar": "من"
+  },
+  "View image {index} full screen": {
+    "en": "View image {index} full screen",
+    "ar": "عرض الصورة {index} بملء الشاشة"
+  },
+  "Previous {label} image": {
+    "en": "Previous {label} image",
+    "ar": "الصورة السابقة لـ {label}"
+  },
+  "Next {label} image": {
+    "en": "Next {label} image",
+    "ar": "الصورة التالية لـ {label}"
+  },
+  "Zoom": {
+    "en": "Zoom",
+    "ar": "التكبير"
+  },
+  "Zoom out": {
+    "en": "Zoom out",
+    "ar": "تصغير"
+  },
+  "Reset zoom, currently {percent} percent": {
+    "en": "Reset zoom, currently {percent} percent",
+    "ar": "إعادة التكبير، الحالي {percent} بالمئة"
+  },
+  "Zoom in": {
+    "en": "Zoom in",
+    "ar": "تكبير"
+  },
+  "Close image viewer": {
+    "en": "Close image viewer",
+    "ar": "إغلاق عارض الصور"
+  },
+  "Close": {
+    "en": "Close",
+    "ar": "إغلاق"
+  },
+  "Previous image": {
+    "en": "Previous image",
+    "ar": "الصورة السابقة"
+  },
+  "Next image": {
+    "en": "Next image",
+    "ar": "الصورة التالية"
+  }
+}

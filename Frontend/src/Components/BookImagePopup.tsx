@@ -6,10 +6,12 @@ import {
   type KeyboardEvent,
 } from "react";
 import type { BookImage } from "../types/Book";
+import { useSettings } from "../Hooks/useSettings";
 
-const MIN_ZOOM = 1;
+const MIN_ZOOM = 0.5;
 const MAX_ZOOM = 4;
 const ZOOM_STEP = 0.5;
+type ImageOrientation = "portrait" | "landscape";
 
 interface BookImagePopupProps {
   images: BookImage[];
@@ -23,12 +25,17 @@ interface BookImagePopupProps {
 function BookImagePopup({ images, label, initialIndex, onClose }: BookImagePopupProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
+  const { t } = useSettings();
   const count = images.length;
 
   const [index, setIndex] = useState(() =>
     Math.min(Math.max(initialIndex, 0), Math.max(count - 1, 0)),
   );
   const [zoom, setZoom] = useState(MIN_ZOOM);
+  const [imageOrientation, setImageOrientation] = useState<{
+    id: number;
+    value: ImageOrientation;
+  } | null>(null);
 
   // Open as a real modal on mount; lock the page scroll while it is open.
   useEffect(() => {
@@ -53,6 +60,8 @@ function BookImagePopup({ images, label, initialIndex, onClose }: BookImagePopup
 
   const image = images[index];
   if (!image) return null;
+  const orientation =
+    imageOrientation?.id === image.id ? imageOrientation.value : "landscape";
 
   const step = (delta: number) => {
     setIndex((current) => (current + delta + count) % count);
@@ -91,17 +100,17 @@ function BookImagePopup({ images, label, initialIndex, onClose }: BookImagePopup
     <dialog
       ref={dialogRef}
       className="image-popup"
-      aria-label={`${label} image viewer`}
+      aria-label={`${label} ${t("image gallery")}`}
       onClose={() => onClose(index)}
       onKeyDown={handleKeyDown}
     >
       <div className="image-popup__content">
         <header className="image-popup__toolbar">
-          <div className="image-popup__zoom" role="group" aria-label="Zoom">
+          <div className="image-popup__zoom" role="group" aria-label={t("Zoom")}>
             <button
               type="button"
               className="image-popup__btn"
-              aria-label="Zoom out"
+              aria-label={t("Zoom out")}
               onClick={() => zoomBy(-ZOOM_STEP)}
               disabled={zoom <= MIN_ZOOM}
             >
@@ -110,7 +119,10 @@ function BookImagePopup({ images, label, initialIndex, onClose }: BookImagePopup
             <button
               type="button"
               className="image-popup__btn image-popup__btn--wide"
-              aria-label={`Reset zoom, currently ${Math.round(zoom * 100)} percent`}
+              aria-label={t("Reset zoom, currently {percent} percent").replace(
+                "{percent}",
+                String(Math.round(zoom * 100)),
+              )}
               onClick={() => setZoom(MIN_ZOOM)}
             >
               {Math.round(zoom * 100)}%
@@ -118,7 +130,7 @@ function BookImagePopup({ images, label, initialIndex, onClose }: BookImagePopup
             <button
               type="button"
               className="image-popup__btn"
-              aria-label="Zoom in"
+              aria-label={t("Zoom in")}
               onClick={() => zoomBy(ZOOM_STEP)}
               disabled={zoom >= MAX_ZOOM}
             >
@@ -129,23 +141,33 @@ function BookImagePopup({ images, label, initialIndex, onClose }: BookImagePopup
           <button
             type="button"
             className="image-popup__btn image-popup__btn--wide"
-            aria-label="Close image viewer"
+            aria-label={t("Close image viewer")}
             onClick={() => dialogRef.current?.close()}
           >
-            Close
+            {t("Close")}
           </button>
         </header>
 
         <div className="image-popup__viewport" ref={viewportRef}>
           <div
             className="image-popup__stage"
+            data-orientation={orientation}
             style={{ "--zoom": zoom } as CSSProperties}
           >
             <img
               src={image.image_url}
-              alt={`${label}, image ${index + 1} of ${count}`}
+              alt={`${label}, ${t("image")} ${index + 1} ${t("of")} ${count}`}
               draggable={false}
-              onDoubleClick={() => setZoom((z) => (z === MIN_ZOOM ? 2 : MIN_ZOOM))}
+              onLoad={(event) => {
+                const { naturalWidth, naturalHeight } = event.currentTarget;
+                setImageOrientation({
+                  id: image.id,
+                  value: naturalHeight > naturalWidth ? "portrait" : "landscape",
+                });
+              }}
+              onDoubleClick={() =>
+                setZoom((z) => (z === MIN_ZOOM ? 2 : MIN_ZOOM))
+              }
             />
           </div>
         </div>
@@ -155,7 +177,7 @@ function BookImagePopup({ images, label, initialIndex, onClose }: BookImagePopup
             <button
               type="button"
               className="image-popup__btn"
-              aria-label="Previous image"
+              aria-label={t("Previous image")}
               onClick={() => step(-1)}
             >
               ‹
@@ -166,7 +188,7 @@ function BookImagePopup({ images, label, initialIndex, onClose }: BookImagePopup
             <button
               type="button"
               className="image-popup__btn"
-              aria-label="Next image"
+              aria-label={t("Next image")}
               onClick={() => step(1)}
             >
               ›

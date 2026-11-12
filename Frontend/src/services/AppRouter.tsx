@@ -9,10 +9,14 @@ import { bookDetailPagePath, booksPagePath, qrPagePath } from "./pagePaths";
 import AppError from "../pages/errors/AppError";
 import BooksPageError from "../pages/errors/BooksPageError";
 import BookDetailsPageError from "../pages/errors/BookDetailsPageError";
+import RouteSkeleton from "../Components/RouteSkeleton";
 
 const router = createBrowserRouter([
   {
     element: <Scaffold />,
+    hydrateFallbackElement: (
+      <RouteSkeleton pathname={window.location.pathname} />
+    ),
     ErrorBoundary: AppError,
     children: [
       {

@@ -7,6 +7,7 @@ import {
 } from "react";
 import userServices, { type BookUpdateFields } from "../api/UserServices";
 import type { Book } from "../types/Book";
+import { useSettings } from "../Hooks/useSettings";
 
 interface VolumeDraft {
   key: number;
@@ -200,6 +201,7 @@ async function cropImageToSquare(file: File): Promise<File> {
 
 function NewBookDialog({ onClose, onSaved, editBookId }: NewBookDialogProps) {
   const isEditing = editBookId !== undefined;
+  const { t } = useSettings();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const [cachedDraft] = useState(readCachedDraft);
@@ -372,7 +374,7 @@ function NewBookDialog({ onClose, onSaved, editBookId }: NewBookDialogProps) {
       const missingField = requiredFields.find(([, value]) => !value.trim());
 
       if (missingField) {
-        setError(`${missingField[0]} is required.`);
+        setError(`{field} is required.`.replace("{field}", missingField[0]));
         return;
       }
 
@@ -426,7 +428,6 @@ function NewBookDialog({ onClose, onSaved, editBookId }: NewBookDialogProps) {
       distributor: String(formData.get("distributor") ?? "").trim(),
       description: String(formData.get("description") ?? "").trim(),
       year: toApiDate(draft),
-      new: true,
     };
 
     let sendRequest: () => Promise<Book>;
@@ -448,7 +449,7 @@ function NewBookDialog({ onClose, onSaved, editBookId }: NewBookDialogProps) {
       if (commonFields.year !== normalizeApiDate(initialBook.year)) {
         changedFields.year = commonFields.year;
       }
-      if (!initialBook.new) changedFields.new = true;
+      if (initialBook.new) changedFields.new = false;
 
       const bookImageSlots = submissionImages.map((_, index) => ({
         slot: `book-image-${index}`,
@@ -499,6 +500,7 @@ function NewBookDialog({ onClose, onSaved, editBookId }: NewBookDialogProps) {
     } else {
       const payload: BookPayload = {
         ...commonFields,
+        new: true,
         images: submissionImages.map((_, index) => ({
           slot: `book-image-${index}`,
         })),
@@ -541,7 +543,9 @@ function NewBookDialog({ onClose, onSaved, editBookId }: NewBookDialogProps) {
       setError(
         submitError instanceof Error
           ? submitError.message
-          : `An unexpected error occurred while ${isEditing ? "updating" : "creating"} the book.`,
+          : isEditing
+            ? "An unexpected error occurred while updating the book."
+            : "An unexpected error occurred while creating the book.",
       );
     } finally {
       setIsSubmitting(false);
@@ -567,15 +571,15 @@ function NewBookDialog({ onClose, onSaved, editBookId }: NewBookDialogProps) {
     >
       <div className="new-book-dialog__header">
         <div>
-          <p className="new-book-dialog__eyebrow">Library</p>
+          <p className="new-book-dialog__eyebrow">{t("Library")}</p>
           <h2 id="book-dialog-title">
-            {isEditing ? "Edit book" : "Add a new book"}
+            {t(isEditing ? "Edit book" : "Add a new book")}
           </h2>
         </div>
         <button
           className="new-book-dialog__close"
           type="button"
-          aria-label={`Close ${isEditing ? "edit" : "new book"} form`}
+          aria-label={t("Close book form")}
           onClick={() => closeWithAnimation()}
         >
           ×
@@ -586,7 +590,7 @@ function NewBookDialog({ onClose, onSaved, editBookId }: NewBookDialogProps) {
           className="new-book-form__loading"
           role={isLoadingEdit ? "status" : "alert"}
         >
-          {isLoadingEdit ? "Loading book details…" : error}
+          {isLoadingEdit ? t("Loading book details…") : t(error)}
         </p>
       ) : (
         <form
@@ -603,7 +607,7 @@ function NewBookDialog({ onClose, onSaved, editBookId }: NewBookDialogProps) {
           <div className="new-book-form__fields">
             <label className="new-book-form__field new-book-form__field--wide">
               <span>
-                Book name <span aria-hidden="true">*</span>
+                {t("Book name")} <span aria-hidden="true">*</span>
               </span>
               <input
                 name="title"
@@ -617,7 +621,7 @@ function NewBookDialog({ onClose, onSaved, editBookId }: NewBookDialogProps) {
             </label>
             <label className="new-book-form__field">
               <span>
-                Author {!isEditing && <span aria-hidden="true">*</span>}
+                {t("Author")} {!isEditing && <span aria-hidden="true">*</span>}
               </span>
               <input
                 name="author"
@@ -631,7 +635,7 @@ function NewBookDialog({ onClose, onSaved, editBookId }: NewBookDialogProps) {
             </label>
             <label className="new-book-form__field">
               <span>
-                Editor {!isEditing && <span aria-hidden="true">*</span>}
+                {t("Editor")} {!isEditing && <span aria-hidden="true">*</span>}
               </span>
               <input
                 name="editor"
@@ -645,7 +649,7 @@ function NewBookDialog({ onClose, onSaved, editBookId }: NewBookDialogProps) {
             </label>
             <label className="new-book-form__field">
               <span>
-                Distributor {!isEditing && <span aria-hidden="true">*</span>}
+                {t("Distributor")} {!isEditing && <span aria-hidden="true">*</span>}
               </span>
               <input
                 name="distributor"
@@ -666,12 +670,12 @@ function NewBookDialog({ onClose, onSaved, editBookId }: NewBookDialogProps) {
                 id="publication-date-label"
                 className="new-book-form__date-label"
               >
-                Publication date{" "}
+                {t("Publication date")}{" "}
                 {!isEditing && <span aria-hidden="true">*</span>}
               </span>
               <div className="new-book-form__date-fields">
                 <label className="new-book-form__field">
-                  <span>Year</span>
+                  <span>{t("Year")}</span>
                   <input
                     name="year"
                     type="number"
@@ -689,8 +693,8 @@ function NewBookDialog({ onClose, onSaved, editBookId }: NewBookDialogProps) {
                 </label>
                 <label className="new-book-form__field">
                   <span>
-                    Month{" "}
-                    <span className="new-book-form__optional">(optional)</span>
+                    {t("Month")}{" "}
+                    <span className="new-book-form__optional">{t("(optional)")}</span>
                   </span>
                   <select
                     name="month"
@@ -699,21 +703,21 @@ function NewBookDialog({ onClose, onSaved, editBookId }: NewBookDialogProps) {
                       updateDraft({ month: event.currentTarget.value, day: "" })
                     }
                   >
-                    <option value="">Select month</option>
+                    <option value="">{t("Select month")}</option>
                     {months.map((month, index) => (
                       <option
                         key={month}
                         value={String(index + 1).padStart(2, "0")}
                       >
-                        {month}
+                        {t(month)}
                       </option>
                     ))}
                   </select>
                 </label>
                 <label className="new-book-form__field">
                   <span>
-                    Day{" "}
-                    <span className="new-book-form__optional">(optional)</span>
+                    {t("Day")}{" "}
+                    <span className="new-book-form__optional">{t("(optional)")}</span>
                   </span>
                   <select
                     name="day"
@@ -723,7 +727,7 @@ function NewBookDialog({ onClose, onSaved, editBookId }: NewBookDialogProps) {
                       updateDraft({ day: event.currentTarget.value })
                     }
                   >
-                    <option value="">Select day</option>
+                    <option value="">{t("Select day")}</option>
                     {Array.from(
                       {
                         length: draft.month
@@ -746,7 +750,7 @@ function NewBookDialog({ onClose, onSaved, editBookId }: NewBookDialogProps) {
             </div>
             <label className="new-book-form__field new-book-form__field--wide">
               <span>
-                Description {!isEditing && <span aria-hidden="true">*</span>}
+                {t("Description")} {!isEditing && <span aria-hidden="true">*</span>}
               </span>
               <textarea
                 name="description"
@@ -766,20 +770,22 @@ function NewBookDialog({ onClose, onSaved, editBookId }: NewBookDialogProps) {
           >
             <div className="new-book-form__section-heading">
               <div>
-                <h3 id="book-images-title">Book images</h3>
+                <h3 id="book-images-title">{t("Book images")}</h3>
                 <p>
                   {isEditing
-                    ? `${initialBook?.images.length ?? 0} existing image(s). Add more images below if needed.`
-                    : "At least one image is required across the book and its volumes. Text and volume details are cached; image files must be selected again when reopening a saved draft."}
+                    ? t("{count} existing image(s). Add more images below if needed.").replace(
+                        "{count}",
+                        String(initialBook?.images.length ?? 0),
+                      )
+                    : t("At least one image is required across the book and its volumes. Text and volume details are cached; image files must be selected again when reopening a saved draft.")}
                 </p>
                 <small className="accent-start-jade tint-jade-500 bg-tint-05 new-book-form__image-tip">
-                  Tip: choose a square (1:1) image first; the first image is
-                  center-cropped when saved.
+                  {t("Tip: choose a square (1:1) image first; the first image is center-cropped when saved.")}
                 </small>
               </div>
             </div>
             <label className="new-book-form__file">
-              <span>Select book images</span>
+              <span>{t("Select book images")}</span>
               <input
                 type="file"
                 accept="image/jpeg,image/png,image/webp"
@@ -790,10 +796,16 @@ function NewBookDialog({ onClose, onSaved, editBookId }: NewBookDialogProps) {
               />
               <small>
                 {bookImages.length
-                  ? `${bookImages.length} image(s) selected`
+                  ? t("{count} image(s) selected").replace(
+                      "{count}",
+                      String(bookImages.length),
+                    )
                   : isEditing
-                    ? `${initialBook?.images.length ?? 0} existing image(s) · JPEG, PNG, or WebP · 5 MB max each.`
-                    : "JPEG, PNG, or WebP · 5 MB max each."}
+                    ? t("{count} existing image(s) · JPEG, PNG, or WebP · 5 MB max each.").replace(
+                        "{count}",
+                        String(initialBook?.images.length ?? 0),
+                      )
+                    : t("JPEG, PNG, or WebP · 5 MB max each.")}
               </small>
             </label>
           </section>
@@ -804,11 +816,11 @@ function NewBookDialog({ onClose, onSaved, editBookId }: NewBookDialogProps) {
           >
             <div className="new-book-form__section-heading">
               <div>
-                <h3 id="book-volumes-title">Volumes</h3>
+                <h3 id="book-volumes-title">{t("Volumes")}</h3>
                 <p>
                   {isEditing
-                    ? "Existing volumes are kept. Add images to any volume below."
-                    : "Volume images are stored separately from book images."}
+                    ? t("Existing volumes are kept. Add images to any volume below.")
+                    : t("Volume images are stored separately from book images.")}
                 </p>
               </div>
               {!isEditing && (
@@ -817,26 +829,31 @@ function NewBookDialog({ onClose, onSaved, editBookId }: NewBookDialogProps) {
                   type="button"
                   onClick={addVolume}
                 >
-                  + Add volume
+                  + {t("Add volume")}
                 </button>
               )}
             </div>
             {volumes.map((volume, index) => (
               <fieldset className="new-book-volume" key={volume.key}>
-                <legend>Volume {volume.number || index + 2}</legend>
+                <legend>
+                  {t("Volume {number}").replace(
+                    "{number}",
+                    volume.number || String(index + 2),
+                  )}
+                </legend>
                 {!isEditing && (
                   <button
                     className="new-book-volume__remove"
                     type="button"
                     onClick={() => removeVolume(volume.key)}
                   >
-                    Remove
+                    {t("Remove")}
                   </button>
                 )}
                 <div className="new-book-form__fields">
                   <label className="new-book-form__field">
                     <span>
-                      Volume title <span aria-hidden="true">*</span>
+                      {t("Volume title")} <span aria-hidden="true">*</span>
                     </span>
                     <input
                       aria-label={`Volume ${volume.number || index + 2} title`}
@@ -853,7 +870,7 @@ function NewBookDialog({ onClose, onSaved, editBookId }: NewBookDialogProps) {
                   </label>
                   <label className="new-book-form__field">
                     <span>
-                      Volume number <span aria-hidden="true">*</span>
+                      {t("Volume number")} <span aria-hidden="true">*</span>
                     </span>
                     <input
                       aria-label={`Volume ${volume.number || index + 2} number`}
@@ -871,7 +888,7 @@ function NewBookDialog({ onClose, onSaved, editBookId }: NewBookDialogProps) {
                     />
                   </label>
                   <label className="new-book-form__file new-book-form__field--wide">
-                    <span>Images for this volume</span>
+                    <span>{t("Images for this volume")}</span>
                     <input
                       type="file"
                       accept="image/jpeg,image/png,image/webp"
@@ -884,10 +901,16 @@ function NewBookDialog({ onClose, onSaved, editBookId }: NewBookDialogProps) {
                     />
                     <small>
                       {volume.images.length
-                        ? `${volume.images.length} image(s) selected`
+                        ? t("{count} image(s) selected").replace(
+                            "{count}",
+                            String(volume.images.length),
+                          )
                         : isEditing
-                          ? `${volume.existingImageCount} existing image(s) · JPEG, PNG, or WebP · 5 MB max each`
-                          : "JPEG, PNG, or WebP · 5 MB max each"}
+                          ? t("{count} existing image(s) · JPEG, PNG, or WebP · 5 MB max each.").replace(
+                              "{count}",
+                              String(volume.existingImageCount),
+                            )
+                          : t("JPEG, PNG, or WebP · 5 MB max each.")}
                     </small>
                   </label>
                 </div>
@@ -897,12 +920,12 @@ function NewBookDialog({ onClose, onSaved, editBookId }: NewBookDialogProps) {
 
           {cacheWarning && (
             <p className="new-book-form__cache-warning" role="status">
-              {cacheWarning}
+              {t(cacheWarning)}
             </p>
           )}
           {error && (
             <p className="new-book-form__error" role="alert">
-              {error}
+              {t(error)}
             </p>
           )}
           <div className="new-book-form__actions">
@@ -949,7 +972,7 @@ function NewBookDialog({ onClose, onSaved, editBookId }: NewBookDialogProps) {
               }}
               disabled={isSubmitting}
             >
-              {isEditing ? "Reset changes" : "Reset form"}
+              {t(isEditing ? "Reset changes" : "Reset form")}
             </button>
             <button
               className="new-book-form__cancel"
@@ -957,7 +980,7 @@ function NewBookDialog({ onClose, onSaved, editBookId }: NewBookDialogProps) {
               onClick={() => closeWithAnimation()}
               disabled={isSubmitting}
             >
-              Cancel
+              {t("Cancel")}
             </button>
             <button
               className="btn-jade new-book-form__submit"
@@ -966,11 +989,11 @@ function NewBookDialog({ onClose, onSaved, editBookId }: NewBookDialogProps) {
             >
               {isSubmitting
                 ? isEditing
-                  ? "Updating book…"
-                  : "Saving book…"
+                  ? t("Updating book…")
+                  : t("Saving book…")
                 : isEditing
-                  ? "Save changes"
-                  : "Save book"}
+                  ? t("Save changes")
+                  : t("Save book")}
             </button>
           </div>
         </form>

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from "react";
 import type { BookImage } from "../types/Book";
 import BookImagePopup from "./BookImagePopup";
+import { useSettings } from "../Hooks/useSettings";
 
 interface BookImageCarouselProps {
   images: BookImage[];
@@ -12,6 +13,7 @@ const prefersReducedMotion = () =>
 
 function BookImageCarousel({ images, label }: BookImageCarouselProps) {
   const count = images.length;
+  const { t } = useSettings();
 
   const slideRefs = useRef<(HTMLDivElement | null)[]>([]);
   // While we are scrolling on purpose, the observer ignores the slides we pass on the way.
@@ -88,16 +90,19 @@ function BookImageCarousel({ images, label }: BookImageCarouselProps) {
   };
 
   if (count === 0) {
-    return <div className="book-image-carousel__empty">No images available</div>;
+    return <div className="book-image-carousel__empty">{t("No images available")}</div>;
   }
 
   return (
-    <section className="book-image-carousel" aria-label={`${label} image gallery`}>
+    <section
+      className="book-image-carousel"
+      aria-label={`${label} ${t("image gallery")}`}
+    >
       <div
         className="book-image-carousel__track"
         ref={trackRef}
         role="group"
-        aria-label={`${label} images`}
+        aria-label={`${label} ${t("images")}`}
         tabIndex={0}
         onKeyDown={handleKeyDown}
       >
@@ -119,7 +124,10 @@ function BookImageCarousel({ images, label }: BookImageCarouselProps) {
             <button
               type="button"
               className="book-image-carousel__expand"
-              aria-label={`View image ${index + 1} full screen`}
+              aria-label={t("View image {index} full screen").replace(
+                "{index}",
+                String(index + 1),
+              )}
               onClick={() => setPopupIndex(index)}
             >
               <span aria-hidden="true">⛶</span>
@@ -130,13 +138,21 @@ function BookImageCarousel({ images, label }: BookImageCarouselProps) {
 
       {count > 1 && (
         <div className="book-image-carousel__controls">
-          <button type="button" aria-label={`Previous ${label} image`} onClick={() => goTo(current - 1)}>
+          <button
+            type="button"
+            aria-label={t("Previous {label} image").replace("{label}", label)}
+            onClick={() => goTo(current - 1)}
+          >
             ‹
           </button>
           <span aria-live="polite">
             {current + 1} / {count}
           </span>
-          <button type="button" aria-label={`Next ${label} image`} onClick={() => goTo(current + 1)}>
+          <button
+            type="button"
+            aria-label={t("Next {label} image").replace("{label}", label)}
+            onClick={() => goTo(current + 1)}
+          >
             ›
           </button>
         </div>

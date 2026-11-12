@@ -10,12 +10,14 @@ import {
   filterBooks,
   type BookFilters as BookFiltersState,
 } from "../services/bookFilters";
+import { useSettings } from "../Hooks/useSettings";
 
 function BooksPage() {
   const books = useLoaderData() as Awaited<ReturnType<typeof BooksPageLoader>>;
   const [isNewBookOpen, setIsNewBookOpen] = useState(false);
   const [filters, setFilters] = useState<BookFiltersState>(emptyBookFilters);
   const revalidator = useRevalidator();
+  const { t } = useSettings();
   const filteredBooks = useMemo(
     () => filterBooks(books, filters),
     [books, filters],
@@ -24,15 +26,13 @@ function BooksPage() {
   return (
     <main className="books-page">
       <div className="books-page__heading">
-        <h1 className="books-page__title">
-          Inside the Book — في الكتاب
-        </h1>
+        <h1 className="books-page__title">{t("Book collection")}</h1>
         <button
           className="btn btn-gold-shine books-page__add-button"
           type="button"
           onClick={() => setIsNewBookOpen(true)}
         >
-          <span aria-hidden="true">+</span> New book
+          <span aria-hidden="true">+</span> {t("New book")}
         </button>
       </div>
       <BookFilters
@@ -43,18 +43,18 @@ function BooksPage() {
       />
       {books.length === 0 ? (
         <div className="books-page__empty d entry-widget">
-          <p>There are no books right now.</p>
+          <p>{t("There are no books right now.")}</p>
           <button
             className="btn-jade"
             type="button"
             onClick={() => setIsNewBookOpen(true)}
           >
-            Add your first book
+            {t("Add your first book")}
           </button>
         </div>
       ) : filteredBooks.length === 0 ? (
         <div className="books-page__empty entry-widget">
-          <p>No books match these filters.</p>
+          <p>{t("No books match these filters.")}</p>
         </div>
       ) : (
         <div className="books-grid">
